@@ -97,10 +97,6 @@
         </div>
           <div class="modal-body">
             <form @submit.prevent="addVaiTro" enctype="multipart/form-data">
-              <!-- <div class="form-group">
-                <label for="maVaiTro">Mã vai trò</label>
-                <input v-model="maVaiTro" type="text" class="form-control" id="maVaiTro" placeholder="Nhập mã vai trò" required>
-              </div> -->
               <div class="form-group">
                 <label for="tenVaiTro">Tên vai trò</label>
                 <input v-model="tenVaiTro" type="text" class="form-control" id="tenVaiTro" placeholder="Nhập tên vai trò" required>
@@ -196,6 +192,7 @@ export default {
         alert('Thêm vai trò thành công');
         modalAdd.value.hide();
         getDanhMucVaiTro(); // Refresh vaiTros
+        tenVaiTro.value = '';
       } catch (error) {
         console.error(error);
         alert('Thêm vai trò thất bại');
@@ -238,9 +235,6 @@ export default {
       console.log(error);
     });
   };
-
-
-
   const updateVaiTro = async() => {
     const danhMucVaiTroData = {
       ma_vai_tro: parseInt(maVaiTro.value),
