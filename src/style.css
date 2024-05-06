@@ -1,0 +1,24 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Comfortaa", sans-serif;
+}
+
+
+:root {
+  --primary-color: #625BFE;
+  --primary-color-dark: #7771F6;
+  --button-color: #5433FF;
+  --button-color-shadow: #5433FF30;
+  --text-color: white;
+  --primary: #605DFF;
+  --primary-dark: #4a00e0;
+  --primary-light: #5DA8FF;
+  --secondary: #1D1D1D;
+  --social-background: #E9E9E9;
+  --social-background-hover: #dddddd;
+  --text: #1F2346;
+  --white: #FFFFFF;
+  --violet: #8e2de2;
+}
