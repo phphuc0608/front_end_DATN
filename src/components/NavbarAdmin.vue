@@ -9,26 +9,25 @@
       <li class="navbar_item"><router-link to="/quan_ly_nguoi_dung">Quản lý người dùng</router-link></li>
       <li class="navbar_item"><router-link to="/quan_ly_doanh_nghiep">Quản lý doanh nghiệp</router-link></li>
       <li class="navbar_item dropdown">
-          <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Quản lý cửa khẩu
-          </a>
-          <div class="sub-menu" aria-labelledby="navbarDropdown" style="width: 100%;">
-            <router-link class="dropdown-item" to="/quan_ly_to_khai">Quản lý tờ khai</router-link>
-            <router-link class="dropdown-item" to="/quan_ly_van_don">Quản lý vận đơn</router-link>
-            <router-link class="dropdown-item" to="/quan_ly_phuong_tien">Quản lý phương tiện</router-link>
-          </div>
-        </li>
+        <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Quản lý cửa khẩu
+        </a>
+        <div class="sub-menu" aria-labelledby="navbarDropdown" style="width: 100%;">
+          <router-link class="dropdown-item" to="/quan_ly_to_khai">Quản lý tờ khai</router-link>
+          <router-link class="dropdown-item" to="/quan_ly_van_don">Quản lý vận đơn</router-link>
+          <router-link class="dropdown-item" to="/quan_ly_phuong_tien">Quản lý phương tiện</router-link>
+        </div>
+      </li>
       <li class="navbar_item dropdown">
-          <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Quản lý danh mục
-          </a>
-          <div class="sub-menu" aria-labelledby="navbarDropdown" style="width: 100%;">
-            <router-link class="dropdown-item" to="/quan_ly_danh_muc_don_vi">Quản lý đơn vị</router-link>
-            <router-link class="dropdown-item" to="/quan_ly_danh_muc_hang_hoa">Quản lý hàng hóa</router-link>
-            <router-link class="dropdown-item" to="/quan_ly_danh_muc_vai_tro">Quản lý vai trò</router-link>
-          </div>
-        </li>
-      <li class="navbar_item"><router-link to="/">Thống kê</router-link></li>
+        <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Quản lý danh mục
+        </a>
+        <div class="sub-menu" aria-labelledby="navbarDropdown" style="width: 100%;">
+          <router-link class="dropdown-item" to="/quan_ly_danh_muc_don_vi">Quản lý đơn vị</router-link>
+          <router-link class="dropdown-item" to="/quan_ly_danh_muc_hang_hoa">Quản lý hàng hóa</router-link>
+          <router-link class="dropdown-item" to="/quan_ly_danh_muc_vai_tro">Quản lý vai trò</router-link>
+        </div>
+      </li>
     </ul>
     <div id="right_side" class="d-flex align-items-center dropdown">
       <a class="nav-link show" aria-expanded="true" @click="useIconClicked">
