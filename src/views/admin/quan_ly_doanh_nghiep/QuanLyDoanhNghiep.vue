@@ -44,9 +44,6 @@
       <router-link to="/them_doanh_nghiep" class="btn btn-primary me-3">
         <i class="bi bi-plus-circle"></i> Thêm doanh nghiệp
       </router-link>
-      <router-link to="/quan_ly_danh_muc_don_vi" class="btn btn-primary me-3">
-        <i class="bi bi-building"></i> Quản lý danh mục đơn vị
-      </router-link>
     </div>
   </div>
   <div class="container-fluid px-5">

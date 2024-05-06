@@ -156,7 +156,7 @@ export default {
     const danhMucDonVis = ref([]);
     const currentPage = ref(1);
     const itemsPerPage = ref(5);
-    const maDanhMucDonVi = ref(0);
+    const maDanhMucDonVi = ref('');
     const tenDanhMucDonVi = ref('');
     
 
@@ -171,7 +171,7 @@ export default {
     });
     
     const getDanhMucDonVi = () => {
-      axios.get(`/api/danh-muc/don-vi`, {
+      axios.get(`/api/danh-muc-don-vi`, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -192,7 +192,7 @@ export default {
       };
       console.log(danhMucDonViData);
       try {
-        const response = await axios.post(`/api/danh-muc/don-vi`, danhMucDonViData);
+        const response = await axios.post(`/api/danh-muc-don-vi`, danhMucDonViData);
         console.log(response.data);
         alert('Thêm danh mục đơn vị thành công');
         modalAdd.value.hide();
@@ -204,7 +204,7 @@ export default {
     };
 
     const deleteDanhMucDonVi = (maDanhMucDonVi) => {
-      axios.delete(`/api/danh-muc/don-vi/${maDanhMucDonVi}`, {
+      axios.delete(`/api/danh-muc-don-vi/${maDanhMucDonVi}`, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -221,7 +221,7 @@ export default {
     }
 
   const getDanhMucDonViById = (maDanhMucDonViId) => {
-    axios.get(`/api/danh-muc/don-vi/${maDanhMucDonViId}`, {
+    axios.get(`/api/danh-muc-don-vi/${maDanhMucDonViId}`, {
       headers: {
         'Content-Type': 'application/json'
       }
@@ -249,7 +249,7 @@ export default {
     };
     console.log(danhMucDonViData);
     try {
-      const response = await axios.put(`/api/danh-muc/don-vi/${maDanhMucDonVi.value}`, danhMucDonViData);
+      const response = await axios.put(`/api/danh-muc-don-vi/${maDanhMucDonVi.value}`, danhMucDonViData);
       console.log(response.data);
       alert('Cập nhật danh mục đơn vị thành công');
       modalUpdate.value.hide();

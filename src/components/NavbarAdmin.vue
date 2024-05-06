@@ -8,7 +8,26 @@
     <ul class="navbar_container">
       <li class="navbar_item"><router-link to="/quan_ly_nguoi_dung">Quản lý người dùng</router-link></li>
       <li class="navbar_item"><router-link to="/quan_ly_doanh_nghiep">Quản lý doanh nghiệp</router-link></li>
-      <li class="navbar_item"><router-link to="/">Quản lý cửa khẩu</router-link></li>
+      <li class="navbar_item dropdown">
+          <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Quản lý cửa khẩu
+          </a>
+          <div class="sub-menu" aria-labelledby="navbarDropdown" style="width: 100%;">
+            <router-link class="dropdown-item" to="/quan_ly_to_khai">Quản lý tờ khai</router-link>
+            <router-link class="dropdown-item" to="/quan_ly_van_don">Quản lý vận đơn</router-link>
+            <router-link class="dropdown-item" to="/quan_ly_phuong_tien">Quản lý phương tiện</router-link>
+          </div>
+        </li>
+      <li class="navbar_item dropdown">
+          <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Quản lý danh mục
+          </a>
+          <div class="sub-menu" aria-labelledby="navbarDropdown" style="width: 100%;">
+            <router-link class="dropdown-item" to="/quan_ly_danh_muc_don_vi">Quản lý đơn vị</router-link>
+            <router-link class="dropdown-item" to="/quan_ly_danh_muc_hang_hoa">Quản lý hàng hóa</router-link>
+            <router-link class="dropdown-item" to="/quan_ly_danh_muc_vai_tro">Quản lý vai trò</router-link>
+          </div>
+        </li>
       <li class="navbar_item"><router-link to="/">Thống kê</router-link></li>
     </ul>
     <div id="right_side" class="d-flex align-items-center dropdown">
@@ -96,20 +115,27 @@ nav .navbar_container{
 }
 nav .navbar_container .navbar_item{
   display: inline-block;
-  line-height: 80px;
-  margin: 0 5px;
+  line-height: 79px;
+  margin: 0px;
+  padding: 0px;
 }
 nav .navbar_container .navbar_item a{
   color: white;
   font-size: 20px;
   padding: 7px 13px;
-  border-radius: 3px;
+  text-transform: uppercase;
+}
+nav .navbar_container .navbar_item .dropdown-item{
+  color: white;
+  font-size: 20px;
+  padding: 0px 13px;
+  min-width: 100%;
   text-transform: uppercase;
 }
 nav .navbar_container .navbar_item a.active,nav .navbar_container .navbar_item a:hover{
   background: #1b9bff;
   transition: .5s;
-  border-radius: 10px;
+  /* border-radius: 10px; */
 }
 .checkbtn_sign_out{
   font-size: 50px;
@@ -119,6 +145,26 @@ nav .navbar_container .navbar_item a.active,nav .navbar_container .navbar_item a
   margin-right: 40px;
   cursor: pointer;
   display: none;
+}
+.navbar_item.dropdown:hover .sub-menu {
+  display: block;
+}
+.sub-menu {
+  display: none;
+  position: absolute;
+  background-color: #222B40;
+  min-width: 200px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+.dropdown-item {
+  color: black;
+  padding: 12px 12px;
+  text-decoration: none;
+  display: block;
+}
+.dropdown-item:hover {
+  background-color: #f1f1f1;
 }
 #check{
   display: none;
@@ -187,7 +233,7 @@ nav .navbar_container .navbar_item a.active,nav .navbar_container .navbar_item a
     line-height: 30px;
   }
   nav .navbar_container .navbar_item a{
-    font-size: 12 px;
+    padding: 15px 0px;
   }
   nav .navbar_container .navbar_item a:hover, nav .navbar_container .navbar_itema.active{
     background: none;
@@ -200,5 +246,26 @@ nav .navbar_container .navbar_item a.active,nav .navbar_container .navbar_item a
     float: right;
     z-index: 1;
   } 
+  .sub-menu {
+    display: none;
+    position: absolute;
+    background-color: #222B40;
+    min-width: 200px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    left: 50%; 
+    transform: translateX(-50%); 
+    top: 100%; 
+  }
+  .navbar_item.dropdown {
+    position: relative; /* Đảm bảo vị trí tương đối cho dropdown item */
+  }
+  nav .navbar_container .navbar_item .dropdown-item{
+  color: white;
+  font-size: 20px;
+  padding: 10px 13px;
+  min-width: 100%;
+  text-transform: uppercase;
+}
 }
 </style>

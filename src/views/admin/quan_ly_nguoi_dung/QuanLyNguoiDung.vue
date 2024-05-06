@@ -44,9 +44,6 @@
       <router-link to="/them_nguoi_dung" class="btn btn-primary me-3">
         <i class="bi bi-plus-circle"></i> Thêm người dùng
       </router-link>
-      <router-link to="/quan_ly_danh_muc_vai_tro" class="btn btn-primary me-3">
-        <i class="bi bi-person-badge"></i> Quản lý vai trò
-      </router-link>
     </div>
   </div>
   <div class="container-fluid px-5">

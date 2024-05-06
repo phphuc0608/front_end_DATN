@@ -24,10 +24,10 @@
         </div>
       </div>  
       <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
           <label for="" class="col-form-label">Danh mục đơn vị</label>
           <select v-model="maDanhMucDonVi" class="form-control form-select h-auto wide">
-            <option v-for="danhMucDonVi in danhMucDonVis" :key="danhMucDonVi.ma_danh_muc_don_vi" :value="danhMucDonVi.ma_danh_muc_don_vi">
+            <option class="option_item"v-for="danhMucDonVi in danhMucDonVis" :key="danhMucDonVi.ma_danh_muc_don_vi" :value="danhMucDonVi.ma_danh_muc_don_vi">
               {{ danhMucDonVi.ten_danh_muc_don_vi }}
             </option>
           </select>
@@ -72,7 +72,7 @@ export default {
     const tenDonVi = ref('');
     const email = ref('');
     const soDienThoai = ref('');
-    const maDanhMucDonVi = ref(0);
+    const maDanhMucDonVi = ref('');
     // const showModal = ref(false);
 
     // const goToQuanLyDoanhNghiep = () => {
@@ -84,11 +84,11 @@ export default {
       tenDonVi.value = '';
       email.value = '';
       soDienThoai.value = '';
-      maDanhMucDonVi.value = 0;
+      maDanhMucDonVi.value = '';
     };
 
     const getDanhMucDonVi = () => {
-      axios.get(`/api/danh-muc/don-vi`, {
+      axios.get(`/api/danh-muc-don-vi`, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -154,5 +154,8 @@ export default {
 <style>
 #content{
   margin-top: 120px;
+}
+.option_item{
+  padding: 10px;
 }
 </style>
