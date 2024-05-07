@@ -71,12 +71,12 @@
               <td>{{ nguoiDung.ho_va_ten }}</td>
               <td>{{ nguoiDung.dang_hoat_dong }}</td>
               <td>{{ nguoiDung.thuoc_don_vi }}</td>
-              <td>{{ nguoiDung.ma_vai_tro }}</td>
+              <td>{{ nguoiDung.vai_tro.ten_vai_tro }}</td>
               <td class="text-end">
-                <a class="btn btn-warning me-2 update_btn">
+                <router-link class="btn btn-warning me-2 update_btn" :to="{ name: 'CapNhatNguoiDung', params: { email: nguoiDung.email } }">
                   <i class="bi bi-pencil-fill"></i>
-                </a>
-                <a class="btn del_button">
+                </router-link>
+                <a class="btn del_button" @click="deleteNguoiDung(nguoiDung.email)">
                   <i class="bi bi-trash"></i>
                 </a>
               </td>
@@ -111,7 +111,6 @@
 import axios from 'axios';
 import { ref, onMounted, computed } from 'vue';
 import NavbarAdmin from '../../../components/NavbarAdmin.vue';
-import router from '../../../routers/router';
 
 export default {
   setup() {
@@ -205,7 +204,6 @@ export default {
       deleteNguoiDung,
     }
   },
-
   components:{
     NavbarAdmin
   },
