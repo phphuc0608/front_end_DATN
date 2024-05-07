@@ -16,6 +16,11 @@ const routes = [
     component: () => import('../views/admin/quan_ly_nguoi_dung/ThemNguoiDung.vue')
   },
   {
+    path: '/cap_nhat_nguoi_dung/:email',
+    name: 'CapNhatNguoiDung',
+    component: () => import('../views/admin/quan_ly_nguoi_dung/CapNhatNguoiDung.vue')
+  },
+  {
     path: '/quan_ly_doanh_nghiep',
     name: 'QuanLyDoanhNghiep',
     component: () => import('../views/admin/quan_ly_doanh_nghiep/QuanLyDoanhNghiep.vue')
