@@ -35,7 +35,6 @@
       </div>  
       <div class="d-flex justify-content-start mt-4">
         <button type="submit" class="btn btn-warning me-3" style="color: white;"><i class="bi bi-pencil-fill"></i> Cập nhật</button>
-        <button type="button" class="btn btn-danger" @click="resetForm"><i class="bi bi-x-circle"></i> Reset</button>
       </div> 
     </form>
   </div>
