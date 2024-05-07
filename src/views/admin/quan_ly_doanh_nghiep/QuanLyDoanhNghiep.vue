@@ -123,20 +123,21 @@ export default {
       document.title = "Quản lý doanh nghiệp";
     });
 
-    const getdonVis = () => {
-      axios.get(`/api/don-vi`, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(function(response){
-        donVis.value = response.data;
-        console.log(response.data); 
-      })
-      .catch(function(error){
-        console.log(error);
-      });
-    };
+  const getdonVis = () => {
+    axios.get(`/api/don-vi`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+    .then(function(response){
+      donVis.value = response.data;
+      console.log(response.data); 
+    })
+    .catch(function(error){
+      console.log(error);
+    });
+  };
 
   const deleteDoanhNghiep = async(maDonVi) => {
     try {
