@@ -4,7 +4,7 @@
     <label for="check" class="checkbtn_sign_out">
       <i class="bi bi-list"></i>
     </label>
-    <label class="logo">Admin Side</label>
+    <label class="logo m-0">Admin Side</label>
     <ul class="navbar_container">
       <li class="navbar_item"><router-link to="/quan_ly_nguoi_dung">Quản lý người dùng</router-link></li>
       <li class="navbar_item"><router-link to="/quan_ly_doanh_nghiep">Quản lý doanh nghiệp</router-link></li>
@@ -59,10 +59,10 @@
           </div>
           <div class="card-footer">
             <li class="card_logout list-group-item border-0 py-2">
-              <router-link to="" class="nav-link">
+              <a @click="signOutClick" class="nav-link">
                 <i class="bi bi-box-arrow-in-right"></i>
                 Đăng xuất
-              </router-link>
+              </a>
             </li>
           </div>
         </div>
@@ -72,17 +72,38 @@
 </template>
 
 <script>
+import { ref } from 'vue';
+import axios from 'axios';
+import router from '../routers/router';
 export default{
-  data() {
-    return {
-      isDropdownVisible: false,
+  setup(){
+    const isDropdownVisible = ref(false);
+    const signOutClick = () => {
+      localStorage.removeItem('token');
+      router.push('/');
     };
-  },
-  methods: {
-    useIconClicked(){
-      this.isDropdownVisible = !this.isDropdownVisible;
+
+    const getNguoiDungByEmail = async() => {
+      const email = localStorage.getItem('username');
+      try {
+        const respone = await axios.get(`/api/nguoi-dung/${email}`);
+        console.log(respone.data);
+      } catch (error) {
+        console.error(error);
+      }
     }
-  }
+
+    const useIconClicked = () => {
+      isDropdownVisible.value = !isDropdownVisible.value;
+    };  
+
+    return{
+      signOutClick,
+      isDropdownVisible,
+      useIconClicked,
+      getNguoiDungByEmail
+    }
+  },
 }
 </script>
 
@@ -105,7 +126,7 @@ nav{
 label.logo{
   color: white;
   font-size: 35px;
-  line-height: 80px;
+  /* line-height: 80px; */
   font-weight: bold;
 }
 nav .navbar_container{
@@ -204,10 +225,11 @@ nav .navbar_container .navbar_item a.active,nav .navbar_container .navbar_item a
   color: #1b9bff;
 }
 .card_logout a{
-  color: #db3700;
+  color: red;
 }
 .card_logout a:hover{
-  color: #956555;
+  color: #db3700;
+  cursor: pointer;
 }
 .card-footer, .card-header{
   background-color: transparent;
