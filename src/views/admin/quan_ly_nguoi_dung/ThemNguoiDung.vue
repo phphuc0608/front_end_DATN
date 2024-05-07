@@ -6,7 +6,7 @@
       <div class="row">
         <div class="col-md-6">
           <label class="col-form-label">Email</label>
-          <input v-model="email" type="text" :class="{'is-invalid': emailError}" class="form-control" placeholder="Nhập email" :title="emailError ? 'Email không đúng định dạng' : ''">
+          <input v-model="email" type="text" :class="{'is-invalid': emailError}" class="form-control" placeholder="Nhập email" :title="emailError ? 'Email không đúng định dạng' : ''" required>
         </div>
         <div class="col-md-6">
           <label for="" class="col-form-label">Họ và tên</label>
@@ -16,21 +16,21 @@
       <div class="row">
         <div class="col-md-6">
           <label for="" class="col-form-label">Số điện thoại</label>
-          <input v-model="soDienThoai" type="text" class="form-control" placeholder="Nhập số điện thoại">
+          <input v-model="soDienThoai" type="text" class="form-control" :class="{'is-invalid': soDienThoaiError}" placeholder="Nhập số điện thoại" :title="soDienThoaiError ? 'Số điện thoại phải đủ 10 ký tự' : ''" required>
         </div>
         <div class="col-md-6">
           <label for="" class="col-form-label">Mật khẩu</label>
-          <input v-model="matKhau" type="password" class="form-control" placeholder="Nhập mật khẩu">
+          <input v-model="matKhau" type="password" class="form-control" placeholder="Nhập mật khẩu" required>
         </div>
       </div>
       <div class="row">
         <div class="col-md-6">
           <label for="" class="col-form-label">Nhập lại mật khẩu</label>
-          <input v-model="matKhauNhapLai" type="password" :class="{'is-invalid': matKhauError}" class="form-control" placeholder="Nhập lại mật khẩu" :title="matKhauError ? 'Mật khẩu không trùng khớp' : ''">
+          <input v-model="matKhauNhapLai" type="password" :class="{'is-invalid': matKhauError}" class="form-control" placeholder="Nhập lại mật khẩu" :title="matKhauError ? 'Mật khẩu không trùng khớp' : ''" required>
         </div>
         <div class="col-md-6">
           <label for="" class="col-form-label">Thuộc đơn vị</label>
-          <select v-model="maDonVi" class="form-control form-select h-auto wide">
+          <select v-model="maDonVi" class="form-control form-select h-auto wide" required>
             <option v-for="donVi in donVis" :key="donVi.ma_don_vi" :value="donVi.ma_don_vi">
               {{ donVi.ten_don_vi }}
             </option>
@@ -40,7 +40,7 @@
       <div class="row">
         <div class="col-md-6">
           <label for="" class="col-form-label">Vai trò</label>
-          <select v-model="maVaiTro" class="form-control form-select h-auto wide">
+          <select v-model="maVaiTro" class="form-control form-select h-auto wide" required>
             <option v-for="vaiTro in vaiTros" :key="vaiTro.ma_vai_tro" :value="vaiTro.ma_vai_tro">
               {{ vaiTro.ten_vai_tro }}
             </option>
@@ -48,7 +48,7 @@
         </div>
       </div>  
       <div class="d-flex justify-content-start mt-4">
-        <button type="submit" class="btn btn-success me-3"><i class="bi bi-plus-circle"></i> Thêm vận đơn</button>
+        <button type="submit" class="btn btn-success me-3"><i class="bi bi-plus-circle"></i> Thêm người dùng</button>
         <button type="button" class="btn btn-danger" @click="resetForm"><i class="bi bi-x-circle"></i> Reset</button>
       </div> 
     </form>
@@ -72,6 +72,7 @@ export default {
     const matKhauNhapLai = ref('');
     const emailError = ref(false);
     const matKhauError = ref(false);
+    const soDienThoaiError = ref(false);
 
     const resetForm = () => {
       email.value = '';
@@ -122,9 +123,15 @@ export default {
       matKhauError.value = matKhau.value !== matKhauNhapLai.value;
     };
     
+    const validateSoDienThoai = () => {
+      const re = /^\d{10}$/;
+      soDienThoaiError.value = !re.test(soDienThoai.value);
+    };
+
     const addNguoiDung = async() => {
       validateEmail();
       validatePasswords();
+      validateSoDienThoai();
       if (emailError.value || matKhauError.value) {
         return;
       }
@@ -175,8 +182,10 @@ export default {
       matKhauNhapLai,
       emailError,
       matKhauError,
+      soDienThoaiError,
       validateEmail,
-      validatePasswords
+      validatePasswords,
+      validateSoDienThoai
     }
   },
   components: {
