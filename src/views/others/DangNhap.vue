@@ -1,13 +1,13 @@
 <template>
 <div class="background">
-  <form class="my-form">
+  <form class="my-form" @submit.prevent="handleSubmit">
     <div class="login-welcome-row">
-        <h1>Welcome &#x1F44F;</h1>
-        <p>Nhập thông tin đăng nhập!</p>
+      <h1>Welcome &#x1F44F;</h1>
+      <p>Nhập thông tin đăng nhập!</p>
     </div>
     <div class="input__wrapper">
-      <input type="email" id="email" name="email" class="input__field" placeholder="Your Email" required>
-      <label for="email" class="input__label">Email:</label>
+      <input type="email" id="username" v-model="username" class="input__field" placeholder="Your Email" required>
+      <label for="username" class="input__label">Email:</label>
       <svg class="input__icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
         stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
@@ -16,7 +16,7 @@
       </svg>
     </div>
     <div class="input__wrapper">
-      <input id="password" type="password" class="input__field" placeholder="Your Password" required>
+      <input id="password" type="password" v-model="password" class="input__field" placeholder="Your Password" required>
       <label for="password" class="input__label">
         Password:
       </label>
@@ -43,11 +43,36 @@
 </template>
 
 <script>
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+import router from '../../routers/router';
 export default {
-  name: 'DangNhap',
-  mounted(){
-      document.title = "Đăng nhập";
-  }
+  setup() {
+    const username = ref('');
+    const password = ref('');
+    const handleSubmit = async() => {
+      const userData = new URLSearchParams();
+      userData.append('username', username.value);
+      userData.append('password', password.value);
+      console.log(userData.toString());
+      try{
+        const response = await axios.post('/api/login', userData,); 
+        console.log(response.data);
+        localStorage.setItem('token', response.data.access_token);
+        router.push('/quan_ly_nguoi_dung');
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    onMounted(() => {
+      document.title = 'Đăng nhập';
+    });
+    return {
+      username,
+      password,
+      handleSubmit,
+    };
+  },
 }
 </script>
 
