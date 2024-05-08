@@ -58,13 +58,18 @@ const routes = [
   {
     path: '/quan_ly_van_don',
     name: 'QuanLyVanDon',
-    component: () => import('../views/admin/quan_ly_cua_khau/QuanLyVanDon.vue')
+    component: () => import('../views/admin/quan_ly_cua_khau/quan_ly_van_don/QuanLyVanDon.vue')
+  },
+  {
+    path: '/them_van_don',
+    name: 'ThemVanDon',
+    component: () => import('../views/admin/quan_ly_cua_khau/quan_ly_van_don/ThemVanDon.vue')
   },
   {
     path: '/quan_ly_phuong_tien',
     name: 'QuanLyPhuongTien',
     component: () => import('../views/admin/quan_ly_cua_khau/QuanLyPhuongTien.vue')
-  }
+  },
 ];
 
 const router = createRouter({
