@@ -53,7 +53,7 @@ const routes = [
   {
     path: '/quan_ly_to_khai',
     name: 'QuanLyToKhai',
-    component: () => import('../views/admin/quan_ly_cua_khau/QuanLyToKhai.vue')
+    component: () => import('../views/admin/quan_ly_cua_khau/quan_ly_to_khai/QuanLyToKhai.vue')
   },
   {
     path: '/quan_ly_van_don',
@@ -68,7 +68,7 @@ const routes = [
   {
     path: '/quan_ly_phuong_tien',
     name: 'QuanLyPhuongTien',
-    component: () => import('../views/admin/quan_ly_cua_khau/QuanLyPhuongTien.vue')
+    component: () => import('../views/admin/quan_ly_cua_khau/quan_ly_phuong_tien')
   },
 ];
 
