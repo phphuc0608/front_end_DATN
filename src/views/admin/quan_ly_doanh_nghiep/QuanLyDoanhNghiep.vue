@@ -127,7 +127,6 @@ export default {
     axios.get(`/api/don-vi`, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`
       }
     })
     .then(function(response){
@@ -143,7 +142,7 @@ export default {
     try {
       await axios.delete(`/api/don-vi/${maDonVi}`, {
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         }
       });
       alert('Xóa danh mục đơn vị thành công');
