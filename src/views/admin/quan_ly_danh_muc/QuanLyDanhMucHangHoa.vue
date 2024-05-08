@@ -30,15 +30,15 @@
       </div>
     </div>
     <div class="col-md-12 d-flex mb-4 pb-3">
-      <button id="btn_add" type="button" data-bs-toggle="modal" data-bs-target="#add_vai_tro" class="btn btn-primary">
-        <i class="bi bi-plus-circle"></i> Thêm vai trò
+      <button id="btn_add" type="button" data-bs-toggle="modal" data-bs-target="#add_danh_muc_hang_hoa" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Thêm hàng hóa
       </button>
     </div>
   </div>
   <div class="container-fluid px-5">
     <div class="header_container">
       <span class="title">
-        <i class="bi bi-table"></i> Bảng vai trò
+        <i class="bi bi-table"></i> Bảng hàng hóa
       </span>
     </div>
     <div class="table_container p-3">
@@ -46,20 +46,20 @@
         <table class="table">
           <thead>
             <tr>
-              <th scope="col">Mã danh mục vai trò</th>
-              <th scope="col">Tên danh mục vai trò</th>
+              <th scope="col">Mã danh mục hàng hóa</th>
+              <th scope="col">Tên danh mục hàng hóa</th>
               <th scope="col" class="text-end">Hành động</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(vaiTro, index) in paginatedData" :key="index">
-              <td>{{ vaiTro.ma_vai_tro }}</td>
-              <td>{{ vaiTro.ten_vai_tro }}</td>
+            <tr v-for="(danhMucHangHoa, index) in paginatedData" :key="index">
+              <td>{{ danhMucHangHoa.ma_danh_muc_hang_hoa }}</td>
+              <td>{{ danhMucHangHoa.ten_danh_muc_hang_hoa }}</td>
               <td class="text-end">
-                <a data-bs-toggle="modal" data-bs-target="#update_vai_tro" class="btn btn-warning me-2 update_btn" @click="getDanhMucVaiTroById(vaiTro.ma_vai_tro)">
+                <a data-bs-toggle="modal" data-bs-target="#update_danh_muc_hang_hoa" class="btn btn-warning me-2 update_btn" @click="getDanhMucHangHoaById(danhMucHangHoa.ma_danh_muc_hang_hoa)">
                   <i class="bi bi-pencil-fill"></i>
                 </a>
-                <a class="btn del_button" @click="deleteDanhMucVaiTro(vaiTro.ma_vai_tro)" >
+                <a class="btn del_button" @click="deleteDanhMucHangHoa(danhMucHangHoa.ma_danh_muc_hang_hoa)" >
                   <i class="bi bi-trash"></i>
                 </a>
               </td>
@@ -88,22 +88,22 @@
       </nav>
     </div>
     <!-- Them danh muc don vi -->
-    <div style="margin-top: 200px;" class="modal" id="add_vai_tro" tabindex="-1" role="dialog" aria-labelledby="add_vai_tro_label" aria-hidden="true">
+    <div style="margin-top: 200px;" class="modal" id="add_danh_muc_hang_hoa" tabindex="-1" role="dialog" aria-labelledby="add_danh_muc_hang_hoa_label" aria-hidden="true">
       <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="add_champion_label">Thêm vai trò</h5>
+          <h5 class="modal-title" id="add_champion_label">Thêm danh mục hàng hóa</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
           <div class="modal-body">
-            <form @submit.prevent="addVaiTro" enctype="multipart/form-data">
-              <!-- <div class="form-group">
-                <label for="maVaiTro">Mã vai trò</label>
-                <input v-model="maVaiTro" type="text" class="form-control" id="maVaiTro" placeholder="Nhập mã vai trò" required>
-              </div> -->
+            <form @submit.prevent="addDanhMucHangHoa" enctype="multipart/form-data">
               <div class="form-group">
-                <label for="tenVaiTro">Tên vai trò</label>
-                <input v-model="tenVaiTro" type="text" class="form-control" id="tenVaiTro" placeholder="Nhập tên vai trò" required>
+                <label for="maDanhMucHangHoa">Mã danh mục hàng hóa</label>
+                <input v-model="maDanhMucHangHoa" type="text" class="form-control" id="maDanhMucHangHoa" placeholder="Nhập mã hàng hóa" required>
+              </div>
+              <div class="form-group">
+                <label for="tenDanhMucHangHoa">Tên danh mục hàng hóa</label>
+                <input v-model="tenDanhMucHangHoa" type="text" class="form-control" id="tenDanhMucHangHoa" placeholder="Nhập tên hàng hóa" required>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary py-2 px-3" data-dismiss="modal">Đóng</button>
@@ -115,22 +115,22 @@
       </div> 
     </div>
     <!-- Cap nhat danh muc don vi -->
-    <div style="margin-top: 200px;" class="modal" id="update_vai_tro" tabindex="-1" role="dialog" aria-labelledby="update_vai_tro_label" aria-hidden="true">
+    <div style="margin-top: 200px;" class="modal" id="update_danh_muc_hang_hoa" tabindex="-1" role="dialog" aria-labelledby="update_danh_muc_hang_hoa_label" aria-hidden="true">
       <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="add_champion_label">Cập nhật vai trò</h5>
+          <h5 class="modal-title" id="add_champion_label">Cập nhật danh mục hàng hóa</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
           <div class="modal-body">
-            <form @submit.prevent="updateVaiTro" enctype="multipart/form-data">
+            <form @submit.prevent="updateDanhMucHangHoa" enctype="multipart/form-data">
               <div class="form-group">
-                <label for="maVaiTro">Mã vai trò</label>
-                <input v-model="maVaiTro" type="text" class="form-control" id="maVaiTro" readonly>
+                <label for="maDanhMucHangHoa">Mã danh mục hàng hóa</label>
+                <input v-model="maDanhMucHangHoa" type="text" class="form-control" id="maDanhMucHangHoa" readonly>
               </div>
               <div class="form-group">
-                <label for="tenVaiTro">Tên vai trò</label>
-                <input v-model="tenVaiTro" type="text" class="form-control" id="tenVaiTro">
+                <label for="tenDanhMucHangHoa">Tên danh mục hàng hóa</label>
+                <input v-model="tenDanhMucHangHoa" type="text" class="form-control" id="tenDanhMucHangHoa">
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary py-2 px-3" data-dismiss="modal">Đóng</button>
@@ -153,31 +153,31 @@ export default {
   setup() {
     const modalAdd = ref(null);
     const modalUpdate = ref(null);
-    const vaiTros = ref([]);
+    const danhMucHangHoas = ref([]);
     const currentPage = ref(1);
     const itemsPerPage = ref(5);
-    const maVaiTro = ref(0);
-    const tenVaiTro = ref('');
+    const maDanhMucHangHoa = ref('');
+    const tenDanhMucHangHoa = ref('');
     
 
     onMounted(() => {
-      document.title = "Quản lý vai trò";
-      modalAdd.value = new bootstrap.Modal(document.getElementById('add_vai_tro'), {
+      document.title = "Quản lý danh mục hàng hóa";
+      modalAdd.value = new bootstrap.Modal(document.getElementById('add_danh_muc_hang_hoa'), {
         keyboard: false
       });
-      modalUpdate.value = new bootstrap.Modal(document.getElementById('update_vai_tro'), {
+      modalUpdate.value = new bootstrap.Modal(document.getElementById('update_danh_muc_hang_hoa'), {
         keyboard: false
       });
     });
     
-    const getDanhMucVaiTro = () => {
-      axios.get(`/api/danh-muc/vai-tro`, {
+    const getDanhMucHangHoa = () => {
+      axios.get(`/api/danh-muc-hang-hoa`, {
         headers: {
           'Content-Type': 'application/json'
         }
       })
       .then(function(response){
-        vaiTros.value = response.data;
+        danhMucHangHoas.value = response.data;
         console.log(response.data); 
       })
       .catch(function(error){
@@ -185,51 +185,52 @@ export default {
       });
     };
 
-    const addVaiTro = async() => {
-      const danhMucVaiTroData = {
-        ten_vai_tro: tenVaiTro.value,
+    const addDanhMucHangHoa = async() => {
+      const danhMucHangHoaData = {
+        ma_danh_muc_hang_hoa: maDanhMucHangHoa.value,
+        ten_danh_muc_hang_hoa: tenDanhMucHangHoa.value,
       };
-      console.log(danhMucVaiTroData);
+      console.log(danhMucHangHoaData);
       try {
-        const response = await axios.post(`/api/danh-muc/vai-tro`, danhMucVaiTroData);
+        const response = await axios.post(`/api/danh-muc-hang-hoa`, danhMucHangHoaData);
         console.log(response.data);
-        alert('Thêm vai trò thành công');
+        alert('Thêm hàng hóa thành công');
         modalAdd.value.hide();
-        getDanhMucVaiTro(); // Refresh vaiTros
+        getDanhMucHangHoa(); // Refresh danhMucHangHoas
       } catch (error) {
         console.error(error);
-        alert('Thêm vai trò thất bại');
+        alert('Thêm hàng hóa thất bại');
       }
     };
 
-    const deleteDanhMucVaiTro = (maVaiTro) => {
-      axios.delete(`/api/danh-muc/vai-tro/${maVaiTro}`, {
+    const deleteDanhMucHangHoa = (maDanhMucHangHoa) => {
+      axios.delete(`/api/danh-muc-hang-hoa/${maDanhMucHangHoa}`, {
         headers: {
           'Content-Type': 'application/json'
         }
       })
       .then(function(response){
         console.log(response.data);
-        alert('Xóa vai trò thành công');
-        getDanhMucVaiTro(); // Refresh vaiTros
+        alert('Xóa hàng hóa thành công');
+        getDanhMucHangHoa(); // Refresh danhMucHangHoas
       })
       .catch(function(error){
         console.log(error);
-        alert('Xóa vai trò thất bại');
+        alert('Xóa hàng hóa thất bại');
       });
     }
 
-  const getDanhMucVaiTroById = (maVaiTroId) => {
-    axios.get(`/api/danh-muc/vai-tro/${maVaiTroId}`, {
+  const getDanhMucHangHoaById = (maDanhMucHangHoaId) => {
+    axios.get(`/api/danh-muc-hang-hoa/${maDanhMucHangHoaId}`, {
       headers: {
         'Content-Type': 'application/json'
       }
     })
     .then(function(response){
-      if (response.data && response.data.ma_vai_tro) {
+      if (response.data && response.data.ma_danh_muc_hang_hoa) {
         const data = response.data;
-        maVaiTro.value = data.ma_vai_tro;
-        tenVaiTro.value = data.ten_vai_tro;
+        maDanhMucHangHoa.value = data.ma_danh_muc_hang_hoa;
+        tenDanhMucHangHoa.value = data.ten_danh_muc_hang_hoa;
       } else {
         console.error('Unexpected response data', response.data);
       }
@@ -241,32 +242,33 @@ export default {
 
 
 
-  const updateVaiTro = async() => {
-    const danhMucVaiTroData = {
-      ma_vai_tro: parseInt(maVaiTro.value),
-      ten_vai_tro: tenVaiTro.value,
+
+  const updateDanhMucHangHoa = async() => {
+    const danhMucHangHoaData = {
+      ma_danh_muc_hang_hoa: maDanhMucHangHoa.value,
+      ten_danh_muc_hang_hoa: tenDanhMucHangHoa.value,
     };
-    console.log(danhMucVaiTroData);
+    console.log(danhMucHangHoaData);
     try {
-      const response = await axios.put(`/api/danh-muc/vai-tro/${maVaiTro.value}`, danhMucVaiTroData);
+      const response = await axios.put(`/api/danh-muc-hang-hoa/${maDanhMucHangHoa.value}`, danhMucHangHoaData);
       console.log(response.data);
-      alert('Cập nhật vai trò thành công');
+      alert('Cập nhật danh mục hàng hóa thành công');
       modalUpdate.value.hide();
-      getDanhMucVaiTro(); // Refresh vaiTros
+      getDanhMucHangHoa(); // Refresh danhMucHangHoas
     } catch (error) {
       console.error(error);
-      alert('Cập nhật vai trò thất bại');
+      alert('Cập nhật danh mục hàng hóa thất bại');
     }
   };
 
   const paginatedData = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage.value;
     const end = start + itemsPerPage.value;
-    return vaiTros.value.slice(start, end);
+    return danhMucHangHoas.value.slice(start, end);
   });
 
   const totalPages = computed(() => {
-    return Math.ceil(vaiTros.value.length / itemsPerPage.value);
+    return Math.ceil(danhMucHangHoas.value.length / itemsPerPage.value);
   });
 
   const changePage = (page) => {
@@ -297,15 +299,15 @@ export default {
     }
   };
 
-  getDanhMucVaiTro();
+  getDanhMucHangHoa();
   return{
-    vaiTros,
-    maVaiTro,
-    tenVaiTro,
-    addVaiTro,
-    deleteDanhMucVaiTro,
-    getDanhMucVaiTroById,
-    updateVaiTro,
+    danhMucHangHoas,
+    maDanhMucHangHoa,
+    tenDanhMucHangHoa,
+    addDanhMucHangHoa,
+    deleteDanhMucHangHoa,
+    getDanhMucHangHoaById,
+    updateDanhMucHangHoa,
     paginatedData,
     totalPages,
     currentPage,
