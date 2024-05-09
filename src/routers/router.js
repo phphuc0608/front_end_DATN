@@ -51,6 +51,11 @@ const routes = [
     component: () => import('../views/admin/quan_ly_danh_muc/QuanLyDanhMucVaiTro.vue')
   },
   {
+    path: '/quan_ly_trang_thai_to_khai',
+    name: 'QuanLyTrangThaiToKhai',
+    component: () => import('../views/admin/quan_ly_danh_muc/QuanLyTrangThaiToKhai.vue')
+  },
+  {
     path: '/quan_ly_to_khai',
     name: 'QuanLyToKhai',
     component: () => import('../views/admin/quan_ly_cua_khau/quan_ly_to_khai/QuanLyToKhai.vue')
@@ -66,9 +71,9 @@ const routes = [
     component: () => import('../views/admin/quan_ly_cua_khau/quan_ly_van_don/ThemVanDon.vue')
   },
   {
-    path: '/quan_ly_phuong_tien',
-    name: 'QuanLyPhuongTien',
-    component: () => import('../views/admin/quan_ly_cua_khau/quan_ly_phuong_tien')
+    path: '/cap_nhat_van_don/:ma_van_don',
+    name: 'CapNhatVanDon',
+    component: () => import('../views/admin/quan_ly_cua_khau/quan_ly_van_don/CapNhatVanDon.vue')
   },
 ];
 
