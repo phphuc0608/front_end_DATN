@@ -151,12 +151,12 @@ export default {
           }
         });
         console.log(response.data);
-        alert('Thêm doanh nghiệp thành công');
+        alert('Thêm người dùng thành công');
         router.push('/quan_ly_nguoi_dung');
         //showModal.value = true;
       } catch (error) {
         console.log(error);
-        alert('Thêm doanh nghiệp thất bại');
+        alert('Thêm người dùng thất bại');
       }
     };
 
