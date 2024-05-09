@@ -15,7 +15,6 @@
         <div class="sub-menu" aria-labelledby="navbarDropdown" style="width: 100%;">
           <router-link class="dropdown-item" to="/quan_ly_to_khai">Quản lý tờ khai</router-link>
           <router-link class="dropdown-item" to="/quan_ly_van_don">Quản lý vận đơn</router-link>
-          <router-link class="dropdown-item" to="/quan_ly_phuong_tien">Quản lý phương tiện</router-link>
         </div>
       </li>
       <li class="navbar_item dropdown">
@@ -23,9 +22,10 @@
           Quản lý danh mục
         </a>
         <div class="sub-menu" aria-labelledby="navbarDropdown" style="width: 100%;">
-          <router-link class="dropdown-item" to="/quan_ly_danh_muc_don_vi">Quản lý đơn vị</router-link>
-          <router-link class="dropdown-item" to="/quan_ly_danh_muc_hang_hoa">Quản lý hàng hóa</router-link>
-          <router-link class="dropdown-item" to="/quan_ly_danh_muc_vai_tro">Quản lý vai trò</router-link>
+          <router-link class="dropdown-item" to="/quan_ly_danh_muc_don_vi">Danh mục đơn vị</router-link>
+          <router-link class="dropdown-item" to="/quan_ly_danh_muc_hang_hoa">Danh mục hàng hóa</router-link>
+          <router-link class="dropdown-item" to="/quan_ly_danh_muc_vai_tro">Danh mục vai trò</router-link> 
+          <router-link class="dropdown-item" to="/quan_ly_trang_thai_to_khai">Trạng thái tờ khai</router-link> 
         </div>
       </li>
     </ul>
