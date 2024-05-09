@@ -206,9 +206,10 @@ export default {
         }
       })
       .then(function(response){
-        console.log(response.data);
-        alert('Xóa vai trò thành công');
-        getDanhMucVaiTro(); // Refresh vaiTros
+        const message = response.data.message;
+        console.log(response.data.message);
+        alert(message);
+        getDanhMucVaiTro();
       })
       .catch(function(error){
         console.log(error);
