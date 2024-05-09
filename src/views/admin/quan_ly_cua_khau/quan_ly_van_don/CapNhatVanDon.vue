@@ -57,9 +57,8 @@
           <textarea v-model="moTa" class="form-control mb-3"></textarea>
         </div>
       </div> 
-      <div class="d-flex justify-content-start mt-4">
-        <button type="submit" class="btn btn-success me-3"><i class="bi bi-plus-circle"></i> Thêm vận đơn</button>
-        <button type="button" class="btn btn-danger" @click="resetForm"><i class="bi bi-x-circle"></i> Reset</button>
+      <div class="d-flex justify-content-start">
+        <button type="submit" class="btn btn-warning me-3" style="color: white;"><i class="bi bi-pencil-fill"></i> Cập nhật</button>
       </div> 
     </form>
   </div>
@@ -69,9 +68,10 @@ import { ref, onMounted, computed } from 'vue';
 import NavbarAdmin from '../../../../components/NavbarAdmin.vue';
 import axios from 'axios';
 import router from '../../../../routers/router';
+import { useRoute } from 'vue-router';
 export default {
   setup(){
-    // const router = useRouter();
+    const route = useRoute();
     const soLuong = ref(0);
     const trongLuong = ref(0);
     const tenHangHoa = ref('');
@@ -82,17 +82,6 @@ export default {
     const bienSo = ref('');
     const danhMucHangHoas = ref([]); 
     const donVis = ref([]);
-
-    const resetForm = () => {
-      soLuong.value = 0;
-      trongLuong.value = 0;
-      tenHangHoa.value = '';
-      moTa.value = '';
-      maDanhMucHangHoa.value = '';
-      donViXuatKhau.value = '';
-      donViNhapKhau.value = '';
-      bienSo.value = '';
-    };
 
     const getDanhMucHangHoa = () => {
       axios.get(`/api/danh-muc-hang-hoa`, {
@@ -138,9 +127,10 @@ export default {
         tenHangHoa.value = vanDon.ten_hang_hoa;
         moTa.value = vanDon.mo_ta;
         maDanhMucHangHoa.value = vanDon.ma_danh_muc_hang_hoa;
-        donViXuatKhau.value = vanDon.ma_don_vi_xuat_khau;
-        donViNhapKhau.value = vanDon.ma_don_vi_nhap_khau;
+        donViXuatKhau.value = vanDon.don_vi_xuat_khau;
+        donViNhapKhau.value = vanDon.don_vi_nhap_khau;
         bienSo.value = vanDon.bien_so;
+        console.log(vanDon);
       } catch (error) {
         console.log(error);
       }
@@ -153,14 +143,14 @@ export default {
         ten_hang_hoa: tenHangHoa.value,
         mo_ta: moTa.value,
         ma_danh_muc_hang_hoa: maDanhMucHangHoa.value,
-        ma_don_vi_xuat_khau: donViXuatKhau.value,
-        ma_don_vi_nhap_khau: donViNhapKhau.value,
+        don_vi_xuat_khau: donViXuatKhau.value,
+        don_vi_nhap_khau: donViNhapKhau.value,
         bien_so: bienSo.value
       };
       try {
         await axios.put(`/api/van-don/${route.params.ma_van_don}`, vanDon);
         alert('Cập nhật vận đơn thành công');
-        router.push('/quan-ly-van-don');
+        router.push('/quan_ly_van_don');
       } catch (error) {
         console.log(error);
         alert('Cập nhật vận đơn thất bại');
@@ -177,7 +167,6 @@ export default {
     return {
       danhMucHangHoas,
       donVis,
-      resetForm,
       soLuong,
       trongLuong,
       tenHangHoa,
