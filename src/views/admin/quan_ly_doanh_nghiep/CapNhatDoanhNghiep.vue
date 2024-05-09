@@ -139,7 +139,9 @@ export default {
       soDienThoai,
       maDanhMucDonVi,
       updateDoanhNghiep,
-      danhMucDonVis, // Trả về danh sách danh mục đơn vị để sử dụng trong template
+      danhMucDonVis,
+      emailError,
+      soDienThoaiError
     };
   },
   components: {
