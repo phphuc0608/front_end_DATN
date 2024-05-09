@@ -137,20 +137,20 @@ export default {
       });
     };
 
-  const deleteNguoiDung = async(email) => {
-    try {
-      await axios.delete(`/api/nguoi-dung/${email}`, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      alert('Xóa người dùng thành công');
-      setTimeout(getNguoiDungs, 1000); 
-      } catch (error) {
-      console.log(error);
-      alert('Xóa người dùng thất bại');
-    }
-  };
+    const deleteNguoiDung = async (email) => {
+      try {
+        const response = await axios.delete(`/api/nguoi-dung/${email}`, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });  
+        alert('Xóa người dùng thành công');
+        setTimeout(getNguoiDungs, 1000);
+      } catch (error) { 
+        alert('Xóa người dùng thất bại');
+      }
+    };
+
 
     const paginatedData = computed(() => {
       const start = (currentPage.value - 1) * itemsPerPage.value;
