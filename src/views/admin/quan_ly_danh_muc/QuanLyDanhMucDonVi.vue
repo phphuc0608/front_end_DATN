@@ -38,7 +38,7 @@
   <div class="container-fluid px-5">
     <div class="header_container">
       <span class="title">
-        <i class="bi bi-table"></i> Bảng tài khoản
+        <i class="bi bi-table"></i> Bảng danh mục đơn vị
       </span>
     </div>
     <div class="table_container p-3">
@@ -187,7 +187,7 @@ export default {
 
     const addDanhMucDonVi = async() => {
       const danhMucDonViData = {
-        ma_danh_muc_don_vi: parseInt(maDanhMucDonVi.value),
+        ma_danh_muc_don_vi: maDanhMucDonVi.value,
         ten_danh_muc_don_vi: tenDanhMucDonVi.value,
       };
       console.log(danhMucDonViData);
@@ -244,7 +244,7 @@ export default {
 
   const updateDanhMucDonVi = async() => {
     const danhMucDonViData = {
-      ma_danh_muc_don_vi: parseInt(maDanhMucDonVi.value),
+      ma_danh_muc_don_vi: maDanhMucDonVi.value,
       ten_danh_muc_don_vi: tenDanhMucDonVi.value,
     };
     console.log(danhMucDonViData);
