@@ -64,9 +64,9 @@
               <td>{{ vanDon.bien_so }}</td>
               <td>{{ vanDon.ngay_tao_van_don }}</td>
               <td class="text-end">
-                <a class="btn btn-warning me-2 update_btn">
+                <router-link class="btn btn-warning me-2 update_btn" :to="{ name: 'CapNhatVanDon', params: { ma_van_don: vanDon.ma_van_don } }">
                   <i class="bi bi-pencil-fill"></i>
-                </a>
+                </router-link>
                 <a class="btn del_button" @click="deleteVanDon(vanDon.ma_van_don)">
                   <i class="bi bi-trash"></i>
                 </a>
