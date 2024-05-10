@@ -46,27 +46,41 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import router from '../../routers/router';
+import { useUserStore } from '../../stores/store';
+
 export default {
   setup() {
+    const userStore = useUserStore();
     const username = ref('');
     const password = ref('');
+
+    // Kiểm tra xem có email trong localStorage không
+    const savedEmail = localStorage.getItem('savedEmail');
+    if (savedEmail) {
+      userStore.setEmail(savedEmail); // Đặt giá trị email vào userStore
+    }
+
     const handleSubmit = async() => {
       const userData = new URLSearchParams();
       userData.append('username', username.value);
       userData.append('password', password.value);
-      console.log(userData.toString());
-      try{
-        const response = await axios.post('/api/login', userData,); 
-        console.log(response.data);
+      
+      // Lưu email vào localStorage
+      localStorage.setItem('savedEmail', username.value);
+
+      try {
+        const response = await axios.post('/api/login', userData); 
         localStorage.setItem('token', response.data.access_token);
         router.push('/quan_ly_nguoi_dung');
       } catch (error) {
         console.error(error);
       }
     }
+
     onMounted(() => {
       document.title = 'Đăng nhập';
     });
+
     return {
       username,
       password,
