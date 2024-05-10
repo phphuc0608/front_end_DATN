@@ -38,7 +38,7 @@
   <div class="container-fluid px-5">
     <div class="header_container">
       <span class="title">
-        <i class="bi bi-table"></i> Bảng hàng hóa
+        <i class="bi bi-table"></i> Bảng danh mục hàng hóa
       </span>
     </div>
     <div class="table_container p-3">
