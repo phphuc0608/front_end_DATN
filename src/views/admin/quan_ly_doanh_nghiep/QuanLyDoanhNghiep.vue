@@ -49,7 +49,7 @@
   <div class="container-fluid px-5">
     <div class="header_container">
       <span class="title">
-        <i class="bi bi-table"></i> Bảng tài khoản
+        <i class="bi bi-table"></i> Bảng doanh nghiệp
       </span>
     </div>
     <div class="table_container p-3">
