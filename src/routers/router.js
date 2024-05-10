@@ -61,6 +61,16 @@ const routes = [
     component: () => import('../views/admin/quan_ly_cua_khau/quan_ly_to_khai/QuanLyToKhai.vue')
   },
   {
+    path: '/them_to_khai',
+    name: 'ThemToKhai',
+    component: () => import('../views/admin/quan_ly_cua_khau/quan_ly_to_khai/ThemToKhai.vue')
+  },
+  {
+    path: '/cap_nhat_to_khai/:ma_to_khai',
+    name: 'CapNhatToKhai',
+    component: () => import('../views/admin/quan_ly_cua_khau/quan_ly_to_khai/CapNhatToKhai.vue')
+  },
+  {
     path: '/quan_ly_van_don',
     name: 'QuanLyVanDon',
     component: () => import('../views/admin/quan_ly_cua_khau/quan_ly_van_don/QuanLyVanDon.vue')
