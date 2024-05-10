@@ -38,7 +38,7 @@
   <div class="container-fluid px-5">
     <div class="header_container">
       <span class="title">
-        <i class="bi bi-table"></i> Bảng trạng thái
+        <i class="bi bi-table"></i> Bảng trạng thái tờ khai
       </span>
     </div>
     <div class="table_container p-3">
