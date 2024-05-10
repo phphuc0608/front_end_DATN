@@ -30,15 +30,15 @@
       </div>
     </div>
     <div class="col-md-12 d-flex mb-4 pb-3">
-      <button id="btn_add" type="button" data-bs-toggle="modal" data-bs-target="#add_danh_muc_don_vi" class="btn btn-primary">
-        <i class="bi bi-plus-circle"></i> Thêm danh mục đơn vị
-      </button>
+      <router-link to="/them_to_khai" class="btn btn-primary me-3">
+        <i class="bi bi-plus-circle"></i> Thêm tờ khai
+      </router-link>
     </div>
   </div>
   <div class="container-fluid px-5">
     <div class="header_container">
       <span class="title">
-        <i class="bi bi-table"></i> Bảng tài khoản
+        <i class="bi bi-table"></i> Bảng tờ khai
       </span>
     </div>
     <div class="table_container p-3">
@@ -46,20 +46,26 @@
         <table class="table">
           <thead>
             <tr>
-              <th scope="col">Mã danh mục đơn vị</th>
-              <th scope="col">Tên danh mục đơn vị</th>
+              <th scope="col">Mã tờ khai</th>
+              <th scope="col">Đơn vị đăng ký</th>
+              <th scope="col">Vận đơn</th>
+              <th scope="col">Trạng thái</th>
+              <th scope="col">Ngày đăng ký</th>
               <th scope="col" class="text-end">Hành động</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(donVi, index) in paginatedData" :key="index">
-              <td>{{ donVi.ma_danh_muc_don_vi }}</td>
-              <td>{{ donVi.ten_danh_muc_don_vi }}</td>
+            <tr v-for="(toKhai, index) in paginatedData" :key="index">
+              <td>{{ toKhai.ma_to_khai }}</td>
+              <td>{{ toKhai.don_vi_dang_ky }}</td>
+              <td>{{ toKhai.van_don.ten_hang_hoa }}</td>
+              <td>{{ toKhai.trang_thai_to_khai.ten_trang_thai }}</td>
+              <td>{{ toKhai.ngay_dang_ky }}</td>
               <td class="text-end">
-                <a data-bs-toggle="modal" data-bs-target="#update_danh_muc_don_vi" class="btn btn-warning me-2 update_btn" @click="getDanhMucDonViById(donVi.ma_danh_muc_don_vi)">
+                <router-link class="btn btn-warning me-2 update_btn" :to="{ name: 'CapNhatToKhai', params: { ma_to_khai: toKhai.ma_to_khai } }">
                   <i class="bi bi-pencil-fill"></i>
-                </a>
-                <a class="btn del_button" @click="deleteDanhMucDonVi(donVi.ma_danh_muc_don_vi)" >
+                </router-link>
+                <a class="btn del_button" @click="deleteToKhai(toKhai.ma_to_khai)">
                   <i class="bi bi-trash"></i>
                 </a>
               </td>
@@ -87,60 +93,6 @@
         </ul>
       </nav>
     </div>
-    <!-- Them danh muc don vi -->
-    <div style="margin-top: 200px;" class="modal" id="add_danh_muc_don_vi" tabindex="-1" role="dialog" aria-labelledby="add_danh_muc_don_vi_label" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="add_champion_label">Thêm danh mục đơn vị</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-          <div class="modal-body">
-            <form @submit.prevent="addDanhMucDonVi" enctype="multipart/form-data">
-              <div class="form-group">
-                <label for="maDanhMucDonVi">Mã danh mục đơn vị</label>
-                <input v-model="maDanhMucDonVi" type="text" class="form-control" id="maDanhMucDonVi" placeholder="Nhập mã danh mục đơn vị" required>
-              </div>
-              <div class="form-group">
-                <label for="tenDanhMucDonVi">Tên danh mục đơn vị</label>
-                <input v-model="tenDanhMucDonVi" type="text" class="form-control" id="tenDanhMucDonVi" placeholder="Nhập tên danh mục đơn vị" required>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary py-2 px-3" data-dismiss="modal">Đóng</button>
-                <button type="submit" class="btn btn-primary py-2 px-3">Thêm</button>
-              </div>
-            </form>
-          </div>
-        </div> 
-      </div> 
-    </div>
-    <!-- Cap nhat danh muc don vi -->
-    <div style="margin-top: 200px;" class="modal" id="update_danh_muc_don_vi" tabindex="-1" role="dialog" aria-labelledby="update_danh_muc_don_vi_label" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="add_champion_label">Cập nhật danh mục đơn vị</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-          <div class="modal-body">
-            <form @submit.prevent="updateDanhMucDonVi" enctype="multipart/form-data">
-              <div class="form-group">
-                <label for="maDanhMucDonVi">Mã danh mục đơn vị</label>
-                <input v-model="maDanhMucDonVi" type="text" class="form-control" id="maDanhMucDonVi">
-              </div>
-              <div class="form-group">
-                <label for="tenDanhMucDonVi">Tên danh mục đơn vị</label>
-                <input v-model="tenDanhMucDonVi" type="text" class="form-control" id="tenDanhMucDonVi">
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary py-2 px-3" data-dismiss="modal">Đóng</button>
-                <button type="submit" class="btn btn-primary py-2 px-3">Cập nhật</button>
-              </div>
-            </form>
-          </div>
-        </div> 
-      </div> 
-    </div>
   </div>
 </template>
 
@@ -148,92 +100,27 @@
 import axios from 'axios';
 import { ref, onMounted, computed } from 'vue';
 import NavbarAdmin from '../../../../components/NavbarAdmin.vue';
+import router from '../../../../routers/router';
 
 export default {
   setup() {
-    const modalAdd = ref(null);
-    const modalUpdate = ref(null);
-    const danhMucDonVis = ref([]);
+    const toKhais = ref([]);
     const currentPage = ref(1);
     const itemsPerPage = ref(5);
-    const maDanhMucDonVi = ref('');
-    const tenDanhMucDonVi = ref('');
-    
 
     onMounted(() => {
-      document.title = "Quản lý người dùng";
-      modalAdd.value = new bootstrap.Modal(document.getElementById('add_danh_muc_don_vi'), {
-        keyboard: false
-      });
-      modalUpdate.value = new bootstrap.Modal(document.getElementById('update_danh_muc_don_vi'), {
-        keyboard: false
-      });
+      document.title = "Quản lý vận đơn";
     });
-    
-    const getDanhMucDonVi = () => {
-      axios.get(`/api/danh-muc-don-vi`, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(function(response){
-        danhMucDonVis.value = response.data;
-        console.log(response.data); 
-      })
-      .catch(function(error){
-        console.log(error);
-      });
-    };
 
-    const addDanhMucDonVi = async() => {
-      const danhMucDonViData = {
-        ma_danh_muc_don_vi: parseInt(maDanhMucDonVi.value),
-        ten_danh_muc_don_vi: tenDanhMucDonVi.value,
-      };
-      console.log(danhMucDonViData);
-      try {
-        const response = await axios.post(`/api/danh-muc-don-vi`, danhMucDonViData);
-        console.log(response.data);
-        alert('Thêm danh mục đơn vị thành công');
-        modalAdd.value.hide();
-        getDanhMucDonVi(); // Refresh danhMucDonVis
-      } catch (error) {
-        console.error(error);
-        alert('Thêm danh mục đơn vị thất bại');
-      }
-    };
-
-    const deleteDanhMucDonVi = (maDanhMucDonVi) => {
-      axios.delete(`/api/danh-muc-don-vi/${maDanhMucDonVi}`, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(function(response){
-        console.log(response.data);
-        alert('Xóa danh mục đơn vị thành công');
-        getDanhMucDonVi(); // Refresh danhMucDonVis
-      })
-      .catch(function(error){
-        console.log(error);
-        alert('Xóa danh mục đơn vị thất bại');
-      });
-    }
-
-  const getDanhMucDonViById = (maDanhMucDonViId) => {
-    axios.get(`/api/danh-muc-don-vi/${maDanhMucDonViId}`, {
+  const getToKhais = () => {
+    axios.get(`/api/to-khai`, {
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       }
     })
     .then(function(response){
-      if (response.data && response.data.ma_danh_muc_don_vi) {
-        const data = response.data;
-        maDanhMucDonVi.value = data.ma_danh_muc_don_vi;
-        tenDanhMucDonVi.value = data.ten_danh_muc_don_vi;
-      } else {
-        console.error('Unexpected response data', response.data);
-      }
+      toKhais.value = response.data;
+      console.log(response.data); 
     })
     .catch(function(error){
       console.log(error);
@@ -241,82 +128,73 @@ export default {
   };
 
 
-
-  const updateDanhMucDonVi = async() => {
-    const danhMucDonViData = {
-      ma_danh_muc_don_vi: parseInt(maDanhMucDonVi.value),
-      ten_danh_muc_don_vi: tenDanhMucDonVi.value,
-    };
-    console.log(danhMucDonViData);
+  const deleteToKhai = async(maToKhai) => {
     try {
-      const response = await axios.put(`/api/danh-muc-don-vi/${maDanhMucDonVi.value}`, danhMucDonViData);
-      console.log(response.data);
-      alert('Cập nhật danh mục đơn vị thành công');
-      modalUpdate.value.hide();
-      getDanhMucDonVi(); // Refresh danhMucDonVis
+      await axios.delete(`/api/to-khai/${maToKhai}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      alert('Xóa vận đơn thành công');
+      setTimeout(getToKhais, 1000); 
     } catch (error) {
-      console.error(error);
-      alert('Cập nhật danh mục đơn vị thất bại');
+      console.log(error);
+      alert('Xóa vận đơn thất bại');
     }
   };
 
-  const paginatedData = computed(() => {
-    const start = (currentPage.value - 1) * itemsPerPage.value;
-    const end = start + itemsPerPage.value;
-    return danhMucDonVis.value.slice(start, end);
-  });
+    const paginatedData = computed(() => {
+      const start = (currentPage.value - 1) * itemsPerPage.value;
+      const end = start + itemsPerPage.value;
+      return toKhais.value.slice(start, end);
+    });
 
-  const totalPages = computed(() => {
-    return Math.ceil(danhMucDonVis.value.length / itemsPerPage.value);
-  });
+    const totalPages = computed(() => {
+      return Math.ceil(toKhais.value.length / itemsPerPage.value);
+    });
 
-  const changePage = (page) => {
-    currentPage.value = page;
-  };
+    const changePage = (page) => {
+      currentPage.value = page;
+    };
 
-  const nextPage = () => {
-    if (currentPage.value < totalPages.value) {
-      currentPage.value++;
+    const nextPage = () => {
+      if (currentPage.value < totalPages.value) {
+        currentPage.value++;
+      }
+    };
+
+    const previousPage = () => {
+      if (currentPage.value > 1) {
+        currentPage.value--;
+      }
+    };
+
+    const filterClicked = () => {
+      let search_box_container = document.getElementById('search_box_content');
+      let icon = document.getElementById('filterUp');
+      if(search_box_container.style.display === 'none'){
+        search_box_container.style.display = 'block';
+        icon.className = 'bi bi-caret-up-fill';
+      }else{
+        search_box_container.style.display = 'none';
+        icon.className = 'bi bi-caret-down-fill';
+      }
+    };
+
+    getToKhais();
+    return{
+      toKhais,
+      paginatedData,
+      totalPages,
+      currentPage,
+      itemsPerPage,
+      changePage,
+      nextPage,
+      previousPage,
+      filterClicked,
+      deleteToKhai,
     }
-  };
-
-  const previousPage = () => {
-    if (currentPage.value > 1) {
-      currentPage.value--;
-    }
-  };
-
-  const filterClicked = () => {
-    let search_box_container = document.getElementById('search_box_content');
-    let icon = document.getElementById('filterUp');
-    if(search_box_container.style.display === 'none'){
-      search_box_container.style.display = 'block';
-      icon.className = 'bi bi-caret-up-fill';
-    }else{
-      search_box_container.style.display = 'none';
-      icon.className = 'bi bi-caret-down-fill';
-    }
-  };
-
-  getDanhMucDonVi();
-  return{
-    danhMucDonVis,
-    maDanhMucDonVi,
-    tenDanhMucDonVi,
-    addDanhMucDonVi,
-    deleteDanhMucDonVi,
-    getDanhMucDonViById,
-    updateDanhMucDonVi,
-    paginatedData,
-    totalPages,
-    currentPage,
-    itemsPerPage,
-    changePage,
-    nextPage,
-    previousPage,
-    filterClicked
-  }
-},
+  },
 
   components:{
     NavbarAdmin
