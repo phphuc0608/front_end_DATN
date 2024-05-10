@@ -109,7 +109,7 @@ export default {
     const itemsPerPage = ref(5);
 
     onMounted(() => {
-      document.title = "Quản lý vận đơn";
+      document.title = "Quản lý tờ khai";
     });
 
   const getToKhais = () => {
