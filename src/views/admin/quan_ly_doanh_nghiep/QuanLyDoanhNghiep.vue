@@ -13,10 +13,10 @@
         <div class="row">
           <div class="col-xl-3 col-sm-6">
             <label class="form-label">Tìm kiếm</label>
-            <input type="text" class="form-control mb-xl-0 mb-3" placeholder="Tìm kiếm">
+            <input type="text" class="form-control mb-xl-0 mb-3" placeholder="Tìm kiếm" v-model="searchString">
           </div>
           <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
-            <label class="form-label" for="">Trạng thái</label>
+            <label class="form-label" for="">Danh mục đơn vị</label>
             <select class="form-control form-select h-auto wide" name="" id="">
               <option selected>Chọn trạng thái</option>
             </select>
@@ -29,7 +29,7 @@
           </div>
           <div class="col-xl-3 col-sm-6 align-self-end">
             <div>
-              <button class="btn btn-primary me-2" title="Nhấn vào đây để tìm kiếm" type="button">
+              <button class="btn btn-primary me-2" title="Nhấn vào đây để tìm kiếm" type="button" @click="search">
                 <i class="bi bi-funnel-fill"></i> Filter
               </button>
               <button class="btn light rev_button" title="Nhấn vào đây để xóa filter" type="button">
@@ -118,40 +118,56 @@ export default {
     const donVis = ref([]);
     const currentPage = ref(1);
     const itemsPerPage = ref(5);
+    const searchString = ref('');
+    const searchResults = ref([]);
 
     onMounted(() => {
       document.title = "Quản lý doanh nghiệp";
     });
 
-  const getdonVis = () => {
-    axios.get(`/api/don-vi`, {
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    })
-    .then(function(response){
-      donVis.value = response.data;
-      console.log(response.data); 
-    })
-    .catch(function(error){
-      console.log(error);
-    });
-  };
-
-  const deleteDoanhNghiep = async(maDonVi) => {
-    try {
-      await axios.delete(`/api/don-vi/${maDonVi}`, {
+    const getdonVis = () => {
+      axios.get(`/api/don-vi`, {
         headers: {
           'Content-Type': 'application/json',
         }
+      })
+      .then(function(response){
+        donVis.value = response.data;
+        console.log(response.data); 
+      })
+      .catch(function(error){
+        console.log(error);
       });
-      alert('Xóa danh mục đơn vị thành công');
-      setTimeout(getdonVis, 1000); // Refresh danhMucDonVis after 1 second
-    } catch (error) {
-      console.log(error);
-      alert('Xóa danh mục đơn vị thất bại');
+    };
+
+    const deleteDoanhNghiep = async(maDonVi) => {
+      try {
+        await axios.delete(`/api/don-vi/${maDonVi}`, {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+        alert('Xóa danh mục đơn vị thành công');
+        setTimeout(getdonVis, 1000); // Refresh danhMucDonVis after 1 second
+      } catch (error) {
+        console.log(error);
+        alert('Xóa danh mục đơn vị thất bại');
+      }
+    };
+
+    const search = async() =>{
+      try {
+        const response = await axios.get(`/api/don-vi?search_string=${searchString.value}`, {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+        searchResults.value = response.data;
+        console.log(response.data);
+      } catch (error) {
+        console.log(error);
+      }
     }
-  };
 
     const paginatedData = computed(() => {
       const start = (currentPage.value - 1) * itemsPerPage.value;
@@ -203,6 +219,9 @@ export default {
       previousPage,
       filterClicked,
       deleteDoanhNghiep,
+      search,
+      searchString,
+      searchResults
     }
   },
 
