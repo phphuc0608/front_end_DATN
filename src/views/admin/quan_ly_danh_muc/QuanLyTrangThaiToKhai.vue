@@ -13,12 +13,12 @@
         <div class="row">
           <div class="col-md-9 col-sm-6">
             <label class="form-label">Tìm kiếm</label>
-            <input type="text" class="form-control mb-xl-0 mb-3" placeholder="Tìm kiếm">
+            <input type="text" class="form-control mb-xl-0 mb-3" placeholder="Tìm kiếm" v-model="searchString">
           </div>
           
           <div class="col-xl-3 col-sm-6 align-self-end">
             <div>
-              <button class="btn btn-primary me-2" title="Nhấn vào đây để tìm kiếm" type="button">
+              <button class="btn btn-primary me-2" title="Nhấn vào đây để tìm kiếm" type="button" @click="search">
                 <i class="bi bi-funnel-fill"></i> Filter
               </button>
               <button class="btn light rev_button" title="Nhấn vào đây để xóa filter" type="button">
@@ -158,7 +158,7 @@ export default {
     const itemsPerPage = ref(5);
     const maTrangThai = ref(0);
     const tenTrangThai = ref('');
-    
+    const searchString = ref(''); 
 
     onMounted(() => {
       document.title = "Quản lý trạng thái";
@@ -185,6 +185,15 @@ export default {
       });
     };
 
+    const search = async() =>{
+      try{
+        const response = await axios.get(`/api/trang-thai-to-khai?search_string=${searchString.value}`);
+        trangThais.value = response.data;
+      }catch(error){
+        console.log(error);
+      }
+    }
+  
     const addTrangThai = async() => {
       const danhMucTrangThaiData = {
         ma_trang_thai: parseInt(maTrangThai.value),
@@ -244,7 +253,7 @@ export default {
   const updatetrangThai = async() => {
     const danhMucTrangThaiData = {
       ma_trang_thai: parseInt(maTrangThai.value),
-      ten_trangma_trang_thai: tenTrangThai.value,
+      ten_trang_trang_thai: tenTrangThai.value,
     };
     console.log(danhMucTrangThaiData);
     try {
@@ -313,7 +322,9 @@ export default {
     changePage,
     nextPage,
     previousPage,
-    filterClicked
+    filterClicked,
+    searchString,
+    search
   }
 },
 
