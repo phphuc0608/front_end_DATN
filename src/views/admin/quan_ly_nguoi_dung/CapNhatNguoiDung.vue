@@ -29,15 +29,6 @@
           <input v-model="matKhauNhapLai" type="password" :class="{'is-invalid': matKhauError}" class="form-control" placeholder="Nhập lại mật khẩu" :title="matKhauError ? 'Mật khẩu không trùng khớp' : ''">
         </div>
         <div class="col-md-6">
-          <label for="" class="col-form-label">Trạng thái</label>
-          <select v-model="dangHoatDong" class="form-control form-select h-auto wide" required>
-            <option value="true">Hoạt động</option>
-            <option value="false">Không hoạt động</option>
-          </select>
-        </div>
-      </div>  
-      <div class="row">
-        <div class="col-md-6">
           <label for="" class="col-form-label">Thuộc đơn vị</label>
           <select v-model="maDonVi" class="form-control form-select h-auto wide" required>
             <option v-for="donVi in donVis" :key="donVi.ma_don_vi" :value="donVi.ma_don_vi">
@@ -45,6 +36,8 @@
             </option>
           </select>
         </div>
+      </div>  
+      <div class="row">
         <div class="col-md-6">
           <label for="" class="col-form-label">Vai trò</label>
           <select v-model="maVaiTro" class="form-control form-select h-auto wide" required>
@@ -53,6 +46,10 @@
             </option>
           </select>
         </div>
+        <form class="col-md-6 d-flex align-items-center" style="margin-top: 36px;">
+          <button class="btn btn-success me-3" @click.prevent="updateDangHoatDong(true)">Mở tài khoản</button>
+          <button class="btn btn-danger" @click.prevent="updateDangHoatDong(false)">Khóa tài khoản</button>
+        </form>
       </div>  
       <div class="d-flex justify-content-start mt-4">
         <button type="submit" class="btn btn-warning me-3" style="color: white;"><i class="bi bi-pencil-fill"></i> Cập nhật</button>
@@ -61,7 +58,7 @@
   </div>
 </template>
 <script>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import NavbarAdmin from '../../../components/NavbarAdmin.vue';
 import axios from 'axios';
@@ -134,12 +131,10 @@ export default {
       validateEmail();
       validatePasswords();
       validateSoDienThoai();
-
       // Check if any validation failed
       if(emailError.value || matKhauError.value || soDienThoaiError.value) {
         return; // Stop execution if validation failed
       }
-
       const nguoiDungData = {
         email: email.value,
         ho_va_ten: hoVaTen.value,
@@ -147,8 +142,9 @@ export default {
         thuoc_don_vi: maDonVi.value,
         ma_vai_tro: maVaiTro.value,
         mat_khau: matKhau.value,
-        dang_hoat_dong: dangHoatDong.value
       };
+      console.log(nguoiDungData);
+      console.log(typeof(nguoiDungData.dang_hoat_dong));
       try {
         await axios.put(`/api/nguoi-dung/${email.value}`, nguoiDungData);
         alert('Cập nhật người dùng thành công');
@@ -161,6 +157,16 @@ export default {
       }
     }
     
+    const updateDangHoatDong = async(status) => {
+      try {
+        await axios.patch(`/api/nguoi-dung/${email.value}?status=${status}`);
+        console.log(status);
+        alert('Cập nhật trạng thái hoạt động thành công');
+      } catch (error) {
+        console.log(error);
+        alert('Cập nhật trạng thái hoạt động thất bại');
+      }
+    }
 
     const validateEmail = () => {
       const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -175,6 +181,10 @@ export default {
       const re = /^\d{10}$/;
       soDienThoaiError.value = !re.test(soDienThoai.value);
     };
+
+    // watch(dangHoatDong, () => {
+    //   updateDangHoatDong();
+    // });
 
     onMounted(async() => {
       document.title = "Cập nhật người dùng";
@@ -203,7 +213,8 @@ export default {
       validateEmail,
       validatePasswords,
       validateSoDienThoai,
-      updateNguoiDung
+      updateNguoiDung,
+      updateDangHoatDong
     }
   },
   components: {
