@@ -11,25 +11,28 @@
       </div>
       <div id="search_box_content">
         <div class="row">
-          <div class="col-xl-3 col-sm-6">
+          <div class="col-xl-6 col-sm-6">
             <label class="form-label">Tìm kiếm</label>
-            <input type="text" class="form-control mb-xl-0 mb-3" placeholder="Tìm kiếm">
+            <input type="text" class="form-control mb-xl-0 mb-3" placeholder="Tìm kiếm" v-model="searchString">
           </div>
-          <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
+          <!-- <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
             <label class="form-label" for="">Trạng thái</label>
             <select class="form-control form-select h-auto wide" name="" id="">
               <option selected>Chọn trạng thái</option>
             </select>
-          </div>
+          </div> -->
           <div class="col-xl-3 col-sm-6">
             <label class="form-label" for="">Vai trò</label>
-            <select class="form-control form-select h-auto wide" name="" id="">
-              <option selected>Chọn vai trò</option>
+            <select class="form-control form-select h-auto wide" v-model="searchVaiTro">
+              <option></option>
+              <option v-for="vaiTro in vaiTros" :key="vaiTro.ma_vai_tro" :value="vaiTro.ma_vai_tro">
+                {{ vaiTro.ten_vai_tro }}
+              </option>
             </select>
           </div>
           <div class="col-xl-3 col-sm-6 align-self-end">
             <div>
-              <button class="btn btn-primary me-2" title="Nhấn vào đây để tìm kiếm" type="button">
+              <button class="btn btn-primary me-2" title="Nhấn vào đây để tìm kiếm" type="button" @click="search">
                 <i class="bi bi-funnel-fill"></i> Filter
               </button>
               <button class="btn light rev_button" title="Nhấn vào đây để xóa filter" type="button">
@@ -109,7 +112,7 @@
 
 <script>
 import axios from 'axios';
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch} from 'vue';
 import NavbarAdmin from '../../../components/NavbarAdmin.vue';
 
 export default {
@@ -117,11 +120,14 @@ export default {
     const nguoiDungs = ref([]);
     const currentPage = ref(1);
     const itemsPerPage = ref(5);
+    const searchString = ref('');
+    const searchVaiTro = ref('');
+    const vaiTros = ref([]);
 
     onMounted(() => {
       document.title = "Quản lý người dùng";
     });
-
+ 
     const getNguoiDungs = () => {
       axios.get(`/api/nguoi-dung`, {
         headers: {
@@ -151,15 +157,55 @@ export default {
       }
     };
 
+    const getDanhMucVaiTro = () => {
+      axios.get(`/api/danh-muc/vai-tro`, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(function(response){
+        vaiTros.value = response.data;
+        console.log(response.data); 
+      })
+      .catch(function(error){
+        console.log(error);
+      });
+    };
+
+    const search = async() => {
+      try {
+        const respone = await axios.get(`/api/nguoi-dung?search_string=${searchString.value}`, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+      });
+      nguoiDungs.value = respone.data;
+      console.log(respone.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const filteredNguoiDungs = computed(() => {
+      if (searchVaiTro.value) {
+        return nguoiDungs.value.filter(nguoiDung => nguoiDung.vai_tro.ma_vai_tro === searchVaiTro.value);
+      } else {
+        return nguoiDungs.value;
+      }
+    });
+
+    watch(searchVaiTro, () => {
+      filteredNguoiDungs.value = nguoiDungs.value.filter(nguoiDung => nguoiDung.vai_tro.ma_vai_tro === searchVaiTro.value);
+    });
 
     const paginatedData = computed(() => {
       const start = (currentPage.value - 1) * itemsPerPage.value;
       const end = start + itemsPerPage.value;
-      return nguoiDungs.value.slice(start, end);
+      return filteredNguoiDungs.value.slice(start, end);
     });
 
     const totalPages = computed(() => {
-      return Math.ceil(nguoiDungs.value.length / itemsPerPage.value);
+      return Math.ceil(filteredNguoiDungs.value.length / itemsPerPage.value);
     });
 
     const changePage = (page) => {
@@ -191,6 +237,7 @@ export default {
     };
 
     getNguoiDungs();
+    getDanhMucVaiTro();
     return{
       nguoiDungs,
       paginatedData,
@@ -202,6 +249,11 @@ export default {
       previousPage,
       filterClicked,
       deleteNguoiDung,
+      searchString,
+      search,
+      searchVaiTro,
+      vaiTros,
+      filteredNguoiDungs
     }
   },
   components:{
