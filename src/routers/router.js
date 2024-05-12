@@ -56,35 +56,40 @@ const routes = [
     component: () => import('../views/admin/quan_ly_danh_muc/QuanLyTrangThaiToKhai.vue')
   },
   {
-    path: '/quan_ly_to_khai',
-    name: 'QuanLyToKhai',
-    component: () => import('../views/admin/quan_ly_cua_khau/quan_ly_to_khai/QuanLyToKhai.vue')
+    path: '/lich_su_dang_nhap',
+    name: 'LichSuDangNhap',
+    component: () => import('../views/admin/thong_ke/LichSuDangNhap.vue')
   },
-  {
-    path: '/them_to_khai',
-    name: 'ThemToKhai',
-    component: () => import('../views/admin/quan_ly_cua_khau/quan_ly_to_khai/ThemToKhai.vue')
-  },
-  {
-    path: '/cap_nhat_to_khai/:ma_to_khai',
-    name: 'CapNhatToKhai',
-    component: () => import('../views/admin/quan_ly_cua_khau/quan_ly_to_khai/CapNhatToKhai.vue')
-  },
-  {
-    path: '/quan_ly_van_don',
-    name: 'QuanLyVanDon',
-    component: () => import('../views/admin/quan_ly_cua_khau/quan_ly_van_don/QuanLyVanDon.vue')
-  },
-  {
-    path: '/them_van_don',
-    name: 'ThemVanDon',
-    component: () => import('../views/admin/quan_ly_cua_khau/quan_ly_van_don/ThemVanDon.vue')
-  },
-  {
-    path: '/cap_nhat_van_don/:ma_van_don',
-    name: 'CapNhatVanDon',
-    component: () => import('../views/admin/quan_ly_cua_khau/quan_ly_van_don/CapNhatVanDon.vue')
-  },
+  // {
+  //   path: '/quan_ly_to_khai',
+  //   name: 'QuanLyToKhai',
+  //   component: () => import('../views/admin/quan_ly_cua_khau/quan_ly_to_khai/QuanLyToKhai.vue')
+  // },
+  // {
+  //   path: '/them_to_khai',
+  //   name: 'ThemToKhai',
+  //   component: () => import('../views/admin/quan_ly_cua_khau/quan_ly_to_khai/ThemToKhai.vue')
+  // },
+  // {
+  //   path: '/cap_nhat_to_khai/:ma_to_khai',
+  //   name: 'CapNhatToKhai',
+  //   component: () => import('../views/admin/quan_ly_cua_khau/quan_ly_to_khai/CapNhatToKhai.vue')
+  // },
+  // {
+  //   path: '/quan_ly_van_don',
+  //   name: 'QuanLyVanDon',
+  //   component: () => import('../views/admin/quan_ly_cua_khau/quan_ly_van_don/QuanLyVanDon.vue')
+  // },
+  // {
+  //   path: '/them_van_don',
+  //   name: 'ThemVanDon',
+  //   component: () => import('../views/admin/quan_ly_cua_khau/quan_ly_van_don/ThemVanDon.vue')
+  // },
+  // {
+  //   path: '/cap_nhat_van_don/:ma_van_don',
+  //   name: 'CapNhatVanDon',
+  //   component: () => import('../views/admin/quan_ly_cua_khau/quan_ly_van_don/CapNhatVanDon.vue')
+  // },
 ];
 
 const router = createRouter({
