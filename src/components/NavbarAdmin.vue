@@ -10,15 +10,6 @@
       <li class="navbar_item"><router-link to="/quan_ly_doanh_nghiep">Quản lý doanh nghiệp</router-link></li>
       <li class="navbar_item dropdown">
         <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-          Quản lý cửa khẩu
-        </a>
-        <div class="sub-menu" aria-labelledby="navbarDropdown" style="width: 100%;">
-          <router-link class="dropdown-item" to="/quan_ly_to_khai">Quản lý tờ khai</router-link>
-          <router-link class="dropdown-item" to="/quan_ly_van_don">Quản lý vận đơn</router-link>
-        </div>
-      </li>
-      <li class="navbar_item dropdown">
-        <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
           Quản lý danh mục
         </a>
         <div class="sub-menu" aria-labelledby="navbarDropdown" style="width: 100%;">
@@ -28,6 +19,7 @@
           <router-link class="dropdown-item" to="/quan_ly_trang_thai_to_khai">Trạng thái tờ khai</router-link> 
         </div>
       </li>
+      <li class="navbar_item"><router-link to="/lich_su_dang_nhap">Lịch sử đăng nhập</router-link></li>
     </ul>
     <div id="right_side" class="d-flex align-items-center dropdown">
       <a class="nav-link show" aria-expanded="true" @click="useIconClicked">
