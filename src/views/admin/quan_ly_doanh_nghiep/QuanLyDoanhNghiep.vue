@@ -11,22 +11,19 @@
       </div>
       <div id="search_box_content">
         <div class="row">
-          <div class="col-xl-3 col-sm-6">
+          <div class="col-xl-9 col-sm-9">
             <label class="form-label">Tìm kiếm</label>
             <input type="text" class="form-control mb-xl-0 mb-3" placeholder="Tìm kiếm" v-model="searchString">
           </div>
-          <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
+          <!-- <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
             <label class="form-label" for="">Danh mục đơn vị</label>
-            <select class="form-control form-select h-auto wide" name="" id="">
-              <option selected>Chọn trạng thái</option>
+            <select v-model="maDanhMucDonVi" class="form-control form-select h-auto wide">
+              <option selected>Chọn danh mục đơn vị</option>
+              <option class="option_item"v-for="danhMucDonVi in danhMucDonVis" :key="danhMucDonVi.ma_danh_muc_don_vi" :value="danhMucDonVi.ma_danh_muc_don_vi">
+                {{ danhMucDonVi.ma_danh_muc_don_vi }}
+              </option>
             </select>
-          </div>
-          <div class="col-xl-3 col-sm-6">
-            <label class="form-label" for="">Vai trò</label>
-            <select class="form-control form-select h-auto wide" name="" id="">
-              <option selected>Chọn vai trò</option>
-            </select>
-          </div>
+          </div> -->
           <div class="col-xl-3 col-sm-6 align-self-end">
             <div>
               <button class="btn btn-primary me-2" title="Nhấn vào đây để tìm kiếm" type="button" @click="search">
@@ -119,7 +116,8 @@ export default {
     const currentPage = ref(1);
     const itemsPerPage = ref(5);
     const searchString = ref('');
-    const searchResults = ref([]);
+    const maDanhMucDonVi = ref('');
+    const danhMucDonVis = ref([]);
 
     onMounted(() => {
       document.title = "Quản lý doanh nghiệp";
@@ -157,17 +155,33 @@ export default {
 
     const search = async() =>{
       try {
+        // const response = await axios.get(`/api/don-vi?search_string=${searchString.value}&ma_danh_muc_don_vi=${maDanhMucDonVi.value}`
         const response = await axios.get(`/api/don-vi?search_string=${searchString.value}`, {
           headers: {
             'Content-Type': 'application/json',
           }
         });
-        searchResults.value = response.data;
+        donVis.value = response.data;
         console.log(response.data);
       } catch (error) {
         console.log(error);
       }
     }
+
+    const getDanhMucDonVi = () => {
+      axios.get(`/api/danh-muc-don-vi`, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      .then(function(response){
+        console.log("Danh Muc Don Vis:", response.data);
+        danhMucDonVis.value = response.data;
+      })
+      .catch(function(error){
+        console.log(error);
+      });
+    };
 
     const paginatedData = computed(() => {
       const start = (currentPage.value - 1) * itemsPerPage.value;
@@ -208,6 +222,7 @@ export default {
     };
 
     getdonVis();
+    getDanhMucDonVi();
     return{
       donVis,
       paginatedData,
@@ -221,7 +236,8 @@ export default {
       deleteDoanhNghiep,
       search,
       searchString,
-      searchResults
+      maDanhMucDonVi,
+      danhMucDonVis
     }
   },
 
