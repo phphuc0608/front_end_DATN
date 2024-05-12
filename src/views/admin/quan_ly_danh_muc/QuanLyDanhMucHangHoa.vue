@@ -13,12 +13,12 @@
         <div class="row">
           <div class="col-md-9 col-sm-6">
             <label class="form-label">Tìm kiếm</label>
-            <input type="text" class="form-control mb-xl-0 mb-3" placeholder="Tìm kiếm">
+            <input type="text" class="form-control mb-xl-0 mb-3" placeholder="Tìm kiếm" v-model="searchString">
           </div>
           
           <div class="col-xl-3 col-sm-6 align-self-end">
             <div>
-              <button class="btn btn-primary me-2" title="Nhấn vào đây để tìm kiếm" type="button">
+              <button class="btn btn-primary me-2" title="Nhấn vào đây để tìm kiếm" type="button" @click="search">
                 <i class="bi bi-funnel-fill"></i> Filter
               </button>
               <button class="btn light rev_button" title="Nhấn vào đây để xóa filter" type="button">
@@ -158,6 +158,7 @@ export default {
     const itemsPerPage = ref(5);
     const maDanhMucHangHoa = ref('');
     const tenDanhMucHangHoa = ref('');
+    const searchString = ref('');
     
 
     onMounted(() => {
@@ -170,6 +171,15 @@ export default {
       });
     });
     
+    const search = async() => {
+      try {
+        const response = await axios.get(`/api/danh-muc-hang-hoa?search_string=${searchString.value}`);
+        danhMucHangHoas.value = response.data;
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
     const getDanhMucHangHoa = () => {
       axios.get(`/api/danh-muc-hang-hoa`, {
         headers: {
@@ -239,9 +249,6 @@ export default {
       console.log(error);
     });
   };
-
-
-
 
   const updateDanhMucHangHoa = async() => {
     const danhMucHangHoaData = {
@@ -315,7 +322,9 @@ export default {
     changePage,
     nextPage,
     previousPage,
-    filterClicked
+    filterClicked,
+    search,
+    searchString
   }
 },
 
