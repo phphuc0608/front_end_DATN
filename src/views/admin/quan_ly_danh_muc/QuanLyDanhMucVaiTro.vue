@@ -13,12 +13,12 @@
         <div class="row">
           <div class="col-md-9 col-sm-6">
             <label class="form-label">Tìm kiếm</label>
-            <input type="text" class="form-control mb-xl-0 mb-3" placeholder="Tìm kiếm">
+            <input type="text" class="form-control mb-xl-0 mb-3" placeholder="Tìm kiếm" v-model="searchString">
           </div>
           
           <div class="col-xl-3 col-sm-6 align-self-end">
             <div>
-              <button class="btn btn-primary me-2" title="Nhấn vào đây để tìm kiếm" type="button">
+              <button class="btn btn-primary me-2" title="Nhấn vào đây để tìm kiếm" type="button" @click="search">
                 <i class="bi bi-funnel-fill"></i> Filter
               </button>
               <button class="btn light rev_button" title="Nhấn vào đây để xóa filter" type="button">
@@ -154,7 +154,30 @@ export default {
     const itemsPerPage = ref(5);
     const maVaiTro = ref(0);
     const tenVaiTro = ref('');
+    const searchString = ref('');
     
+    // const search = () => {
+    //   if (searchString.value) {
+    //     vaiTros.value = vaiTros.value.filter((vaiTro) => {
+    //       return vaiTro.ten_vai_tro.toLowerCase().includes(searchString.value.toLowerCase());
+    //     });
+    //   }
+    // };
+
+    const search = () => {
+      axios.get(`/api/danh-muc/vai-tro?search_string=${searchString.value}`, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(function(response){
+        vaiTros.value = response.data;
+        console.log(response.data); 
+      })
+      .catch(function(error){
+        console.log(error);
+      });
+    };
 
     onMounted(() => {
       document.title = "Quản lý vai trò";
@@ -308,7 +331,9 @@ export default {
     changePage,
     nextPage,
     previousPage,
-    filterClicked
+    filterClicked,
+    search,
+    searchString
   }
 },
 
