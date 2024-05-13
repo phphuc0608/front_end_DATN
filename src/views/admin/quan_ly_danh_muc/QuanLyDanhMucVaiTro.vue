@@ -165,7 +165,7 @@ export default {
     // };
 
     const search = () => {
-      axios.get(`/api/danh-muc/vai-tro?search_string=${searchString.value}`, {
+      axios.get(`/api/danh-muc-vai-tro?search_string=${searchString.value}`, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -190,7 +190,7 @@ export default {
     });
     
     const getDanhMucVaiTro = () => {
-      axios.get(`/api/danh-muc/vai-tro`, {
+      axios.get(`/api/danh-muc-vai-tro`, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -210,7 +210,7 @@ export default {
       };
       console.log(danhMucVaiTroData);
       try {
-        const response = await axios.post(`/api/danh-muc/vai-tro`, danhMucVaiTroData);
+        const response = await axios.post(`/api/danh-muc-vai-tro`, danhMucVaiTroData);
         console.log(response.data);
         alert('Thêm vai trò thành công');
         modalAdd.value.hide();
@@ -223,7 +223,7 @@ export default {
     };
 
     const deleteDanhMucVaiTro = (maVaiTro) => {
-      axios.delete(`/api/danh-muc/vai-tro/${maVaiTro}`, {
+      axios.delete(`/api/danh-muc-vai-tro/${maVaiTro}`, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -241,7 +241,7 @@ export default {
     }
 
   const getDanhMucVaiTroById = (maVaiTroId) => {
-    axios.get(`/api/danh-muc/vai-tro/${maVaiTroId}`, {
+    axios.get(`/api/danh-muc-vai-tro/${maVaiTroId}`, {
       headers: {
         'Content-Type': 'application/json'
       }
@@ -266,7 +266,7 @@ export default {
     };
     console.log(danhMucVaiTroData);
     try {
-      const response = await axios.put(`/api/danh-muc/vai-tro/${maVaiTro.value}`, danhMucVaiTroData);
+      const response = await axios.put(`/api/danh-muc-vai-tro/${maVaiTro.value}`, danhMucVaiTroData);
       console.log(response.data);
       alert('Cập nhật vai trò thành công');
       modalUpdate.value.hide();
