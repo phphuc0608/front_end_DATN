@@ -60,6 +60,34 @@ export default {
       userStore.setEmail(savedEmail); // Đặt giá trị email vào userStore
     }
 
+    const savedMaVaiTro = localStorage.getItem('savedMaVaiTro');
+    if (savedMaVaiTro) {
+      userStore.setMaVaiTro(savedMaVaiTro); // Đặt giá trị ma_vai_tro vào userStore
+    }
+
+    const savedThuocDonVi = localStorage.getItem('savedThuocDonVi');
+    if (savedThuocDonVi) {
+      userStore.setThuocDonVi(savedThuocDonVi); // Đặt giá trị thuoc_don_vi vào userStore
+    }
+
+    const getNguoiDungByEmail = async() => {
+      const emailParam = userStore.email;
+      console.log(emailParam);  
+      try {
+        const response = await axios.get(`/api/nguoi-dung/${emailParam}`);
+        console.log(response.data);
+        // Lưu ma_vai_tro vào localStorage và userStore
+        const ma_vai_tro = response.data.ma_vai_tro;
+        const thuoc_don_vi = response.data.thuoc_don_vi;
+        localStorage.setItem('savedMaVaiTro', ma_vai_tro);
+        userStore.setMaVaiTro(ma_vai_tro);
+        localStorage.setItem('savedThuocDonVi', thuoc_don_vi);
+        userStore.setThuocDonVi(thuoc_don_vi);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
     const handleSubmit = async() => {
       const userData = new URLSearchParams();
       userData.append('username', username.value);
@@ -67,11 +95,27 @@ export default {
       
       // Lưu email vào localStorage
       localStorage.setItem('savedEmail', username.value);
+      userStore.setEmail(username.value);
 
       try {
         const response = await axios.post('/api/login', userData); 
         localStorage.setItem('token', response.data.access_token);
-        router.push('/quan_ly_nguoi_dung');
+
+        // Lấy thông tin người dùng và cập nhật savedMaVaiTro
+        const userInfo = await axios.get(`/api/nguoi-dung/${username.value}`);
+        const ma_vai_tro = userInfo.data.ma_vai_tro;
+        localStorage.setItem('savedMaVaiTro', ma_vai_tro);
+        userStore.setMaVaiTro(ma_vai_tro);
+
+        const thuoc_don_vi = userInfo.data.thuoc_don_vi;  
+        localStorage.setItem('savedThuocDonVi', thuoc_don_vi);
+        userStore.setThuocDonVi(thuoc_don_vi);
+        // Kiểm tra ma_vai_tro và chuyển hướng tương ứng
+        if (Number(ma_vai_tro) === 1) {
+          router.push('/quan_ly_nguoi_dung');
+        } else if (Number(ma_vai_tro) === 3) {
+          router.push('/quan_ly_van_don');
+        }
       } catch (error) {
         console.error(error);
       }
@@ -79,6 +123,7 @@ export default {
 
     onMounted(() => {
       document.title = 'Đăng nhập';
+      getNguoiDungByEmail();
     });
 
     return {
