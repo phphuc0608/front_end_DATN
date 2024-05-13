@@ -100,7 +100,7 @@ export default {
     };
     
     const getDanhMucVaiTro = () => {
-      axios.get(`/api/danh-muc/vai-tro`, {
+      axios.get(`/api/danh-muc-vai-tro`, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -162,7 +162,7 @@ export default {
 
 
     onMounted(() => {
-      document.title = "Thêm doanh nghiệp";
+      document.title = "Thêm người dùng";
     });
 
     getdonVis();
