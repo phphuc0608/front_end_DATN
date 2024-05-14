@@ -106,6 +106,11 @@ const routes = [
     path: '/cap_nhat_nguoi_dung_cong_ty/:email',
     name: 'CapNhatNguoiDungCongTy',
     component: () => import('../views/cong_ty/quan_ly_nguoi_dung/CapNhatNguoiDung.vue')
+  },
+  {
+    path: '/thong_ke_cong_ty',
+    name: 'ThongKeCongTy',
+    component: () => import('../views/cong_ty/thong_ke/ThongKe.vue')
   }
 ];
 
