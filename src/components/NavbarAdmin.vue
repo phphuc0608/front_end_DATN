@@ -30,8 +30,8 @@
       <div class="dropdown-menu dropdown-menu-end" v-show="isDropdownVisible">
         <div class="card border-0 mb-0 px-2">
           <div class="card-header py-2">
-            <span class="dropdown_text" style="color: black;">User1</span><br>
-            <span class="dropdown_text" style="color: gray;">Công ty A</span>
+            <span class="dropdown_text" style="color: black;">{{ userName }}</span><br>
+            <span class="dropdown_text" style="color: gray;">{{ tenVaiTro }}</span>
           </div>
           <div class="card-body px-0 py-2">
             <ul class="list-group list-group-flush">
@@ -65,25 +65,21 @@
 
 <script>
 import { ref } from 'vue';
-import axios from 'axios';
 import router from '../routers/router';
 export default{
   setup(){
     const isDropdownVisible = ref(false);
+    const userName = ref(localStorage.getItem('savedEmail'));
+    const tenVaiTro = ref(localStorage.getItem('savedTenVaiTro'));
+
     const signOutClick = () => {
+      localStorage.removeItem('savedEmail');
+      localStorage.removeItem('savedMaVaiTro');
+      localStorage.removeItem('savedThuocDonVi');
+      localStorage.removeItem('savedTenVaiTro');
       localStorage.removeItem('token');
       router.push('/');
     };
-
-    const getNguoiDungByEmail = async() => {
-      const email = localStorage.getItem('username');
-      try {
-        const respone = await axios.get(`/api/nguoi-dung/${email}`);
-        console.log(respone.data);
-      } catch (error) {
-        console.error(error);
-      }
-    }
 
     const useIconClicked = () => {
       isDropdownVisible.value = !isDropdownVisible.value;
@@ -93,7 +89,8 @@ export default{
       signOutClick,
       isDropdownVisible,
       useIconClicked,
-      getNguoiDungByEmail
+      userName,
+      tenVaiTro
     }
   },
 }
