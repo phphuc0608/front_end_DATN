@@ -102,7 +102,6 @@
 import axios from 'axios';
 import { ref, onMounted, computed } from 'vue';
 import NavbarCongty from '../../../components/NavbarCongty.vue';
-import router from '../../../routers/router';
 
 export default {
   setup() {
