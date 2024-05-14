@@ -1,17 +1,10 @@
 <template>
-  <NavbarAdmin/>
+  <NavbarCongty/>
   <div id="content" class="container">
     <h3 class="my-4 text-left">THÊM VẬN ĐƠN</h3>
     <form @submit.prevent="addVanDon">
       <div class="row">
-        <div class="col-md-6">
-          <label class="form-label">Số lượng</label>
-          <input v-model="soLuong" type="number" class="form-control mb-3" placeholder="Nhập số lượng" required>
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">Trọng lượng</label>
-          <input v-model="trongLuong" type="number" class="form-control mb-3" placeholder="Nhập trọng lượng" required>
-        </div>
+
       </div>
       <div class="row">
         <div class="col-md-6">
@@ -50,7 +43,21 @@
           <label class="form-label">Biển số xe</label>
           <input v-model="bienSo" type="text" class="form-control mb-3" placeholder="Nhập biển số xe" required>
         </div>
+        <div class="col-md-6">
+          <label class="form-label">Người tạo</label>
+          <input v-model="nguoiTao" type="text" class="form-control mb-3" required>
+        </div>
       </div> 
+      <div class="row">
+        <div class="col-md-6">
+          <label class="form-label">Số lượng</label>
+          <input v-model="soLuong" type="number" class="form-control mb-3" placeholder="Nhập số lượng" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Trọng lượng</label>
+          <input v-model="trongLuong" type="number" class="form-control mb-3" placeholder="Nhập trọng lượng" required>
+        </div>
+      </div>
       <div class="row">
         <div class="col-md-12">
           <label class="form-label">Mô tả</label>
@@ -66,9 +73,9 @@
 </template>
 <script>
 import { ref, onMounted, computed } from 'vue';
-import NavbarAdmin from '../../../../components/NavbarAdmin.vue';
+import NavbarCongty from '../../../components/NavbarCongty.vue';
 import axios from 'axios';
-import router from '../../../../routers/router';
+import router from '../../../routers/router';
 export default {
   setup(){
     // const router = useRouter();
@@ -80,6 +87,7 @@ export default {
     const donViXuatKhau = ref('');
     const donViNhapKhau = ref('');
     const bienSo = ref('');
+    const nguoiTao = ref(localStorage.getItem('savedEmail'));
     const danhMucHangHoas = ref([]); 
     const donVis = ref([]);
 
@@ -92,6 +100,7 @@ export default {
       donViXuatKhau.value = '';
       donViNhapKhau.value = '';
       bienSo.value = '';
+      nguoiTao.value='';
     };
 
     const getDanhMucHangHoa = () => {
@@ -133,7 +142,8 @@ export default {
         ma_danh_muc_hang_hoa: maDanhMucHangHoa.value,
         don_vi_xuat_khau: donViXuatKhau.value,
         don_vi_nhap_khau: donViNhapKhau.value,
-        bien_so: bienSo.value
+        bien_so: bienSo.value,
+        nguoi_tao: nguoiTao.value
       };
       console.log(vanDonData);
       try {
@@ -170,11 +180,12 @@ export default {
       donViXuatKhau,
       donViNhapKhau,
       bienSo,
+      nguoiTao,
       addVanDon
     }
   },
   components: {
-    NavbarAdmin
+    NavbarCongty
   },
 }
 </script>
