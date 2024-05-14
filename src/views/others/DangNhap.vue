@@ -70,6 +70,11 @@ export default {
       userStore.setThuocDonVi(savedThuocDonVi); // Đặt giá trị thuoc_don_vi vào userStore
     }
 
+    const savedTenVaiTro = localStorage.getItem('savedTenVaiTro');
+    if (savedTenVaiTro) {
+      userStore.setTenVaiTro(savedTenVaiTro); // Đặt giá trị ten_vai_tro vào userStore
+    }
+
     const getNguoiDungByEmail = async() => {
       const emailParam = userStore.email;
       console.log(emailParam);  
@@ -106,14 +111,16 @@ export default {
         const ma_vai_tro = userInfo.data.ma_vai_tro;
         localStorage.setItem('savedMaVaiTro', ma_vai_tro);
         userStore.setMaVaiTro(ma_vai_tro);
-
+        const ten_vai_tro = userInfo.data.vai_tro.ten_vai_tro;
+        localStorage.setItem('savedTenVaiTro', ten_vai_tro);
+        userStore.setTenVaiTro(ten_vai_tro);
         const thuoc_don_vi = userInfo.data.thuoc_don_vi;  
         localStorage.setItem('savedThuocDonVi', thuoc_don_vi);
         userStore.setThuocDonVi(thuoc_don_vi);
         // Kiểm tra ma_vai_tro và chuyển hướng tương ứng
         if (Number(ma_vai_tro) === 1) {
           router.push('/quan_ly_nguoi_dung');
-        } else if (Number(ma_vai_tro) === 3) {
+        } else if (Number(ma_vai_tro) === 3 || Number(ma_vai_tro) === 5) {
           router.push('/quan_ly_van_don');
         }
       } catch (error) {
