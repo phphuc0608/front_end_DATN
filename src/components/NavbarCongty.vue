@@ -8,7 +8,7 @@
       <li class="navbar_item"><router-link to="/quan_ly_nguoi_dung_cong_ty">Quản lý người dùng</router-link></li>
       <li class="navbar_item"><router-link to="/quan_ly_van_don">Quản lý vận đơn</router-link></li>
       <li class="navbar_item"><router-link to="/quan_ly_to_khai">Quản lý tờ khai</router-link></li>
-      <li class="navbar_item"><router-link to="">Thống kê</router-link></li>
+      <li class="navbar_item"><router-link to="/thong_ke_cong_ty">Thống kê</router-link></li>
     </ul>
     <div id="right_side" class="d-flex align-items-center dropdown">
       <a class="nav-link show" aria-expanded="true" @click="useIconClicked">
@@ -19,8 +19,8 @@
       <div class="dropdown-menu dropdown-menu-end" v-show="isDropdownVisible">
         <div class="card border-0 mb-0 px-2">
           <div class="card-header py-2">
-            <span class="dropdown_text" style="color: black;">User1</span><br>
-            <span class="dropdown_text" style="color: gray;">Công ty A</span>
+            <span class="dropdown_text" style="color: black;">{{ userName }}</span><br>
+            <span class="dropdown_text" style="color: gray;">{{ tenVaiTro }}</span>
           </div>
           <div class="card-body px-0 py-2">
             <ul class="list-group list-group-flush">
@@ -54,12 +54,18 @@
 
 <script>
 import { ref } from 'vue';
-import axios from 'axios';
 import router from '../routers/router';
 export default{
   setup(){
     const isDropdownVisible = ref(false);
+    const userName = ref(localStorage.getItem('savedEmail'));
+    const tenVaiTro = ref(localStorage.getItem('savedTenVaiTro'));  
+
     const signOutClick = () => {
+      localStorage.removeItem('savedEmail');
+      localStorage.removeItem('savedMaVaiTro');
+      localStorage.removeItem('savedThuocDonVi');
+      localStorage.removeItem('savedTenVaiTro');
       localStorage.removeItem('token');
       router.push('/');
     };
@@ -72,6 +78,8 @@ export default{
       signOutClick,
       isDropdownVisible,
       useIconClicked,
+      userName,
+      tenVaiTro
     }
   },
 }
