@@ -1,5 +1,5 @@
 <template>
-  <NavbarAdmin/>
+  <NavbarCongty/>
   <div id="content" class="container">
     <h3 class="my-4 text-left">CẬP NHẬT VẬN ĐƠN</h3>
     <form @submit.prevent="updateVanDon">
@@ -65,9 +65,9 @@
 </template>
 <script>
 import { ref, onMounted, computed } from 'vue';
-import NavbarAdmin from '../../../../components/NavbarAdmin.vue';
+import NavbarCongty from '../../../components/NavbarCongty.vue';
 import axios from 'axios';
-import router from '../../../../routers/router';
+import router from '../../../routers/router';
 import { useRoute } from 'vue-router';
 export default {
   setup(){
@@ -179,7 +179,7 @@ export default {
     }
   },
   components: {
-    NavbarAdmin
+    NavbarCongty
   },
 }
 </script>
