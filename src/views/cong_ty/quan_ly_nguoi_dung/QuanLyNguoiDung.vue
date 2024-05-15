@@ -15,21 +15,6 @@
             <label class="form-label">Tìm kiếm</label>
             <input type="text" class="form-control mb-xl-0 mb-3" placeholder="Tìm kiếm" v-model="searchString">
           </div>
-          <!-- <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
-            <label class="form-label" for="">Trạng thái</label>
-            <select class="form-control form-select h-auto wide" name="" id="">
-              <option selected>Chọn trạng thái</option>
-            </select>
-          </div> -->
-          <!-- <div class="col-xl-3 col-sm-6">
-            <label class="form-label" for="">Vai trò</label>
-            <select class="form-control form-select h-auto wide" v-model="searchVaiTro">
-              <option></option>
-              <option v-for="vaiTro in vaiTros" :key="vaiTro.ma_vai_tro" :value="vaiTro.ma_vai_tro">
-                {{ vaiTro.ten_vai_tro }}
-              </option>
-            </select>
-          </div> -->
           <div class="col-xl-3 col-sm-6 align-self-end">
             <div>
               <button class="btn btn-primary me-2" title="Nhấn vào đây để tìm kiếm" type="button" @click="search">
