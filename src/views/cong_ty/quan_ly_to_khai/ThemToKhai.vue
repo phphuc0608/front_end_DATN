@@ -1,5 +1,5 @@
 <template>
-  <NavbarAdmin/>
+  <NavbarCongty/>
   <div id="content" class="container">
     <h3 class="my-4 text-left">THÊM TỜ KHAI</h3>
     <form @submit.prevent="addToKhai">
@@ -10,18 +10,19 @@
         </div>
         <div class="col-md-6">
           <label for="" class="col-form-label">Đơn vị đăng ký</label>
-          <select v-model="maDonVi" class="form-control form-select h-auto wide" required>
+          <input type="text" v-model="maDonVi" class="form-control h-auto wide" required readonly>
+          <!-- <select v-model="maDonVi" class="form-control form-select h-auto wide" required>
             <option v-for="donVi in donVis" :key="donVi.ma_don_vi" :value="donVi.ma_don_vi">
               {{ donVi.ten_don_vi }}
             </option>
-          </select>
+          </select> -->
         </div>
       </div>
       <div class="row">
         <div class="col-md-6">
           <label for="" class="col-form-label">Vận đơn</label>
           <select v-model="maToKhai" class="form-control form-select h-auto wide" required>
-            <option v-for="ToKhai in VanDons" :key="ToKhai.ma_van_don" :value="ToKhai.ma_van_don">
+            <option v-for="ToKhai in vanDons" :key="ToKhai.ma_van_don" :value="ToKhai.ma_van_don">
               {{ ToKhai.ma_van_don }} - {{ ToKhai.ten_hang_hoa }}
             </option>
           </select>
@@ -36,15 +37,15 @@
 </template>
 <script>
 import { ref, onMounted, computed } from 'vue';
-import NavbarAdmin from '../../../../components/NavbarAdmin.vue';
+import NavbarCongty from '../../../components/NavbarCongty.vue';
 import axios from 'axios';
-import router from '../../../../routers/router';
+import router from '../../../routers/router';
 export default {
   setup(){
     const donVis = ref([]); 
-    const VanDons = ref([]);
+    const vanDons = ref([]);
     const email = ref(localStorage.getItem('savedEmail'));
-    const maDonVi = ref('');
+    const maDonVi = ref(localStorage.getItem('savedThuocDonVi'));
     const maToKhai = ref('');
     const emailError = ref(false);
 
@@ -53,7 +54,7 @@ export default {
       maToKhai.value = '';
     };
 
-    const getdonVis = () => {
+    const getDonVis = () => {
       axios.get(`/api/don-vi`, {
         headers: {
           'Content-Type': 'application/json'
@@ -68,19 +69,13 @@ export default {
       });
     };
     
-    const getVanDons = () => {
-      axios.get(`/api/van-don`, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(function(response){
-        VanDons.value = response.data;
-        console.log(response.data); 
-      })
-      .catch(function(error){
+    const getVanDons = async() => {
+      try {
+        const response = await axios.get(`/api/van-don/doanh-nghiep/${maDonVi.value}`);
+        vanDons.value = response.data;
+      } catch (error) {
         console.log(error);
-      });
+      }
     };
 
     const validateEmail = () => {
@@ -121,7 +116,7 @@ export default {
       document.title = "Thêm tờ khai";
     });
 
-    getdonVis();
+    getDonVis();
     getVanDons();
     return {
       donVis,
@@ -129,14 +124,14 @@ export default {
       email,
       maDonVi,
       maToKhai,
-      VanDons,
+      vanDons,
       emailError,
       validateEmail,
       addToKhai
     }
   },
   components: {
-    NavbarAdmin
+    NavbarCongty
   },
 }
 </script>
