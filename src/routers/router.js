@@ -111,6 +111,22 @@ const routes = [
     path: '/thong_ke_cong_ty',
     name: 'ThongKeCongTy',
     component: () => import('../views/cong_ty/thong_ke/ThongKe.vue')
+  },
+  //Cửa khẩu
+  {
+    path: '/quan_ly_xe_ra_vao',
+    name: 'QuanLyXeRaVao',
+    component: () => import('../views/cua_khau/QuanLyXeRaVao.vue')
+  },
+  {
+    path: '/lich_su_xe_ra_vao',
+    name: 'LichSuXeRaVao',
+    component: () => import('../views/cua_khau/LichSuXeRaVao.vue')
+  },
+  {
+    path: '/thong_ke_cua_khau',
+    name: 'ThongKeCuaKhau',
+    component: () => import('../views/cua_khau/ThongKe.vue')
   }
 ];
 
