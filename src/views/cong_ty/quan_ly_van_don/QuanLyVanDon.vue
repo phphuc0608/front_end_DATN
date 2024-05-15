@@ -100,7 +100,7 @@
 
 <script>
 import axios from 'axios';
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, toRaw } from 'vue';
 import NavbarCongty from '../../../components/NavbarCongty.vue';
 
 export default {
@@ -108,26 +108,20 @@ export default {
     const vanDons = ref([]);
     const currentPage = ref(1);
     const itemsPerPage = ref(5);
+    const maDonVi = ref(localStorage.getItem('savedThuocDonVi'));
 
     onMounted(() => {
       document.title = "Quản lý vận đơn";
     });
-
-  const getVanDons = () => {
-    axios.get(`/api/van-don`, {
-      headers: {
-        'Content-Type': 'application/json',
+    
+    const getVanDons = async() => {
+      try {
+        const response = await axios.get(`/api/van-don/doanh-nghiep/${maDonVi.value}`);
+        vanDons.value = response.data;
+      } catch (error) {
+        console.log(error);
       }
-    })
-    .then(function(response){
-      vanDons.value = response.data;
-      console.log(response.data); 
-    })
-    .catch(function(error){
-      console.log(error);
-    });
-  };
-
+    };
 
   const deleteVanDon = async(maVanDon) => {
     try {
