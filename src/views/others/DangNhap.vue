@@ -53,7 +53,6 @@ export default {
     const userStore = useUserStore();
     const username = ref('');
     const password = ref('');
-
     // Kiểm tra xem có email trong localStorage không
     const savedEmail = localStorage.getItem('savedEmail');
     if (savedEmail) {
@@ -105,7 +104,6 @@ export default {
       try {
         const response = await axios.post('/api/login', userData); 
         localStorage.setItem('token', response.data.access_token);
-
         // Lấy thông tin người dùng và cập nhật savedMaVaiTro
         const userInfo = await axios.get(`/api/nguoi-dung/${username.value}`);
         const ma_vai_tro = userInfo.data.ma_vai_tro;
@@ -122,7 +120,9 @@ export default {
           router.push('/quan_ly_nguoi_dung');
         } else if (Number(ma_vai_tro) === 3 || Number(ma_vai_tro) === 5) {
           router.push('/quan_ly_van_don');
-        }
+        } else if (Number(ma_vai_tro) === 2 || Number(ma_vai_tro) === 4) {
+          router.push('/quan_ly_xe_ra_vao');
+        } 
       } catch (error) {
         console.error(error);
       }
