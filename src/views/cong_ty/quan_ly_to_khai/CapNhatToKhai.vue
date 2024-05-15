@@ -1,5 +1,5 @@
 <template>
-  <NavbarAdmin/>
+  <NavbarCongty/>
   <div id="content" class="container">
     <h3 class="my-4 text-left">CẬP NHẬT TỜ KHAI</h3>
     <form @submit.prevent="updateToKhai">
@@ -14,11 +14,7 @@
         </div>
         <div class="col-md-6">
           <label for="" class="col-form-label">Đơn vị đăng ký</label>
-          <select v-model="maDonVi" class="form-control form-select h-auto wide" required>
-            <option v-for="donVi in donVis" :key="donVi.ma_don_vi" :value="donVi.ma_don_vi">
-              {{ donVi.ten_don_vi }}
-            </option>
-          </select>
+          <input type="text" v-model="maDonVi" class="form-control h-auto wide" required readonly>
         </div>
       </div>
       <div class="row">
@@ -32,11 +28,7 @@
         </div>
         <div class="col-md-6">
           <label for="" class="col-form-label">Trạng thái</label>
-          <select v-model="maTrangThai" class="form-control form-select h-auto wide" required>
-            <option v-for="trangThai in trangThais" :key="trangThai.ma_trang_thai" :value="trangThai.ma_trang_thai">
-              {{ trangThai.ten_trang_thai }}
-            </option>
-          </select>
+          <input type="text" v-model="tenTrangThai" class="form-control h-auto wide" required readonly>
         </div>
       </div> 
       <div class="d-flex justify-content-start mt-4">
@@ -47,51 +39,21 @@
 </template>
 <script>
 import { ref, onMounted, computed } from 'vue';
-import NavbarAdmin from '../../../../components/NavbarAdmin.vue';
+import NavbarCongty from '../../../components/NavbarCongty.vue';
 import axios from 'axios';
-import router from '../../../../routers/router';
+import router from '../../../routers/router';
 import { useRoute } from 'vue-router';
 export default {
   setup(){
     const route = useRoute(); 
-    const donVis = ref([]);
-    const trangThais = ref([]);
     const vanDons = ref([]);
     const maDonVi = ref('');
     const maVanDon = ref('');
     const maTrangThai = ref('');
     const email = ref(localStorage.getItem('savedEmail'));
+    const tenTrangThai = ref('');
     const emailError = ref(false);
     
-    const getDonVis = () => {
-      axios.get(`/api/don-vi`, {
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      })
-      .then(function(response){
-        donVis.value = response.data;
-        console.log(response.data); 
-      })
-      .catch(function(error){
-        console.log(error);
-      });
-    };
-
-    const getDanhMucTrangThai = () => {
-      axios.get(`/api/trang-thai-to-khai`, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(function(response){
-        trangThais.value = response.data;
-        console.log(response.data); 
-      })
-      .catch(function(error){
-        console.log(error);
-      });
-    };
 
     const getToKhaiById = async () => {
       const maToKhaiParam = route.params.ma_to_khai;
@@ -127,6 +89,21 @@ export default {
       });
     };
 
+    const getTenTrangThai = async () => {
+      try {
+        const response = await axios.get(`/api/trang-thai-to-khai/${maTrangThai.value}`,{
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+        const trangThai = response.data;
+        tenTrangThai.value = trangThai.ten_trang_thai;
+        console.log(trangThai);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     const updateToKhai = async()=>{
       const toKhai = {
         email_nguoi_dang_ky: email.value,
@@ -147,25 +124,23 @@ export default {
     onMounted(async() => {
       document.title = "Cập nhật tờ khai";
       await getToKhaiById();
-      await getDanhMucTrangThai();
-      await getDonVis();
       await getVanDons();
+      await getTenTrangThai();
     });
 
     return {
-      donVis,
-      trangThais,
       vanDons,
       maDonVi,
       maVanDon,
       maTrangThai,
       email,
       emailError,
-      updateToKhai
+      updateToKhai,
+      tenTrangThair 
     }
   },
   components: {
-    NavbarAdmin
+    NavbarCongty
   },
 }
 </script>
