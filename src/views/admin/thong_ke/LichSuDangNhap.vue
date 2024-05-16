@@ -2,38 +2,6 @@
 <NavbarAdmin/>
 <div id="content" class="container-fluid px-5">
     <h3 class="text-center" style="margin-top: 120px; margin-bottom: 60px;">LỊCH SỬ TÀI KHOẢN</h3>
-    <!-- <div id="search_box" class="box_container col-md-12">
-      <div id="search_box_header" class="header_container d-flex justify-content-between align-items-center">
-        <span class="title">
-          <i class="bi bi-funnel-fill"></i> Filter
-        </span>
-        <i id="filterUp" class="bi bi-caret-up-fill" @click="filterClicked"></i>
-      </div>
-      <div id="search_box_content">
-        <div class="row">
-          <div class="col-md-9 col-sm-6">
-            <label class="form-label">Tìm kiếm</label>
-            <input type="text" class="form-control mb-xl-0 mb-3" placeholder="Tìm kiếm">
-          </div>
-          
-          <div class="col-xl-3 col-sm-6 align-self-end">
-            <div>
-              <button class="btn btn-primary me-2" title="Nhấn vào đây để tìm kiếm" type="button">
-                <i class="bi bi-funnel-fill"></i> Filter
-              </button>
-              <button class="btn light rev_button" title="Nhấn vào đây để xóa filter" type="button">
-                Remove filter
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div> -->
-    <!-- <div class="col-md-12 d-flex mb-4 pb-3">
-      <a class="btn btn-primary me-3">
-        <i class="bi bi-plus-circle"></i> Thêm tờ khai
-      </a>
-    </div> -->
   </div>
   <div class="container-fluid px-5">
     <div class="header_container">
