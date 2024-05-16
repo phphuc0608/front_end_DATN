@@ -5,22 +5,12 @@
     <form @submit.prevent="updateVanDon">
       <div class="row">
         <div class="col-md-6">
-          <label class="form-label">Số lượng</label>
-          <input v-model="soLuong" type="number" class="form-control mb-3" placeholder="Nhập số lượng">
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">Trọng lượng</label>
-          <input v-model="trongLuong" type="number" class="form-control mb-3" placeholder="Nhập trọng lượng">
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
           <label class="form-label">Tên hàng hóa</label>
-          <input v-model="tenHangHoa" type="text" class="form-control mb-3" placeholder="Nhập tên hàng hóa">
+          <input v-model="tenHangHoa" type="text" class="form-control mb-3" placeholder="Nhập tên hàng hóa" required>
         </div>
         <div class="col-md-6">
           <label class="form-label">Danh mục hàng hóa</label>
-          <select v-model="maDanhMucHangHoa" class="form-control form-select h-auto wide">
+          <select v-model="maDanhMucHangHoa" class="form-control form-select h-auto wide" required>
             <option v-for="danhMucHangHoa in danhMucHangHoas" :key="danhMucHangHoa.ma_danh_muc_hang_hoa" :value="danhMucHangHoa.ma_danh_muc_hang_hoa">
               {{ danhMucHangHoa.ten_danh_muc_hang_hoa }}
             </option>
@@ -30,7 +20,7 @@
       <div class="row">
         <div class="col-md-6">
           <label class="form-label">Đơn vị nhập khẩu</label>
-          <select v-model="donViNhapKhau" class="form-control form-select h-auto wide">
+          <select v-model="donViNhapKhau" class="form-control form-select h-auto wide" required>
             <option v-for="donVi in donVis" :key="donVi.ma_don_vi" :value="donVi.ma_don_vi">
               {{ donVi.ten_don_vi }}
             </option>
@@ -38,7 +28,7 @@
         </div>
         <div class="col-md-6">
           <label class="form-label">Đơn vị xuất khẩu</label>
-          <select v-model="donViXuatKhau" class="form-control form-select h-auto wide">
+          <select v-model="donViXuatKhau" class="form-control form-select h-auto wide" required>
             <option v-for="donVi in donVis" :key="donVi.ma_don_vi" :value="donVi.ma_don_vi">
               {{ donVi.ten_don_vi }}
             </option>
@@ -48,15 +38,29 @@
       <div class="row">
         <div class="col-md-6">
           <label class="form-label">Biển số xe</label>
-          <input v-model="bienSo" type="text" class="form-control mb-3" placeholder="Nhập biển số xe">
+          <input v-model="bienSo" type="text" class="form-control mb-3" placeholder="Nhập biển số xe" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Người tạo</label>
+          <input v-model="nguoiTao" type="text" class="form-control mb-3" required readonly>
         </div>
       </div> 
       <div class="row">
+        <div class="col-md-6">
+          <label class="form-label">Số lượng</label>
+          <input v-model="soLuong" type="number" class="form-control mb-3" placeholder="Nhập số lượng" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Trọng lượng</label>
+          <input v-model="trongLuong" type="number" class="form-control mb-3" placeholder="Nhập trọng lượng" required>
+        </div>
+      </div>
+      <div class="row">
         <div class="col-md-12">
           <label class="form-label">Mô tả</label>
-          <textarea v-model="moTa" class="form-control mb-3"></textarea>
+          <textarea v-model="moTa" class="form-control mb-3" required></textarea>
         </div>
-      </div> 
+      </div>
       <div class="d-flex justify-content-start">
         <button type="submit" class="btn btn-warning me-3" style="color: white;"><i class="bi bi-pencil-fill"></i> Cập nhật</button>
       </div> 
@@ -82,6 +86,7 @@ export default {
     const bienSo = ref('');
     const danhMucHangHoas = ref([]); 
     const donVis = ref([]);
+    const nguoiTao = ref('');
 
     const getDanhMucHangHoa = () => {
       axios.get(`/api/danh-muc-hang-hoa`, {
@@ -130,6 +135,7 @@ export default {
         donViXuatKhau.value = vanDon.don_vi_xuat_khau;
         donViNhapKhau.value = vanDon.don_vi_nhap_khau;
         bienSo.value = vanDon.bien_so;
+        nguoiTao.value = vanDon.nguoi_dung.email;
         console.log(vanDon);
       } catch (error) {
         console.log(error);
@@ -145,8 +151,10 @@ export default {
         ma_danh_muc_hang_hoa: maDanhMucHangHoa.value,
         don_vi_xuat_khau: donViXuatKhau.value,
         don_vi_nhap_khau: donViNhapKhau.value,
-        bien_so: bienSo.value
+        bien_so: bienSo.value,
+        nguoi_tao: nguoiTao.value
       };
+      console.log(vanDon);
       try {
         await axios.put(`/api/van-don/${route.params.ma_van_don}`, vanDon);
         alert('Cập nhật vận đơn thành công');
@@ -175,7 +183,8 @@ export default {
       donViXuatKhau,
       donViNhapKhau,
       bienSo,
-      updateVanDon
+      updateVanDon,
+      nguoiTao
     }
   },
   components: {
