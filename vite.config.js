@@ -15,6 +15,7 @@ export default defineConfig({
         target: 'http://1.53.213.122:8000/',
         changeOrigin: true,
         secure: false,
+        timeout: 5000,
       }
     }
   }
