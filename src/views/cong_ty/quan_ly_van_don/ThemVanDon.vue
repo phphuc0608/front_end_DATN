@@ -4,9 +4,6 @@
     <h3 class="my-4 text-left">THÊM VẬN ĐƠN</h3>
     <form @submit.prevent="addVanDon">
       <div class="row">
-
-      </div>
-      <div class="row">
         <div class="col-md-6">
           <label class="form-label">Tên hàng hóa</label>
           <input v-model="tenHangHoa" type="text" class="form-control mb-3" placeholder="Nhập tên hàng hóa" required>
