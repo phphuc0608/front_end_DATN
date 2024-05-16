@@ -119,9 +119,9 @@ const routes = [
     component: () => import('../views/cua_khau/QuanLyXeRaVao.vue')
   },
   {
-    path: '/lich_su_xe_ra_vao',
-    name: 'LichSuXeRaVao',
-    component: () => import('../views/cua_khau/LichSuXeRaVao.vue')
+    path: '/lich_su_phuong_tien',
+    name: 'LichSuPhuongTien',
+    component: () => import('../views/cua_khau/LichSuPhuongTien.vue')
   },
   {
     path: '/thong_ke_cua_khau',
