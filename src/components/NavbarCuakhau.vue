@@ -5,9 +5,9 @@
     </label>
     <label class="logo m-0">Company Side</label>
     <ul class="navbar_container">
-      <li class="navbar_item"><router-link to="/quan_ly_nguoi_dung_cong_ty">Quản lý xe ra vào</router-link></li>
-      <li class="navbar_item"><router-link to="/quan_ly_van_don">Lịch sử xe ra vào</router-link></li>
-      <li class="navbar_item"><router-link to="/quan_ly_to_khai">Thống kê</router-link></li>
+      <li class="navbar_item"><router-link to="/quan_ly_xe_ra_vao">Quản lý xe ra vào</router-link></li>
+      <li class="navbar_item"><router-link to="/lich_su_phuong_tien">Lịch sử phương tiện</router-link></li>
+      <li class="navbar_item"><router-link to="/thong_ke_cua_khau">Thống kê</router-link></li>
       <!-- <li class="navbar_item"><router-link to="/thong_ke_cong_ty">Thống kê</router-link></li> -->
     </ul>
     <div id="right_side" class="d-flex align-items-center dropdown">
