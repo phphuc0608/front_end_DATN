@@ -107,13 +107,14 @@ export default {
     const toKhais = ref([]);
     const currentPage = ref(1);
     const itemsPerPage = ref(5);
-
+    const maDonVi = ref(localStorage.getItem('savedThuocDonVi'));
+    
     onMounted(() => {
       document.title = "Quản lý tờ khai";
     });
 
   const getToKhais = () => {
-    axios.get(`/api/to-khai`, {
+    axios.get(`/api/to-khai/doanh-nghiep/${maDonVi.value}`, {
       headers: {
         'Content-Type': 'application/json',
       }
