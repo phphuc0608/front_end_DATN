@@ -8,7 +8,7 @@
   <div class="container-fluid px-5">
     <div class="header_container">
       <span class="title">
-        <i class="bi bi-table"></i> Dữ liệu tờ khai
+        <i class="bi bi-table"></i> Bảng dữ liệu phương tiện mới nhất
       </span>
     </div>
     <div class="table_container p-3">
@@ -25,7 +25,7 @@
           <tbody>
             <tr v-for="vanDon in firstVanDon" :key="vanDon.bien_so">
               <td>{{ vanDon.bien_so }}</td>
-              <td>{{ vanDon.trang_thai_phuong_tien.ten_trang_thai }}</td>
+              <td>{{ vanDon.trang_thai_phuong_tien.ten_trang_thai}}</td>
               <td>{{ vanDon.ma_lich_su }}</td>
               <td>{{ vanDon.thoi_gian }}</td>
             </tr>
@@ -33,166 +33,90 @@
         </table>
       </div>
     </div>
-    <div id="btn_container">
-        <button class="btn btn-success me-3" @click="confirmVanDon">
-          <i class="fa-solid fa-circle-check"></i> Xác nhận
-        </button>
-        <button class="btn btn-danger">
-          <i class="fa-solid fa-circle-xmark"></i> Từ chối
-        </button>
-      </div>
-      <div id="img_container" class="mt-3 text-center">
-        <img :src="imageUrl" alt="">
-      </div>
+    <div id="btn_container" class="py-3">
+      <button class="btn btn-success me-3" @click="confirmVanDon">
+        <i class="bi bi-check-circle-fill"></i> Xác nhận
+      </button>
+      <button class="btn btn-danger">
+        <i class="bi bi-x-circle-fill"></i> Từ chối
+      </button>
     </div>
+    <div id="img_container" class="mt-3 text-center">
+      <img :src="imageUrl" alt="">
+    </div>
+  </div>
 </template>
 
 <script>
 import axios from 'axios';
-import { ref, onMounted, computed, watch} from 'vue';
+import { ref, onMounted, computed, watch, onUnmounted} from 'vue';
 import NavbarCuakhau from '../../components/NavbarCuakhau.vue';
 
 export default {
   setup() {
-    const nguoiDungs = ref([]);
-    const currentPage = ref(1);
-    const itemsPerPage = ref(5);
-    const searchString = ref('');
-    const searchVaiTro = ref('');
-    const vaiTros = ref([]);
-    const savedThuocDonVi = ref(localStorage.getItem('savedThuocDonVi'));
+    const firstVanDon = ref([]);
+    const imageUrl = ref('http://1.53.213.122:8000/api/lich-su-phuong-tien/lastest/image');
+    const currentBienSo = ref('');
+    let intervalId;
+
+    const getLastestImage = () => {
+      imageUrl.value = `http://1.53.213.122:8000/api/lich-su-phuong-tien/lastest/image?time=${new Date().getTime()}`;
+    }
 
     onMounted(() => {
-      document.title = "Quản lý người dùng công ty";
+      document.title = "Quản lý xe ra vào";
+      intervalId = setInterval(getLastestImage, 1000);
     });
- 
-    const getNguoiDungs = () => {
-      axios.get(`/api/nguoi-dung?search_string=${savedThuocDonVi.value}`, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(function(response){
-        nguoiDungs.value = response.data;
-        console.log(response.data); 
-      })
-      .catch(function(error){
-        console.log(error);
-      });
-    };
 
-    const deleteNguoiDung = async (email) => {
-      try {
-        const response = await axios.delete(`/api/nguoi-dung/${email}`, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });  
-        alert('Xóa người dùng thành công');
-        setTimeout(getNguoiDungs, 1000);
-      } catch (error) { 
-        alert('Xóa người dùng thất bại');
-      }
-    };
+    onUnmounted(() => {
+      clearInterval(intervalId);
+    });
 
-    const getDanhMucVaiTro = () => {
-      axios.get(`/api/danh-muc-vai-tro`, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(function(response){
-        vaiTros.value = response.data;
-        console.log(response.data); 
-      })
-      .catch(function(error){
-        console.log(error);
-      });
-    };
-
-    const search = async() => {
-      try {
-        const respone = await axios.get(`/api/nguoi-dung?search_string=${searchString.value}`, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-      });
-      nguoiDungs.value = respone.data;
-      console.log(respone.data);
+    const getFirstVanDon = async() => {
+      try{
+        const response = await axios.get(`/api/lich-su-phuong-tien/lastest`)
+        firstVanDon.value = [response.data];
+        currentBienSo.value = response.data.bien_so;
       } catch (error) {
-        console.error(error);
+        console.log(error);
       }
-    };
+    }
 
-    const filteredNguoiDungs = computed(() => {
-      if (searchVaiTro.value) {
-        return nguoiDungs.value.filter(nguoiDung => nguoiDung.vai_tro.ma_vai_tro === searchVaiTro.value);
-      } else {
-        return nguoiDungs.value;
-      }
-    });
-
-    watch(searchVaiTro, () => {
-      filteredNguoiDungs.value = nguoiDungs.value.filter(nguoiDung => nguoiDung.vai_tro.ma_vai_tro === searchVaiTro.value);
-    });
-
-    const paginatedData = computed(() => {
-      const start = (currentPage.value - 1) * itemsPerPage.value;
-      const end = start + itemsPerPage.value;
-      return filteredNguoiDungs.value.slice(start, end);
-    });
-
-    const totalPages = computed(() => {
-      return Math.ceil(filteredNguoiDungs.value.length / itemsPerPage.value);
-    });
-
-    const changePage = (page) => {
-      currentPage.value = page;
-    };
-
-    const nextPage = () => {
-      if (currentPage.value < totalPages.value) {
-        currentPage.value++;
-      }
-    };
-
-    const previousPage = () => {
-      if (currentPage.value > 1) {
-        currentPage.value--;
-      }
-    };
-
-    const filterClicked = () => {
-      let search_box_container = document.getElementById('search_box_content');
-      let icon = document.getElementById('filterUp');
-      if(search_box_container.style.display === 'none'){
-        search_box_container.style.display = 'block';
-        icon.className = 'bi bi-caret-up-fill';
+    const confirmVanDon = () => {
+      if(firstVanDon.value.length === 0){
+        return;
       }else{
-        search_box_container.style.display = 'none';
-        icon.className = 'bi bi-caret-down-fill';
-      }
-    };
+        axios.post(`/api/lich-su-phuong-tien`, {
+          bien_so: bien_so,
+          ma_trang_thai: 3,
+          anh: ""
+        })
+        .then(function(response){
+          console.log(response.data);
+          getfirstVanDon(); // Refresh the data
+        })
+        .catch(function(error){
+          console.log(error);
+        });
+        }
+    }
 
-    getNguoiDungs();
-    getDanhMucVaiTro();
+    getFirstVanDon();
+    getLastestImage();
+    confirmVanDon();
+
+    setInterval(() => {
+      getFirstVanDon();
+    }, 1000);
+
     return{
-      nguoiDungs,
-      paginatedData,
-      totalPages,
-      currentPage,
-      itemsPerPage,
-      changePage,
-      nextPage,
-      previousPage,
-      filterClicked,
-      deleteNguoiDung,
-      searchString,
-      search,
-      searchVaiTro,
-      vaiTros,
-      filteredNguoiDungs,
-      savedThuocDonVi
+      firstVanDon,
+      imageUrl,
+      currentBienSo,
+      intervalId,
+      confirmVanDon,
+      getFirstVanDon,
+      getLastestImage
     }
   },
   components:{
@@ -293,5 +217,9 @@ export default {
   background-color: #452B90;
   color: white;
   border-color: #452B90; 
+}
+#img_container img {
+  width: 50%;
+  height: auto;
 }
 </style>
