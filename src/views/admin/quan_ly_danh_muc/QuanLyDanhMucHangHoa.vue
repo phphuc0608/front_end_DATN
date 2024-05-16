@@ -207,6 +207,8 @@ export default {
         alert('Thêm hàng hóa thành công');
         modalAdd.value.hide();
         getDanhMucHangHoa(); // Refresh danhMucHangHoas
+        maDanhMucHangHoa.value = '';
+        tenDanhMucHangHoa.value = '';
       } catch (error) {
         console.error(error);
         alert('Thêm hàng hóa thất bại');
