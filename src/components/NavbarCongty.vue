@@ -5,7 +5,7 @@
     </label>
     <label class="logo m-0">Company Side</label>
     <ul class="navbar_container">
-      <li class="navbar_item"><router-link to="/quan_ly_nguoi_dung_cong_ty">Quản lý người dùng</router-link></li>
+      <li class="navbar_item"><router-link to="/quan_ly_nguoi_dung_cong_ty" @click.native.prevent="navigateUserManagement">Quản lý người dùng</router-link></li>
       <li class="navbar_item"><router-link to="/quan_ly_van_don">Quản lý vận đơn</router-link></li>
       <li class="navbar_item"><router-link to="/quan_ly_to_khai">Quản lý tờ khai</router-link></li>
       <li class="navbar_item"><router-link to="/thong_ke_cong_ty">Thống kê</router-link></li>
@@ -59,7 +59,16 @@ export default{
   setup(){
     const isDropdownVisible = ref(false);
     const userName = ref(localStorage.getItem('savedEmail'));
-    const tenVaiTro = ref(localStorage.getItem('savedTenVaiTro'));  
+    const tenVaiTro = ref(localStorage.getItem('savedTenVaiTro'));
+    const maVaiTro = ref(localStorage.getItem('savedMaVaiTro'));  
+
+    const navigateUserManagement = () => {
+      if(maVaiTro.value === 5){
+        alert('Bạn không có quyền truy cập vào trang này');
+      }else if(maVaiTro === 2){
+        router.push('/quan_ly_nguoi_dung_cong_ty');
+      }
+    }
 
     const signOutClick = () => {
       localStorage.removeItem('savedEmail');
@@ -79,7 +88,8 @@ export default{
       isDropdownVisible,
       useIconClicked,
       userName,
-      tenVaiTro
+      tenVaiTro,
+      navigateUserManagement
     }
   },
 }
