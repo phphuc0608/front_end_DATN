@@ -23,26 +23,38 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-4">
         <div class="box_container">
           <div class="header_container">
             <h5>Thống kê vận đơn</h5>
           </div>
           <div class="content_container">
             <div class="chart_container">
-              <Bar :data="chartDataVanDon" :option="chartOptions"/> 
+              <Doughnut :data="chartDataVanDon" :option="chartOptions"/> 
             </div>
           </div>
         </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-4">
         <div class="box_container">
           <div class="header_container">
             <h5>Thống kê tờ khai</h5>
           </div>
           <div class="content_container">
             <div class="chart_container">
-              <Bar :data="chartDataToKhai" :option="chartOptions"/> 
+              <Doughnut :data="chartDataToKhai" :option="chartOptions"/> 
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="box_container">
+          <div class="header_container">
+            <h5>Thống kê tờ khai 2</h5>
+          </div>
+          <div class="content_container">
+            <div class="chart_container">
+              <v-chart class="chart" :option="barChartOption" autoresize/>
             </div>
           </div>
         </div>
@@ -53,13 +65,19 @@
 
 <script>
 import axios from 'axios';
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, provide } from 'vue';
 import NavbarCongty from '../../../components/NavbarCongty.vue';
-import {Bar} from 'vue-chartjs';
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
-import router from '../../../routers/router';
+import {Bar, Doughnut} from 'vue-chartjs';
+import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement } from 'chart.js';
+import { use } from 'echarts/core';
+import { BarChart } from 'echarts/charts';
+import { TitleComponent, TooltipComponent, LegendComponent, GridComponent } from 'echarts/components';
+import { CanvasRenderer } from 'echarts/renderers';
+import VChart, { THEME_KEY } from 'vue-echarts';
 
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
+use([BarChart, TitleComponent, TooltipComponent, CanvasRenderer,LegendComponent, GridComponent]);
+
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement);
 export default {
   setup() {
     const vanDons = ref([]);
@@ -73,6 +91,11 @@ export default {
     const quyHienTai = ref(Math.floor((new Date().getMonth() + 1) / 3) + 1);
     const toKhaiTheoThang = ref(0);
     const toKhaiTheoQuy = ref(0);
+    const toKhaiTheoNgay = ref(0);
+    const vanDonTheoNgay = ref(0);
+
+    provide(THEME_KEY, 'light');
+
     //Computed property sẽ tự động cập nhật khi các reactive dependencies thay đổi.
     const boxData1 = computed(() => [
       {
@@ -85,29 +108,64 @@ export default {
         number: totalToKhais.value,
         color: '#FFD700'
       },
-      {
+            {
+        title: 'Vận đơn theo ngày',
+        number: vanDonTheoNgay.value,
+        color: '#87CEEB'
+      },
+    ]);
+
+    const boxData2 = computed(() => [
+            {
         title: 'Vận đơn theo tháng',
         number: vanDonTheoThang.value,
         color: '#FFA07A'
       },
-    ]);
-    const boxData2 = computed(() => [
-      {
-        title: 'Vận đơn theo quý',
-        number: vanDonTheoQuy.value,
-        color: '#87CEEB'
+            {
+        title: 'Tờ khai theo ngày',
+        number: toKhaiTheoNgay.value,
+        color: '#9370DB'
       },
       {
         title: 'Tờ khai theo tháng',
         number: toKhaiTheoThang.value,
         color: '#98FB98'
       },
-      {
-        title: 'Tờ khai theo quý',
-        number: toKhaiTheoQuy.value,
-        color: '#9370DB'
-      }
     ]);
+    
+    const barChartOption = ref({
+      tooltip: {
+        trigger: 'item',
+        formatter: '{a} <br/>{b} : {c}'
+      },
+      xAxis: {
+        type: 'category',
+        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      },
+      yAxis: {
+        type: 'value'
+      },
+      series: [
+        {
+          data: [
+            120,
+            {
+              value: 200,
+              itemStyle: {
+                color: '#a90000'
+              }
+            },
+            150,
+            80,
+            70,
+            110,
+            130
+          ],
+          type: 'bar'
+        }
+      ]
+    })
+
     const chartOptions = ref({
       responsive: true,
     });
@@ -151,7 +209,7 @@ export default {
       }
     }
 
-    const gettoKhaiTheoThangs = async() => {
+    const getToKhaiTheoThangs = async() => {
       try{
         const response = await axios.get(`/api/thong-ke/so-luong-to-khai-theo-thang/${maDonVi.value}/${thangHienTai.value}`);
         toKhaiTheoThang.value = response.data;
@@ -160,7 +218,7 @@ export default {
       }
     }
 
-    const gettoKhaiTheoQuys = async() => {
+    const getToKhaiTheoQuys = async() => {
       try{
         const response = await axios.get(`/api/thong-ke/so-luong-to-khai-theo-quy/${maDonVi.value}/${quyHienTai.value}`);
         toKhaiTheoQuy.value = response.data;
@@ -169,43 +227,49 @@ export default {
       }
     }
 
-    const chartDataVanDon = computed(()=>({
+    const getToKhaiTheoNgays = async() => {
+      try{
+        const response = await axios.get(`/api/thong-ke/so-luong-to-khai-theo-ngay/${maDonVi.value}`);
+        toKhaiTheoNgay.value = response.data;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    const getVanDonTheoNgays = async() => {
+      try{
+        const response = await axios.get(`/api/thong-ke/so-luong-van-don-theo-ngay/${maDonVi.value}`);
+        vanDonTheoNgay.value = response.data;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    const chartDataVanDon = computed(() => ({
       labels: ['Vận đơn theo tháng', 'Vận đơn theo quý'],
-      datasets: [
-        {
-          //label: 'Vận đơn', 
-          data: [vanDonTheoThang.value, vanDonTheoQuy.value],
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-          ],
-          borderColor: [
-            'rgb(255, 99, 132)',
-            'rgb(54, 162, 235)',
-          ],
-          borderWidth: 1
-        }
-      ],
+      datasets: [{
+        label: 'Vận đơn theo tháng và quý',
+        data: [vanDonTheoThang.value, vanDonTheoQuy.value],
+        backgroundColor: [
+          'rgb(255, 99, 132)',
+          'rgb(54, 162, 235)',
+        ],
+        hoverOffset: 4
+      }]
     }));
-    const chartDataToKhai = computed(()=>({
+
+    const chartDataToKhai = computed(() => ({
       labels: ['Tờ khai theo tháng', 'Tờ khai theo quý'],
-      datasets: [
-        {
-          // label: ['Vận đơn', 'Tờ khai'],
-          data: [Number(toKhaiTheoThang.value), Number(toKhaiTheoQuy.value)],
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-          ],
-          borderColor: [
-            'rgb(255, 99, 132)',
-            'rgb(54, 162, 235)',
-          ],
-          borderWidth: 1
-        }
-      ],
+      datasets: [{
+        label: 'Tờ khai theo tháng và quý',
+        data: [toKhaiTheoThang.value, toKhaiTheoQuy.value],
+        backgroundColor: [
+          'rgb(255, 99, 132)',
+          'rgb(54, 162, 235)',
+        ],
+        hoverOffset: 4
+      }]
     }));
-    console.log(chartDataToKhai.value);
 
     onMounted(() => {
       document.title = "Thống kê";
@@ -213,8 +277,10 @@ export default {
       getToKhais();
       getVanDonTheoThangs();
       getVanDonTheoQuys();
-      gettoKhaiTheoThangs();
-      gettoKhaiTheoQuys();
+      getToKhaiTheoThangs();
+      getToKhaiTheoQuys();
+      getToKhaiTheoNgays();
+      getVanDonTheoNgays();
     });
     return{
       chartDataToKhai,
@@ -227,13 +293,17 @@ export default {
       vanDonTheoThang,
       vanDonTheoQuy,
       toKhaiTheoThang,
-      toKhaiTheoQuy
+      toKhaiTheoQuy,
+      toKhaiTheoNgay,
+      vanDonTheoNgay,
+      barChartOption
     }
   },
 
   components:{
     NavbarCongty,
     Bar,
+    Doughnut
   },
 } 
 </script>
@@ -336,5 +406,8 @@ export default {
   margin-right: 1rem;
   padding: 1rem;
   box-shadow: 0 0 10px rgba(7, 7, 7, 0.1);
+}
+.chart{
+  min-height: 458px;
 }
 </style>
