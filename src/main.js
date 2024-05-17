@@ -4,6 +4,7 @@ import App from './App.vue'
 import router from './routers/router'
 import axios from 'axios'
 import { createPinia } from 'pinia'
+import VueEcharts from 'vue-echarts'
 //Add axios to window object to use it in console for testing purposes 
 window.axios = axios;
 // Add a request interceptor to add the token to the request headers
@@ -20,4 +21,4 @@ axios.interceptors.request.use(
   }
 );
 
-createApp(App).use(createPinia()).use(router).mount('#app');
+createApp(App).use(createPinia()).use(router).component('v-chart', VueEcharts).mount('#app');
