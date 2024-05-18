@@ -11,17 +11,25 @@
       </div>
       <div id="search_box_content">
         <div class="row">
-          <div class="col-md-9 col-sm-6">
+          <div class="col-md-6 col-sm-6">
             <label class="form-label">Tìm kiếm</label>
-            <input type="text" class="form-control mb-xl-0 mb-3" placeholder="Tìm kiếm">
+            <input type="text" class="form-control mb-xl-0 mb-3" placeholder="Tìm kiếm" v-model="searchString">
           </div>
-          
+          <div class="col-md-3 col-sm-6">
+            <label class="form-label">Danh mục hàng hóa</label>
+            <select class="form-control form-select h-auto wide" v-model="maDanhMucHangHoa">
+              <option></option>
+              <option v-for="(danhMucHangHoa, index) in danhMucHangHoas" :key="index" :value="danhMucHangHoa.ma_danh_muc_hang_hoa">
+                {{ danhMucHangHoa.ten_danh_muc_hang_hoa }}
+              </option>
+            </select>
+          </div>
           <div class="col-xl-3 col-sm-6 align-self-end">
             <div>
-              <button class="btn btn-primary me-2" title="Nhấn vào đây để tìm kiếm" type="button">
+              <button class="btn btn-primary me-2" title="Nhấn vào đây để tìm kiếm" type="button" @click="search">
                 <i class="bi bi-funnel-fill"></i> Filter
               </button>
-              <button class="btn light rev_button" title="Nhấn vào đây để xóa filter" type="button">
+              <button class="btn light rev_button" title="Nhấn vào đây để xóa filter" type="button" @click="removeFilter">
                 Remove filter
               </button>
             </div>
@@ -109,11 +117,50 @@ export default {
     const currentPage = ref(1);
     const itemsPerPage = ref(5);
     const maDonVi = ref(localStorage.getItem('savedThuocDonVi'));
+    const danhMucHangHoas = ref([]);
+    const searchString = ref('');
+    const maDanhMucHangHoa = ref('');
 
     onMounted(() => {
       document.title = "Quản lý vận đơn";
     });
     
+    const search = async() =>{
+      try {
+        const response = await axios.get(`/api/van-don?search_string=${searchString.value}&ma_danh_muc_hang_hoa=${maDanhMucHangHoa.value}`, {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+        vanDons.value = response.data;
+        console.log(response.data);
+        console.log(maDanhMucHangHoa.value);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    const removeFilter = () => {
+      searchString.value = '';
+      maDanhMucHangHoa.value = '';
+      getVanDons();
+    };
+
+    const getDanhMucHangHoa = () => {
+      axios.get(`/api/danh-muc-hang-hoa`, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(function(response){
+        danhMucHangHoas.value = response.data;
+        console.log(response.data); 
+      })
+      .catch(function(error){
+        console.log(error);
+      });
+    };
+
     const getVanDons = async() => {
       try {
         const response = await axios.get(`/api/van-don/doanh-nghiep/${maDonVi.value}`);
@@ -177,6 +224,7 @@ export default {
     };
 
     getVanDons();
+    getDanhMucHangHoa();
     return{
       vanDons,
       paginatedData,
@@ -188,6 +236,11 @@ export default {
       previousPage,
       filterClicked,
       deleteVanDon,
+      danhMucHangHoas,
+      search,
+      searchString,
+      maDanhMucHangHoa,
+      removeFilter
     }
   },
 
