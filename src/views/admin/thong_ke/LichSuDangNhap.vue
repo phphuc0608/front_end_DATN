@@ -57,7 +57,6 @@
 import axios from 'axios';
 import { ref, onMounted, computed } from 'vue';
 import NavbarAdmin from '../../../components/NavbarAdmin.vue';
-import router from '../../../routers/router';
 
 export default {
   setup() {
@@ -66,7 +65,7 @@ export default {
     const itemsPerPage = ref(5);
 
     onMounted(() => {
-      document.title = "Quản lý tờ khai";
+      document.title = "Lịch sử tài khoản - Admin";
     });
 
   const getlichSus = () => {
