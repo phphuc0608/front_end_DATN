@@ -18,7 +18,16 @@
           <h5>{{ singleBox.title }}</h5>
         </div>
         <div class="box_number">
-          <h1>{{ singleBox.number }}</h1>
+          <h1>
+            {{ singleBox.number }}
+            <span
+              v-if="singleBox.percentChange"
+              :class="{'text-success': singleBox.percentChange > 0, 'text-danger': singleBox.percentChange < 0}"
+              style="font-size: 25px;"
+            >
+              {{ singleBox.percentChange > 0 ? '+' : '' }}{{ singleBox.percentChange }}%
+            </span>
+          </h1>
         </div>
       </div>
     </div>
@@ -26,11 +35,11 @@
       <div class="col-md-4">
         <div class="box_container">
           <div class="header_container">
-            <h5>Thống kê vận đơn</h5>
+            <h5>Thống kê vận đơn hàng tháng</h5>
           </div>
           <div class="content_container">
             <div class="chart_container">
-              <Doughnut :data="chartDataVanDon" :option="chartOptions"/> 
+              <v-chart class="chart" :option="chartVanDonMTD" autoresize/>
             </div>
           </div>
         </div>
@@ -38,11 +47,11 @@
       <div class="col-md-4">
         <div class="box_container">
           <div class="header_container">
-            <h5>Thống kê tờ khai</h5>
+            <h5>Thống kê tờ khai hàng tháng</h5>
           </div>
           <div class="content_container">
             <div class="chart_container">
-              <Doughnut :data="chartDataToKhai" :option="chartOptions"/> 
+              <v-chart class="chart" :option="chartToKhaiMTD" autoresize/>
             </div>
           </div>
         </div>
@@ -50,11 +59,11 @@
       <div class="col-md-4">
         <div class="box_container">
           <div class="header_container">
-            <h5>Thống kê tờ khai 2</h5>
+            <h5>Thống kê tờ khai theo trạng thái</h5>
           </div>
           <div class="content_container">
             <div class="chart_container">
-              <v-chart class="chart" :option="barChartOption" autoresize/>
+              <v-chart class="chart" :option="chartToKhaiTheoTrangThai" autoresize/>
             </div>
           </div>
         </div>
@@ -67,17 +76,17 @@
 import axios from 'axios';
 import { ref, onMounted, computed, provide } from 'vue';
 import NavbarCongty from '../../../components/NavbarCongty.vue';
-import {Bar, Doughnut} from 'vue-chartjs';
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement } from 'chart.js';
+//import {Bar, Doughnut} from 'vue-chartjs';
+//import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement } from 'chart.js';
 import { use } from 'echarts/core';
-import { BarChart } from 'echarts/charts';
+import { BarChart, PieChart } from 'echarts/charts';
 import { TitleComponent, TooltipComponent, LegendComponent, GridComponent } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 import VChart, { THEME_KEY } from 'vue-echarts';
 
-use([BarChart, TitleComponent, TooltipComponent, CanvasRenderer,LegendComponent, GridComponent]);
+use([BarChart, TitleComponent, TooltipComponent, CanvasRenderer,LegendComponent, GridComponent, PieChart]);
 
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement);
+// ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement);
 export default {
   setup() {
     const vanDons = ref([]);
@@ -86,13 +95,20 @@ export default {
     const toKhais = ref([]);
     const totalToKhais = ref(0);
     const vanDonTheoThang = ref(0);
+    const vanDonThangTruoc = ref(0);
     const thangHienTai = ref(new Date().getMonth() + 1);
+    const thangTruoc = ref(thangHienTai.value - 1);
+    const ngayHienTai = ref(new Date().getDate());  
     const vanDonTheoQuy = ref(0);
     const quyHienTai = ref(Math.floor((new Date().getMonth() + 1) / 3) + 1);
     const toKhaiTheoThang = ref(0);
+    const toKhaiThangTruoc = ref(0);
     const toKhaiTheoQuy = ref(0);
     const toKhaiTheoNgay = ref(0);
     const vanDonTheoNgay = ref(0);
+    const vanDonMTD = ref([]);
+    const toKhaiMTD = ref([]);
+    const toKhaiTheoTrangThais = ref([]);
 
     provide(THEME_KEY, 'light');
 
@@ -109,31 +125,52 @@ export default {
         color: '#FFD700'
       },
             {
-        title: 'Vận đơn theo ngày',
+        title: `Vận đơn ngày ${ngayHienTai.value}/${thangHienTai.value}`,
         number: vanDonTheoNgay.value,
         color: '#87CEEB'
       },
     ]);
 
     const boxData2 = computed(() => [
-            {
-        title: 'Vận đơn theo tháng',
+      {
+        title: `Vận đơn tháng ${thangHienTai.value}`,
         number: vanDonTheoThang.value,
-        color: '#FFA07A'
+        color: '#FFA07A',
+        percentChange: vanDonThangTruoc.value === 0 ? 100 : ((vanDonTheoThang.value - vanDonThangTruoc.value) / vanDonThangTruoc.value * 100).toFixed(2)
       },
-            {
-        title: 'Tờ khai theo ngày',
+      {
+        title: `Tờ khai ngày ${ngayHienTai.value}/${thangHienTai.value}`,
         number: toKhaiTheoNgay.value,
         color: '#9370DB'
       },
       {
-        title: 'Tờ khai theo tháng',
+        title: `Tờ khai tháng ${thangHienTai.value}`,
         number: toKhaiTheoThang.value,
-        color: '#98FB98'
+        color: '#98FB98',
+        percentChange: toKhaiThangTruoc.value === 0 ? 100 : ((toKhaiTheoThang.value - toKhaiThangTruoc.value) / toKhaiThangTruoc.value * 100).toFixed(2)
       },
     ]);
     
-    const barChartOption = ref({
+    const getVanDonMTD = async() => {
+      try{
+        const response = await axios.get(`/api/thong-ke/so-luong-van-don-mtd/${maDonVi.value}`);
+        vanDonMTD.value = response.data;
+        console.log(vanDonMTD.value); 
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const getToKhaiMTD = async() => {
+      try{
+        const response = await axios.get(`/api/thong-ke/so-luong-to-khai-mtd/${maDonVi.value}`);
+        toKhaiMTD.value = response.data;
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const chartVanDonMTD = computed(() => ({
       tooltip: {
         trigger: 'item',
         formatter: '{a} <br/>{b} : {c}'
@@ -147,28 +184,31 @@ export default {
       },
       series: [
         {
-          data: [
-            120,
-            {
-              value: 200,
-              itemStyle: {
-                color: '#a90000'
-              }
-            },
-            150,
-            80,
-            70,
-            110,
-            130
-          ],
+          data: vanDonMTD.value,
           type: 'bar'
         }
       ]
-    })
+    }));
 
-    const chartOptions = ref({
-      responsive: true,
-    });
+    const chartToKhaiMTD = computed(() => ({
+      tooltip: {
+        trigger: 'item',
+        formatter: '{a} <br/>{b} : {c}'
+      },
+      xAxis: {
+        type: 'category',
+        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      },
+      yAxis: {
+        type: 'value'
+      },
+      series: [
+        {
+          data: toKhaiMTD.value,
+          type: 'bar'
+        }
+      ]
+    }));
 
     const getVanDons = async() => {
       try {
@@ -200,6 +240,16 @@ export default {
       }
     }
 
+    const getVanDonThangTruocs = async() => {
+      try{
+        const response = await axios.get(`/api/thong-ke/so-luong-van-don-theo-thang/${maDonVi.value}/${thangTruoc.value}`);
+        vanDonThangTruoc.value = response.data;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+
     const getVanDonTheoQuys = async() => {
       try{
         const response = await axios.get(`/api/thong-ke/so-luong-van-don-theo-quy/${maDonVi.value}/${quyHienTai.value}`);
@@ -213,6 +263,15 @@ export default {
       try{
         const response = await axios.get(`/api/thong-ke/so-luong-to-khai-theo-thang/${maDonVi.value}/${thangHienTai.value}`);
         toKhaiTheoThang.value = response.data;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    const getToKhaiThangTruocs = async() => {
+      try{
+        const response = await axios.get(`/api/thong-ke/so-luong-to-khai-theo-thang/${maDonVi.value}/${thangTruoc.value}`);
+        toKhaiThangTruoc.value = response.data;
       } catch (error) {
         console.log(error);
       }
@@ -245,31 +304,48 @@ export default {
       }
     }
 
-    const chartDataVanDon = computed(() => ({
-      labels: ['Vận đơn theo tháng', 'Vận đơn theo quý'],
-      datasets: [{
-        label: 'Vận đơn theo tháng và quý',
-        data: [vanDonTheoThang.value, vanDonTheoQuy.value],
-        backgroundColor: [
-          'rgb(255, 99, 132)',
-          'rgb(54, 162, 235)',
-        ],
-        hoverOffset: 4
-      }]
-    }));
+    const getToKhaiTheoTrangThai = async() => {
+      try{
+        const response = await axios.get(`/api/thong-ke/so-luong-to-khai-theo-trang-thai/${maDonVi.value}`);
+        toKhaiTheoTrangThais.value = response.data;
+        console.log(toKhaiTheoTrangThais.value);  
+      } catch (error) {
+        console.log(error);
+      }
+    }
 
-    const chartDataToKhai = computed(() => ({
-      labels: ['Tờ khai theo tháng', 'Tờ khai theo quý'],
-      datasets: [{
-        label: 'Tờ khai theo tháng và quý',
-        data: [toKhaiTheoThang.value, toKhaiTheoQuy.value],
-        backgroundColor: [
-          'rgb(255, 99, 132)',
-          'rgb(54, 162, 235)',
-        ],
-        hoverOffset: 4
-      }]
-    }));
+    const chartToKhaiTheoTrangThai = computed(() => {
+      // Transform the data into the expected format
+      const transformedData = Object.entries(toKhaiTheoTrangThais.value).map(([name, value]) => ({ name, value }));
+
+      return {
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b} : {c} ({d}%)',
+        },
+        legend: {
+          orient: 'vertical',
+          left: 'right',
+          data: ['Chờ xác nhận', 'Đã xác nhận', 'Từ chối', 'Đã thông quan', 'Không thông quan'],
+        },
+        series: [
+          {
+            name: 'Tờ khai theo trạng thái',
+            type: 'pie',
+            radius: '55%',
+            center: ['50%', '50%'],
+            data: transformedData,
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)',
+              },
+            },
+          }
+        ]
+      };
+    });
 
     onMounted(() => {
       document.title = "Thống kê";
@@ -281,29 +357,37 @@ export default {
       getToKhaiTheoQuys();
       getToKhaiTheoNgays();
       getVanDonTheoNgays();
+      getVanDonMTD();
+      getToKhaiMTD();
+      getToKhaiTheoTrangThai();
+      getVanDonThangTruocs();
+      getToKhaiThangTruocs();
     });
+
     return{
-      chartDataToKhai,
-      chartDataVanDon,
-      chartOptions,
+      chartToKhaiTheoTrangThai,
       boxData1,
       boxData2,
       totalVanDons,
       totalToKhais,
       vanDonTheoThang,
+      vanDonThangTruoc,
       vanDonTheoQuy,
       toKhaiTheoThang,
+      toKhaiThangTruoc,
       toKhaiTheoQuy,
       toKhaiTheoNgay,
       vanDonTheoNgay,
-      barChartOption
+      chartVanDonMTD,
+      vanDonMTD,
+      chartToKhaiMTD,
+      toKhaiMTD,
+      toKhaiTheoTrangThais,
     }
   },
 
   components:{
     NavbarCongty,
-    Bar,
-    Doughnut
   },
 } 
 </script>
@@ -319,6 +403,7 @@ export default {
   background-color: white;
   border-radius: 0.5rem;
   margin-bottom: 1rem;
+  border: 1px solid #dad8d4;
 }
 .header_container{
   color: white;
