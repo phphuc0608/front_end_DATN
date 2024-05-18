@@ -11,25 +11,25 @@
       </div>
       <div id="search_box_content">
         <div class="row">
-          <div class="col-xl-9 col-sm-9">
+          <div class="col-xl-6 col-sm-9">
             <label class="form-label">Tìm kiếm</label>
             <input type="text" class="form-control mb-xl-0 mb-3" placeholder="Tìm kiếm" v-model="searchString">
           </div>
-          <!-- <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
+          <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
             <label class="form-label" for="">Danh mục đơn vị</label>
             <select v-model="maDanhMucDonVi" class="form-control form-select h-auto wide">
-              <option selected>Chọn danh mục đơn vị</option>
+              <option selected></option>
               <option class="option_item"v-for="danhMucDonVi in danhMucDonVis" :key="danhMucDonVi.ma_danh_muc_don_vi" :value="danhMucDonVi.ma_danh_muc_don_vi">
                 {{ danhMucDonVi.ma_danh_muc_don_vi }}
               </option>
             </select>
-          </div> -->
+          </div>
           <div class="col-xl-3 col-sm-6 align-self-end">
             <div>
               <button class="btn btn-primary me-2" title="Nhấn vào đây để tìm kiếm" type="button" @click="search">
                 <i class="bi bi-funnel-fill"></i> Filter
               </button>
-              <button class="btn light rev_button" title="Nhấn vào đây để xóa filter" type="button">
+              <button class="btn light rev_button" title="Nhấn vào đây để xóa filter" type="button" @click="removeFilter">
                 Remove filter
               </button>
             </div>
@@ -108,7 +108,6 @@
 import axios from 'axios';
 import { ref, onMounted, computed } from 'vue';
 import NavbarAdmin from '../../../components/NavbarAdmin.vue';
-import router from '../../../routers/router';
 
 export default {
   setup() {
@@ -122,6 +121,12 @@ export default {
     onMounted(() => {
       document.title = "Quản lý doanh nghiệp";
     });
+    
+    const removeFilter = () => {
+      searchString.value = '';
+      maDanhMucDonVi.value = '';
+      getdonVis();
+    };
 
     const getdonVis = () => {
       axios.get(`/api/don-vi`, {
@@ -146,7 +151,7 @@ export default {
           }
         });
         alert('Xóa danh mục đơn vị thành công');
-        setTimeout(getdonVis, 1000); // Refresh danhMucDonVis after 1 second
+        setTimeout(getdonVis, 1000); 
       } catch (error) {
         console.log(error);
         alert('Xóa danh mục đơn vị thất bại');
@@ -155,8 +160,7 @@ export default {
 
     const search = async() =>{
       try {
-        // const response = await axios.get(`/api/don-vi?search_string=${searchString.value}&ma_danh_muc_don_vi=${maDanhMucDonVi.value}`
-        const response = await axios.get(`/api/don-vi?search_string=${searchString.value}`, {
+        const response = await axios.get(`/api/don-vi?search_string=${searchString.value}&ma_danh_muc_don_vi=${maDanhMucDonVi.value}`, {
           headers: {
             'Content-Type': 'application/json',
           }
@@ -237,7 +241,8 @@ export default {
       search,
       searchString,
       maDanhMucDonVi,
-      danhMucDonVis
+      danhMucDonVis,
+      removeFilter
     }
   },
 
