@@ -21,7 +21,7 @@
               <button class="btn btn-primary me-2" title="Nhấn vào đây để tìm kiếm" type="button" @click="search">
                 <i class="bi bi-funnel-fill"></i> Filter
               </button>
-              <button class="btn light rev_button" title="Nhấn vào đây để xóa filter" type="button">
+              <button class="btn light rev_button" title="Nhấn vào đây để xóa filter" type="button" @click="removeFilter">
                 Remove filter
               </button>
             </div>
@@ -170,6 +170,11 @@ export default {
       });
     });
     
+    const removeFilter = () => {
+      searchString.value = '';
+      getDanhMucTrangThai();
+    };
+
     const getDanhMucTrangThai = () => {
       axios.get(`/api/trang-thai-to-khai`, {
         headers: {
@@ -324,7 +329,8 @@ export default {
     previousPage,
     filterClicked,
     searchString,
-    search
+    search,
+    removeFilter
   }
 },
 
