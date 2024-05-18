@@ -21,7 +21,7 @@
               <button class="btn btn-primary me-2" title="Nhấn vào đây để tìm kiếm" type="button" @click="search">
                 <i class="bi bi-funnel-fill"></i> Filter
               </button>
-              <button class="btn light rev_button" title="Nhấn vào đây để xóa filter" type="button">
+              <button class="btn light rev_button" title="Nhấn vào đây để xóa filter" type="button" @click="removeFilter">
                 Remove filter
               </button>
             </div>
@@ -156,13 +156,10 @@ export default {
     const tenVaiTro = ref('');
     const searchString = ref('');
     
-    // const search = () => {
-    //   if (searchString.value) {
-    //     vaiTros.value = vaiTros.value.filter((vaiTro) => {
-    //       return vaiTro.ten_vai_tro.toLowerCase().includes(searchString.value.toLowerCase());
-    //     });
-    //   }
-    // };
+    const removeFilter = () => {
+      searchString.value = '';
+      getDanhMucVaiTro();
+    };
 
     const search = () => {
       axios.get(`/api/danh-muc-vai-tro?search_string=${searchString.value}`, {
@@ -333,7 +330,8 @@ export default {
     previousPage,
     filterClicked,
     search,
-    searchString
+    searchString,
+    removeFilter
   }
 },
 
