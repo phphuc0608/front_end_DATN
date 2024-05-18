@@ -162,6 +162,7 @@ export default {
         await axios.patch(`/api/nguoi-dung/${email.value}?status=${status}`);
         console.log(status);
         alert('Cập nhật trạng thái hoạt động thành công');
+        router.push('/quan_ly_nguoi_dung');
       } catch (error) {
         console.log(error);
         alert('Cập nhật trạng thái hoạt động thất bại');
@@ -181,10 +182,6 @@ export default {
       const re = /^\d{10}$/;
       soDienThoaiError.value = !re.test(soDienThoai.value);
     };
-
-    // watch(dangHoatDong, () => {
-    //   updateDangHoatDong();
-    // });
 
     onMounted(async() => {
       document.title = "Cập nhật người dùng";
