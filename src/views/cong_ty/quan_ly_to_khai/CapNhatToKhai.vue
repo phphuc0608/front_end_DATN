@@ -4,10 +4,6 @@
     <h3 class="my-4 text-left">CẬP NHẬT TỜ KHAI</h3>
     <form @submit.prevent="updateToKhai">
       <div class="row">
-        <!-- <div class="col-md-6">
-          <label class="col-form-label">Mã tờ khai</label>
-          <input v-model="ma_to_khai" type="number" class="form-control" required readonly>
-        </div> -->
         <div class="col-md-6">
           <label class="col-form-label">Email người đăng ký</label>
           <input v-model="email" type="text" :class="{'is-invalid': emailError}" class="form-control" placeholder="Nhập email" :title="emailError ? 'Email không đúng định dạng' : ''" required readonly>
@@ -38,7 +34,7 @@
   </div>
 </template>
 <script>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import NavbarCongty from '../../../components/NavbarCongty.vue';
 import axios from 'axios';
 import router from '../../../routers/router';
@@ -136,7 +132,7 @@ export default {
       email,
       emailError,
       updateToKhai,
-      tenTrangThair 
+      tenTrangThai
     }
   },
   components: {
