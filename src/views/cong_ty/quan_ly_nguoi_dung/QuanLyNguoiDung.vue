@@ -11,9 +11,26 @@
       </div>
       <div id="search_box_content">
         <div class="row">
-          <div class="col-xl-9 col-sm-6">
+          <div class="col-xl-3 col-sm-6">
             <label class="form-label">Tìm kiếm</label>
             <input type="text" class="form-control mb-xl-0 mb-3" placeholder="Tìm kiếm" v-model="searchString">
+          </div>
+          <div class="col-xl-3 col-sm-6 mb-3 mb-xl-0">
+            <label class="form-label" for="">Trạng thái</label>
+            <select class="form-control form-select h-auto wide" v-model="searchDangHoatDong">
+              <option selected></option>
+              <option value="true">Đang hoạt động</option>
+              <option value="false">Khóa hoạt động</option>
+            </select>
+          </div>
+          <div class="col-xl-3 col-sm-6">
+            <label class="form-label" for="">Vai trò</label>
+            <select class="form-control form-select h-auto wide" v-model="searchVaiTro">
+              <option></option>
+              <option v-for="vaiTro in vaiTros.filter(vaiTro => [3, 5].includes(vaiTro.ma_vai_tro))" :key="vaiTro.ma_vai_tro" :value="vaiTro.ma_vai_tro">
+                {{ vaiTro.ten_vai_tro }}
+              </option>
+            </select>
           </div>
           <div class="col-xl-3 col-sm-6 align-self-end">
             <div>
@@ -57,7 +74,9 @@
             <tr v-for="(nguoiDung, index) in paginatedData" :key="index">
               <td>{{ nguoiDung.email }}</td>
               <td>{{ nguoiDung.ho_va_ten }}</td>
-              <td>{{ nguoiDung.dang_hoat_dong }}</td>
+              <td :class="{'active': nguoiDung.dang_hoat_dong, 'inactive': !nguoiDung.dang_hoat_dong}">
+                {{ nguoiDung.dang_hoat_dong ? 'Đang hoạt động' : 'Khóa hoạt động' }}
+              </td>
               <td>{{ nguoiDung.thuoc_don_vi }}</td>
               <td>{{ nguoiDung.vai_tro.ten_vai_tro }}</td>
               <td class="text-end">
@@ -107,6 +126,7 @@ export default {
     const itemsPerPage = ref(5);
     const searchString = ref('');
     const searchVaiTro = ref('');
+    const searchDangHoatDong = ref(null);
     const vaiTros = ref([]);
     const savedThuocDonVi = ref(localStorage.getItem('savedThuocDonVi'));
 
@@ -128,6 +148,8 @@ export default {
         console.log(error);
       });
     };
+
+    
 
     const deleteNguoiDung = async (email) => {
       try {
@@ -173,11 +195,14 @@ export default {
     };
 
     const filteredNguoiDungs = computed(() => {
+      let filtered = nguoiDungs.value;
       if (searchVaiTro.value) {
-        return nguoiDungs.value.filter(nguoiDung => nguoiDung.vai_tro.ma_vai_tro === searchVaiTro.value);
-      } else {
-        return nguoiDungs.value;
+        filtered = filtered.filter(nguoiDung => nguoiDung.vai_tro.ma_vai_tro === searchVaiTro.value);
       }
+      if (searchDangHoatDong.value !== null && searchDangHoatDong.value !== '') {
+        filtered = filtered.filter(nguoiDung => nguoiDung.dang_hoat_dong.toString() === searchDangHoatDong.value);
+      }
+      return filtered;
     });
 
     watch(searchVaiTro, () => {
@@ -240,7 +265,8 @@ export default {
       searchVaiTro,
       vaiTros,
       filteredNguoiDungs,
-      savedThuocDonVi
+      savedThuocDonVi,
+      searchDangHoatDong
     }
   },
   components:{
@@ -252,6 +278,14 @@ export default {
 <style scoped>
 *{
   font-family: 'Space Grotesk', sans-serif;
+}
+
+.active {
+  color: rgb(59, 224, 59);
+}
+
+.inactive {
+  color: red;
 }
 
 #content{
