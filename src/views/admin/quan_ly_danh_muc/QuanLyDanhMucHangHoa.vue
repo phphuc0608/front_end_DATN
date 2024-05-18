@@ -21,7 +21,7 @@
               <button class="btn btn-primary me-2" title="Nhấn vào đây để tìm kiếm" type="button" @click="search">
                 <i class="bi bi-funnel-fill"></i> Filter
               </button>
-              <button class="btn light rev_button" title="Nhấn vào đây để xóa filter" type="button">
+              <button class="btn light rev_button" title="Nhấn vào đây để xóa filter" type="button" @click="removeFilter">
                 Remove filter
               </button>
             </div>
@@ -159,7 +159,6 @@ export default {
     const maDanhMucHangHoa = ref('');
     const tenDanhMucHangHoa = ref('');
     const searchString = ref('');
-    
 
     onMounted(() => {
       document.title = "Quản lý danh mục hàng hóa";
@@ -179,6 +178,11 @@ export default {
         console.error(error);
       }
     }
+
+    const removeFilter = () => {
+      searchString.value = '';
+      getDanhMucHangHoa();
+    };
 
     const getDanhMucHangHoa = () => {
       axios.get(`/api/danh-muc-hang-hoa`, {
@@ -326,7 +330,8 @@ export default {
     previousPage,
     filterClicked,
     search,
-    searchString
+    searchString,
+    removeFilter
   }
 },
 
