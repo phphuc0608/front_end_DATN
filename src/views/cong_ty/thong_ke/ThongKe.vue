@@ -76,8 +76,6 @@
 import axios from 'axios';
 import { ref, onMounted, computed, provide } from 'vue';
 import NavbarCongty from '../../../components/NavbarCongty.vue';
-//import {Bar, Doughnut} from 'vue-chartjs';
-//import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement } from 'chart.js';
 import { use } from 'echarts/core';
 import { BarChart, PieChart } from 'echarts/charts';
 import { TitleComponent, TooltipComponent, LegendComponent, GridComponent } from 'echarts/components';
@@ -86,7 +84,6 @@ import VChart, { THEME_KEY } from 'vue-echarts';
 
 use([BarChart, TitleComponent, TooltipComponent, CanvasRenderer,LegendComponent, GridComponent, PieChart]);
 
-// ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ArcElement);
 export default {
   setup() {
     const vanDons = ref([]);
