@@ -64,14 +64,21 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import router from '../routers/router';
 export default{
   setup(){
     const isDropdownVisible = ref(false);
     const userName = ref(localStorage.getItem('savedEmail'));
     const tenVaiTro = ref(localStorage.getItem('savedTenVaiTro'));
+    const route = useRoute();
 
+    watch(route, (to, from) => {
+      if (to.path === '/') {
+        router.push('/');
+      }
+    });
     const signOutClick = () => {
       localStorage.removeItem('savedEmail');
       localStorage.removeItem('savedMaVaiTro');
