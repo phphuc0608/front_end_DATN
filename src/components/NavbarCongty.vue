@@ -1,11 +1,12 @@
 <template>
   <nav class="container-fluid d-flex justify-content-between align-items-center px-5 py-2">
+    <input type="checkbox" id="check">
     <label for="check" class="checkbtn_sign_out">
       <i class="bi bi-list"></i>
     </label>
     <label class="logo m-0">Company Side</label>
     <ul class="navbar_container">
-      <li class="navbar_item"><router-link to="/quan_ly_nguoi_dung_cong_ty" @click.native.prevent="navigateUserManagement">Quản lý người dùng</router-link></li>
+      <li class="navbar_item" v-if="maVaiTro === 3"><router-link to="/quan_ly_nguoi_dung_cong_ty">Quản lý người dùng</router-link></li>
       <li class="navbar_item"><router-link to="/quan_ly_van_don">Quản lý vận đơn</router-link></li>
       <li class="navbar_item"><router-link to="/quan_ly_to_khai">Quản lý tờ khai</router-link></li>
       <li class="navbar_item"><router-link to="/thong_ke_cong_ty">Thống kê</router-link></li>
@@ -60,15 +61,7 @@ export default{
     const isDropdownVisible = ref(false);
     const userName = ref(localStorage.getItem('savedEmail'));
     const tenVaiTro = ref(localStorage.getItem('savedTenVaiTro'));
-    const maVaiTro = ref(localStorage.getItem('savedMaVaiTro'));  
-
-    const navigateUserManagement = () => {
-      if(maVaiTro.value === 5){
-        alert('Bạn không có quyền truy cập vào trang này');
-      }else if(maVaiTro === 2){
-        router.push('/quan_ly_nguoi_dung_cong_ty');
-      }
-    }
+    const maVaiTro = ref(parseInt(localStorage.getItem('savedMaVaiTro')));
 
     const signOutClick = () => {
       localStorage.removeItem('savedEmail');
@@ -89,7 +82,7 @@ export default{
       useIconClicked,
       userName,
       tenVaiTro,
-      navigateUserManagement
+      maVaiTro
     }
   },
 }
