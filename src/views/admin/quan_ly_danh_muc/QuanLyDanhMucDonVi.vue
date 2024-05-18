@@ -161,7 +161,7 @@ export default {
     
 
     onMounted(() => {
-      document.title = "Quản lý người dùng";
+      document.title = "Quản lý danh mục đơn vị";
       modalAdd.value = new bootstrap.Modal(document.getElementById('add_danh_muc_don_vi'), {
         keyboard: false
       });
