@@ -2,6 +2,41 @@
 <NavbarCuakhau/>
 <div id="content" class="container-fluid px-5">
     <h3 class="text-center" style="margin-top: 120px; margin-bottom: 60px;">LỊCH SỬ PHƯƠNG TIỆN</h3>
+        <div id="search_box" class="box_container col-md-12">
+      <div id="search_box_header" class="header_container d-flex justify-content-between align-items-center">
+        <span class="title">
+          <i class="bi bi-funnel-fill"></i> Filter
+        </span>
+        <i id="filterUp" class="bi bi-caret-up-fill" @click="filterClicked"></i>
+      </div>
+      <div id="search_box_content">
+        <div class="row">
+          <div class="col-md-6 col-sm-6">
+            <label class="form-label">Tìm kiếm</label>
+            <input type="text" class="form-control mb-xl-0 mb-3" placeholder="Tìm kiếm" v-model="searchString">
+          </div>
+          <div class="col-md-3 col-sm-6">
+            <label class="form-label">Danh mục trạng thái</label>
+            <select class="form-control form-select h-auto wide" v-model="maDanhMucTrangThai">
+              <option></option>
+              <option v-for="(danhMucTrangThai, index) in danhMucTrangThais" :key="index" :value="danhMucTrangThai.ma_trang_thai">
+                {{ danhMucTrangThai.ten_trang_thai }}
+              </option>
+            </select>
+          </div>
+          <div class="col-xl-3 col-sm-6 align-self-end">
+            <div>
+              <button class="btn btn-primary me-2" title="Nhấn vào đây để tìm kiếm" type="button" @click="search">
+                <i class="bi bi-funnel-fill"></i> Filter
+              </button>
+              <button class="btn light rev_button" title="Nhấn vào đây để xóa filter" type="button" @click="removeFilter">
+                Remove filter
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="container-fluid px-5">
     <div class="header_container">
@@ -15,7 +50,7 @@
           <thead>
             <tr>
               <th scope="col">Mã lịch sử</th>
-              <th scope="col">Email</th>
+              <th scope="col">Biển số xe</th>
               <th scope="col">Hành động</th>
               <th scope="col">Thời gian</th>
             </tr>
@@ -57,32 +92,82 @@
 import axios from 'axios';
 import { ref, onMounted, computed } from 'vue';
 import NavbarCuakhau from '../../components/NavbarCuakhau.vue';
-import router from '../../routers/router';
 
 export default {
   setup() {
     const lichSus = ref([]);
     const currentPage = ref(1);
     const itemsPerPage = ref(5);
+    const searchString = ref('');
+    const maDanhMucTrangThai = ref('');
+    const danhMucTrangThais = ref([]);
 
     onMounted(() => {
       document.title = "Quản lý tờ khai";
     });
 
-  const getlichSus = () => {
-    axios.get(`/api/lich-su-phuong-tien`, {
-      headers: {
-        'Content-Type': 'application/json',
+    const filterClicked = () => {
+      let search_box_container = document.getElementById('search_box_content');
+      let icon = document.getElementById('filterUp');
+      if(search_box_container.style.display === 'none'){
+        search_box_container.style.display = 'block';
+        icon.className = 'bi bi-caret-up-fill';
+      }else{
+        search_box_container.style.display = 'none';
+        icon.className = 'bi bi-caret-down-fill';
       }
-    })
-    .then(function(response){
-      lichSus.value = response.data;
-      console.log(response.data); 
-    })
-    .catch(function(error){
-      console.log(error);
-    });
-  };
+    };
+
+    const search = () => {
+      axios.get(`/api/lich-su-phuong-tien?search_string=${searchString.value}&ma_trang_thai=${maDanhMucTrangThai.value}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      .then(function(response){
+        lichSus.value = response.data;
+        console.log(response.data); 
+      })
+      .catch(function(error){
+        console.log(error);
+      });
+    };
+    
+    const removeFilter = () => {
+      searchString.value = '';
+      maDanhMucTrangThai.value = '';
+      getlichSus();
+    };
+
+    const getTrangThaiPhuongTien = () => {
+      axios.get(`/api/danh-muc/trang-thai-phuong-tien`, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      .then(function(response){
+        danhMucTrangThais.value = response.data;
+        console.log(response.data); 
+      })
+      .catch(function(error){
+        console.log(error);
+      });
+    };
+
+    const getlichSus = () => {
+      axios.get(`/api/lich-su-phuong-tien`, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      .then(function(response){
+        lichSus.value = response.data;
+        console.log(response.data); 
+      })
+      .catch(function(error){
+        console.log(error);
+      });
+    };
 
     const paginatedData = computed(() => {
       const start = (currentPage.value - 1) * itemsPerPage.value;
@@ -111,6 +196,8 @@ export default {
     };
 
     getlichSus();
+    getTrangThaiPhuongTien();
+
     return{
       lichSus,
       paginatedData,
@@ -120,6 +207,12 @@ export default {
       changePage,
       nextPage,
       previousPage,
+      filterClicked,
+      searchString,
+      maDanhMucTrangThai,
+      danhMucTrangThais,
+      search,
+      removeFilter
     }
   },
 
