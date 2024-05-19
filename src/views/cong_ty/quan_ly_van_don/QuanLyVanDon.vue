@@ -127,7 +127,7 @@ export default {
     
     const search = async() =>{
       try {
-        const response = await axios.get(`/api/van-don?search_string=${searchString.value}&ma_danh_muc_hang_hoa=${maDanhMucHangHoa.value}`, {
+        const response = await axios.get(`/api/van-don/doanh-nghiep/${maDonVi.value}?search_string=${searchString.value}&ma_danh_muc_hang_hoa=${maDanhMucHangHoa.value}`, {
           headers: {
             'Content-Type': 'application/json',
           }
