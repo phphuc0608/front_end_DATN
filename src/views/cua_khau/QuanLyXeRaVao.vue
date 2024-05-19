@@ -55,12 +55,12 @@ import NavbarCuakhau from '../../components/NavbarCuakhau.vue';
 export default {
   setup() {
     const firstVanDon = ref([]);
-    const imageUrl = ref('http://1.53.213.122:8000/api/lich-su-phuong-tien/lastest/image');
+    const imageUrl = ref('http://42.115.62.251:8000/api/lich-su-phuong-tien/lastest/image');
     const currentBienSo = ref('');
     let intervalId;
 
     const getLastestImage = () => {
-      imageUrl.value = `http://1.53.213.122:8000/api/lich-su-phuong-tien/lastest/image?time=${new Date().getTime()}`;
+      imageUrl.value = `http://42.115.62.251:8000/api/lich-su-phuong-tien/lastest/image?time=${new Date().getTime()}`;
     }
 
     onMounted(() => {
