@@ -34,7 +34,7 @@
         </div>
       </div>  
       <div class="d-flex justify-content-start mt-4">
-        <button type="submit" class="btn btn-success me-3"><i class="bi bi-plus-circle"></i> Thêm vận đơn</button>
+        <button type="submit" class="btn btn-success me-3"><i class="bi bi-plus-circle"></i> Thêm doanh nghiệp</button>
         <button type="button" class="btn btn-danger" @click="resetForm"><i class="bi bi-x-circle"></i> Reset</button>
       </div> 
     </form>
