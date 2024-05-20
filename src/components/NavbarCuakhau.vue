@@ -4,12 +4,12 @@
     <label for="check" class="checkbtn_sign_out">
       <i class="bi bi-list"></i>
     </label>
-    <label class="logo m-0">Company Side</label>
+    <label class="logo m-0">Gate Side</label>
     <ul class="navbar_container">
+      <li v-if="maVaiTro === 2" class="navbar_item"><router-link to="/quan_ly_nguoi_dung_cua_khau">Quản lý người dùng</router-link></li>
       <li class="navbar_item"><router-link to="/quan_ly_xe_ra_vao">Quản lý xe ra vào</router-link></li>
       <li class="navbar_item"><router-link to="/lich_su_phuong_tien">Lịch sử phương tiện</router-link></li>
       <li class="navbar_item"><router-link to="/thong_ke_cua_khau">Thống kê</router-link></li>
-      <!-- <li class="navbar_item"><router-link to="/thong_ke_cong_ty">Thống kê</router-link></li> -->
     </ul>
     <div id="right_side" class="d-flex align-items-center dropdown">
       <a class="nav-link show" aria-expanded="true" @click="useIconClicked">
@@ -61,6 +61,7 @@ export default{
     const isDropdownVisible = ref(false);
     const userName = ref(localStorage.getItem('savedEmail'));
     const tenVaiTro = ref(localStorage.getItem('savedTenVaiTro'));  
+    const maVaiTro = ref(parseInt(localStorage.getItem('savedMaVaiTro')));
 
     const signOutClick = () => {
       localStorage.removeItem('savedEmail');
@@ -80,7 +81,8 @@ export default{
       isDropdownVisible,
       useIconClicked,
       userName,
-      tenVaiTro
+      tenVaiTro,
+      maVaiTro
     }
   },
 }
