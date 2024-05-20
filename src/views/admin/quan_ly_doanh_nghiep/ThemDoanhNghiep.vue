@@ -41,7 +41,7 @@
   </div>
 </template>
 <script>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import NavbarAdmin from '../../../components/NavbarAdmin.vue';
 import axios from 'axios';
 import router from '../../../routers/router';
