@@ -119,7 +119,11 @@ export default {
     };
 
     const search = () => {
-      axios.get(`/api/lich-su-phuong-tien?search_string=${searchString.value}&ma_trang_thai=${maDanhMucTrangThai.value}`, {
+      let url = `/api/lich-su-phuong-tien?search_string=${searchString.value}`;
+      if (maDanhMucTrangThai.value) {
+        url += `&ma_trang_thai=${maDanhMucTrangThai.value}`;
+      }
+      axios.get(url, {
         headers: {
           'Content-Type': 'application/json',
         }
