@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import Swal from 'sweetalert2';
 const routes = [
   //Admin hệ thống
   {
@@ -149,5 +150,41 @@ const router = createRouter({
   history: createWebHistory(),
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  const savedMaVaiTro = localStorage.getItem('savedMaVaiTro');
+
+  const adminRoutes = ['QuanLyNguoiDung', 'ThemNguoiDung', 'CapNhatNguoiDung', 'QuanLyDoanhNghiep', 'ThemDoanhNghiep', 'CapNhatDoanhNghiep', 'QuanLyDanhMucDonVi', 'QuanLyDanhMucHangHoa', 'QuanLyDanhMucVaiTro', 'QuanLyTrangThaiToKhai', 'LichSuDangNhap'];
+  const cuaKhauRoutes = ['QuanLyNguoiDungCuaKhau', 'ThemNguoiDungCuaKhau', 'CapNhatNguoiDungCuaKhau', 'QuanLyXeRaVao', 'LichSuPhuongTien', 'ThongKeCuaKhau'];
+  const congTyRoutes = ['QuanLyNguoiDungCongTy', 'ThemNguoiDungCongTy', 'CapNhatNguoiDungCongTy', 'QuanLyToKhai', 'ThemToKhai', 'CapNhatToKhai', 'QuanLyVanDon', 'ThemVanDon', 'CapNhatVanDon', 'ThongKeCongTy'];
+  const cuaKhauRestrictedRoutes = ['quan_ly_nguoi_dung_cua_khau'];
+  const congTyRestrictedRoutes = ['quan_ly_nguoi_dung_cong_ty'];
+
+  if (to.name === 'DangNhap') {
+    next();
+  } else if (savedMaVaiTro === '1' && adminRoutes.includes(to.name)) {
+    next();
+  } else if (savedMaVaiTro === '2' && cuaKhauRoutes.includes(to.name)) {
+    next();
+  } else if (savedMaVaiTro === '3' && congTyRoutes.includes(to.name)) {
+    next();
+  } else if (savedMaVaiTro === '4' && cuaKhauRoutes.includes(to.name) && !cuaKhauRestrictedRoutes.includes(to.name)) {
+    next();
+  } else if (savedMaVaiTro === '5' && congTyRoutes.includes(to.name) && !congTyRestrictedRoutes.includes(to.name)) {
+    next();
+  } else {
+    Swal.fire({
+      icon: 'error',
+      title: 'Bạn không có quyền vào trang này!',
+    }).then(() => {
+      next(from.path);
+      localStorage.removeItem('savedMaVaiTro');
+      localStorage.removeItem('savedEmail');
+      localStorage.removeItem('savedThuocDonVi');
+      localStorage.removeItem('token');
+      localStorage.removeItem('savedTenVaiTro');
+    });
+  }
+});
 
 export default router;
