@@ -31,13 +31,6 @@
     <button type="submit" class="my-form__button">
       Đăng nhập
     </button>
-    <div class="my-form__actions">
-      <div class="my-form__row">
-          <a href="#" title="Create Account">
-              Quên mật khẩu?
-          </a>
-      </div>
-    </div>
   </form>
 </div>
 </template>
@@ -47,6 +40,7 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import router from '../../routers/router';
 import { useUserStore } from '../../stores/store';
+import Swal from 'sweetalert2';
 
 export default {
   setup() {
@@ -125,6 +119,11 @@ export default {
         } 
       } catch (error) {
         console.error(error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Thông tin đăng nhập không chính xác!',
+        });
       }
     }
 
