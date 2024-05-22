@@ -59,6 +59,8 @@ import { ref, onMounted, computed } from 'vue';
 import NavbarAdmin from '../../../components/NavbarAdmin.vue';
 import axios from 'axios';
 import router from '../../../routers/router';
+import Swal from 'sweetalert2';
+
 export default {
   setup(){
     const donVis = ref([]);
@@ -151,12 +153,22 @@ export default {
           }
         });
         console.log(response.data);
-        alert('Thêm người dùng thành công');
-        router.push('/quan_ly_nguoi_dung');
+        Swal.fire({
+          icon: 'success',
+          title: 'Thêm người dùng thành công',
+          showConfirmButton: false,
+          timer: 1000
+        });
+        router.back('/quan_ly_nguoi_dung');
         //showModal.value = true;
       } catch (error) {
         console.log(error);
-        alert('Thêm người dùng thất bại');
+        Swal.fire({
+          icon: 'error',
+          title: 'Thêm người dùng thất bại',
+          showConfirmButton: false,
+          timer: 1000
+        });
       }
     };
 
