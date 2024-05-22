@@ -73,6 +73,8 @@ import { ref, onMounted, computed } from 'vue';
 import NavbarCongty from '../../../components/NavbarCongty.vue';
 import axios from 'axios';
 import router from '../../../routers/router';
+import Swal from 'sweetalert2';
+
 export default {
   setup(){
     // const router = useRouter();
@@ -97,7 +99,6 @@ export default {
       donViXuatKhau.value = '';
       donViNhapKhau.value = '';
       bienSo.value = '';
-      nguoiTao.value='';
     };
 
     const getDanhMucHangHoa = () => {
@@ -150,11 +151,17 @@ export default {
           }
         });
         console.log(response.data);
-        alert('Thêm vận đơn thành công');
-        router.push('/quan_ly_van_don');
+        Swal.fire({
+          icon: 'success',
+          title: 'Thêm vận đơn thành công',
+        });
+        router.back('/quan_ly_van_don');
       } catch (error) {
         console.log(error);
-        alert('Thêm vận đơn thất bại');
+        Swal.fire({
+          icon: 'error',
+          title: 'Thêm vận đơn thất bại',
+        });
       }
     };
     
