@@ -45,6 +45,7 @@ import axios from 'axios';
 import NavbarAdmin from '../../../components/NavbarAdmin.vue';
 import { useRoute } from 'vue-router';
 import router from '../../../routers/router';
+import Swal from 'sweetalert2';
 
 export default {
   setup() {
@@ -116,13 +117,19 @@ export default {
       };
       try {
         await axios.put(`/api/don-vi/${maDonVi.value}`, donVi);
-        alert('Cập nhật doanh nghiệp thành công');
+        Swal.fire({
+          icon: 'success',
+          title: 'Cập nhật doanh nghiệp thành công',
+        });
         setTimeout(() => {
-          router.push('/quan_ly_doanh_nghiep');
+          router.back('/quan_ly_doanh_nghiep');
         }, 10);
       } catch (error) {
         console.log(error);
-        alert('Cập nhật doanh nghiệp thất bại');
+        Swal.fire({
+          icon: 'error',
+          title: 'Cập nhật doanh nghiệp thất bại',
+        });
       }
     };
 
