@@ -1,12 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Swal from 'sweetalert2';
 const routes = [
-  //Admin hệ thống
+
   {
     path: '/',
     name: 'DangNhap',
     component: () => import('../views/others/DangNhap.vue')
   },
+  {
+    path: '/doi_mat_khau',
+    name: 'DoiMatKhau',
+    component: () => import('../views/others/DoiMatKhau.vue')
+  },
+  //Admin hệ thống
   {
     path: '/quan_ly_nguoi_dung',
     name: 'QuanLyNguoiDung',
@@ -58,9 +64,19 @@ const routes = [
     component: () => import('../views/admin/quan_ly_danh_muc/QuanLyTrangThaiToKhai.vue')
   },
   {
-    path: '/lich_su_dang_nhap',
-    name: 'LichSuDangNhap',
-    component: () => import('../views/admin/thong_ke/LichSuDangNhap.vue')
+    path: '/lich_su_tai_khoan',
+    name: 'LichSuTaiKhoan',
+    component: () => import('../views/admin/quan_ly_lich_su/LichSuTaiKhoan.vue')
+  },
+  {
+    path: '/lich_su_to_khai',
+    name: 'LichSuToKhai',
+    component: () => import('../views/admin/quan_ly_lich_su/LichSuToKhai.vue')
+  },
+  {
+    path: '/lich_su_van_don',
+    name: 'LichSuVanDon',
+    component: () => import('../views/admin/quan_ly_lich_su/LichSuVanDon.vue')
   },
   //Công ty
   {
@@ -154,9 +170,23 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const savedMaVaiTro = localStorage.getItem('savedMaVaiTro');
 
-  const adminRoutes = ['QuanLyNguoiDung', 'ThemNguoiDung', 'CapNhatNguoiDung', 'QuanLyDoanhNghiep', 'ThemDoanhNghiep', 'CapNhatDoanhNghiep', 'QuanLyDanhMucDonVi', 'QuanLyDanhMucHangHoa', 'QuanLyDanhMucVaiTro', 'QuanLyTrangThaiToKhai', 'LichSuDangNhap'];
-  const cuaKhauRoutes = ['QuanLyNguoiDungCuaKhau', 'ThemNguoiDungCuaKhau', 'CapNhatNguoiDungCuaKhau', 'QuanLyXeRaVao', 'LichSuPhuongTien', 'ThongKeCuaKhau'];
-  const congTyRoutes = ['QuanLyNguoiDungCongTy', 'ThemNguoiDungCongTy', 'CapNhatNguoiDungCongTy', 'QuanLyToKhai', 'ThemToKhai', 'CapNhatToKhai', 'QuanLyVanDon', 'ThemVanDon', 'CapNhatVanDon', 'ThongKeCongTy'];
+  const adminRoutes = [
+    'QuanLyNguoiDung',
+    'ThemNguoiDung',
+    'CapNhatNguoiDung',
+    'QuanLyDoanhNghiep',
+    'ThemDoanhNghiep',
+    'CapNhatDoanhNghiep',
+    'QuanLyDanhMucDonVi',
+    'QuanLyDanhMucHangHoa',
+    'QuanLyDanhMucVaiTro',
+    'QuanLyTrangThaiToKhai',
+    'LichSuTaiKhoan',
+    'LichSuToKhai',
+    'LichSuVanDon'
+  ];
+  const cuaKhauRoutes = ['QuanLyNguoiDungCuaKhau', 'ThemNguoiDungCuaKhau', 'CapNhatNguoiDungCuaKhau', 'QuanLyXeRaVao', 'LichSuPhuongTien', 'ThongKeCuaKhau', 'DoiMatKhau'];
+  const congTyRoutes = ['QuanLyNguoiDungCongTy', 'ThemNguoiDungCongTy', 'CapNhatNguoiDungCongTy', 'QuanLyToKhai', 'ThemToKhai', 'CapNhatToKhai', 'QuanLyVanDon', 'ThemVanDon', 'CapNhatVanDon', 'ThongKeCongTy', 'DoiMatKhau'];
   const cuaKhauRestrictedRoutes = ['quan_ly_nguoi_dung_cua_khau'];
   const congTyRestrictedRoutes = ['quan_ly_nguoi_dung_cong_ty'];
 
