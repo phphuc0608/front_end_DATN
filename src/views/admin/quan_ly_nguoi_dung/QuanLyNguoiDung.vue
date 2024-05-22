@@ -83,34 +83,13 @@
                 <router-link class="btn btn-warning me-2 update_btn" :to="{ name: 'CapNhatNguoiDung', params: { email: nguoiDung.email } }">
                   <i class="bi bi-pencil-fill"></i>
                 </router-link>
-                <a class="btn del_button" @click="deleteNguoiDung(nguoiDung.email)">
-                  <i class="bi bi-trash"></i>
-                </a>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
-    <div class="col-md-12 d-flex align-items-center justify-content-end flex-wrap px-3 py-2" style="background-color: white;">
-      <nav aria-label="Page navigation example mb-2">
-        <ul class="pagination mb-2 mb-sm-0">
-          <li class="page-item">
-            <a class="page-link" href="#" @click.prevent="previousPage">
-              <i class="bi bi-arrow-left-short"></i>
-            </a>
-          </li>
-          <li class="page-item" v-for="page in totalPages" :key="page">
-            <a class="page-link" href="#" @click.prevent="changePage(page)">{{ page }}</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="#" @click.prevent="nextPage">
-              <i class="bi bi-arrow-right-short"></i>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
+    <Pagination :totalItems="nguoiDungs.length" :itemsPerPage="itemsPerPage" :currentPage="currentPage" @page-changed="changePage" />
   </div>
 </template>
 
@@ -118,6 +97,8 @@
 import axios from 'axios';
 import { ref, onMounted, computed, watch} from 'vue';
 import NavbarAdmin from '../../../components/NavbarAdmin.vue';
+import Swal from 'sweetalert2';
+import Pagination from '../../../components/Pagination.vue';
 
 export default {
   setup() {
@@ -153,20 +134,6 @@ export default {
       .catch(function(error){
         console.log(error);
       });
-    };
-
-    const deleteNguoiDung = async (email) => {
-      try {
-        const response = await axios.delete(`/api/nguoi-dung/${email}`, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });  
-        alert('Xóa người dùng thành công');
-        setTimeout(getNguoiDungs, 1000);
-      } catch (error) { 
-        alert('Xóa người dùng thất bại');
-      }
     };
 
     const getDanhMucVaiTro = () => {
@@ -216,27 +183,11 @@ export default {
     const paginatedData = computed(() => {
       const start = (currentPage.value - 1) * itemsPerPage.value;
       const end = start + itemsPerPage.value;
-      return filteredNguoiDungs.value.slice(start, end);
-    });
-
-    const totalPages = computed(() => {
-      return Math.ceil(filteredNguoiDungs.value.length / itemsPerPage.value);
+      return nguoiDungs.value.slice(start, end);
     });
 
     const changePage = (page) => {
       currentPage.value = page;
-    };
-
-    const nextPage = () => {
-      if (currentPage.value < totalPages.value) {
-        currentPage.value++;
-      }
-    };
-
-    const previousPage = () => {
-      if (currentPage.value > 1) {
-        currentPage.value--;
-      }
     };
 
     const filterClicked = () => {
@@ -256,14 +207,10 @@ export default {
     return{
       nguoiDungs,
       paginatedData,
-      totalPages,
       currentPage,
       itemsPerPage,
       changePage,
-      nextPage,
-      previousPage,
       filterClicked,
-      deleteNguoiDung,
       searchString,
       search,
       searchVaiTro,
@@ -274,7 +221,8 @@ export default {
     }
   },
   components:{
-    NavbarAdmin
+    NavbarAdmin,
+    Pagination
   },
 } 
 </script>
