@@ -54,8 +54,10 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import router from '../routers/router';
+import axios from 'axios';
+
 export default{
   setup(){
     const isDropdownVisible = ref(false);
@@ -63,12 +65,38 @@ export default{
     const tenVaiTro = ref(localStorage.getItem('savedTenVaiTro'));  
     const maVaiTro = ref(parseInt(localStorage.getItem('savedMaVaiTro')));
 
+    watch(route, (to, from) => {
+      if (to.path === '/') {
+        router.push('/');
+      }
+    });
+
+    const addLichSuTaiKhoan = async() => {
+      const lichSuData = {
+        email: userName.value,
+        ma_hanh_dong: 2,
+      };
+
+      console.log(lichSuData);
+      try {
+        const response = await axios.post(`/api/lich-su-tai-khoan`, lichSuData, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        console.log(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     const signOutClick = () => {
       localStorage.removeItem('savedEmail');
       localStorage.removeItem('savedMaVaiTro');
       localStorage.removeItem('savedThuocDonVi');
       localStorage.removeItem('savedTenVaiTro');
       localStorage.removeItem('token');
+      addLichSuTaiKhoan();
       router.push('/');
     };
 
