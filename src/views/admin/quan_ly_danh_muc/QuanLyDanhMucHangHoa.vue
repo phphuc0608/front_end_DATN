@@ -68,25 +68,7 @@
         </table>
       </div>
     </div>
-    <div class="col-md-12 d-flex align-items-center justify-content-end flex-wrap px-3 py-2" style="background-color: white;">
-      <nav aria-label="Page navigation example mb-2">
-        <ul class="pagination mb-2 mb-sm-0">
-          <li class="page-item">
-            <a class="page-link" href="#" @click.prevent="previousPage">
-              <i class="bi bi-arrow-left-short"></i>
-            </a>
-          </li>
-          <li class="page-item" v-for="page in totalPages" :key="page">
-            <a class="page-link" href="#" @click.prevent="changePage(page)">{{ page }}</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="#" @click.prevent="nextPage">
-              <i class="bi bi-arrow-right-short"></i>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
+    <Pagination :totalItems="danhMucHangHoas.length" :itemsPerPage="itemsPerPage" :currentPage="currentPage" @page-changed="changePage" />
     <!-- Them danh muc don vi -->
     <div style="margin-top: 200px;" class="modal" id="add_danh_muc_hang_hoa" tabindex="-1" role="dialog" aria-labelledby="add_danh_muc_hang_hoa_label" aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -148,6 +130,8 @@
 import axios from 'axios';
 import { ref, onMounted, computed } from 'vue';
 import NavbarAdmin from '../../../components/NavbarAdmin.vue';
+import Swal from 'sweetalert2';
+import Pagination from '../../../components/Pagination.vue';
 
 export default {
   setup() {
@@ -208,14 +192,24 @@ export default {
       try {
         const response = await axios.post(`/api/danh-muc-hang-hoa`, danhMucHangHoaData);
         console.log(response.data);
-        alert('Thêm hàng hóa thành công');
+        Swal.fire({
+          icon: 'success',
+          title: 'Thêm hàng hóa thành công',
+          showConfirmButton: false,
+          timer: 1000
+        });
         modalAdd.value.hide();
         getDanhMucHangHoa(); // Refresh danhMucHangHoas
         maDanhMucHangHoa.value = '';
         tenDanhMucHangHoa.value = '';
       } catch (error) {
         console.error(error);
-        alert('Thêm hàng hóa thất bại');
+        Swal.fire({
+          icon: 'error',
+          title: 'Thêm hàng hóa thất bại',
+          showConfirmButton: false,
+          timer: 1000
+        });
       }
     };
 
@@ -227,12 +221,22 @@ export default {
       })
       .then(function(response){
         console.log(response.data);
-        alert('Xóa hàng hóa thành công');
+        Swal.fire({
+          icon: 'success',
+          title: 'Xóa hàng hóa thành công',
+          showConfirmButton: false,
+          timer: 1000
+        });
         getDanhMucHangHoa(); // Refresh danhMucHangHoas
       })
       .catch(function(error){
         console.log(error);
-        alert('Xóa hàng hóa thất bại');
+        Swal.fire({
+          icon: 'error',
+          title: 'Xóa hàng hóa thất bại',
+          showConfirmButton: false,
+          timer: 1000
+        });
       });
     }
 
@@ -265,40 +269,34 @@ export default {
     try {
       const response = await axios.put(`/api/danh-muc-hang-hoa/${maDanhMucHangHoa.value}`, danhMucHangHoaData);
       console.log(response.data);
-      alert('Cập nhật danh mục hàng hóa thành công');
+      Swal.fire({
+        icon: 'success',
+        title: 'Cập nhật danh mục hàng hóa thành công',
+        showConfirmButton: false,
+        timer: 1000
+      });
       modalUpdate.value.hide();
       getDanhMucHangHoa(); // Refresh danhMucHangHoas
     } catch (error) {
       console.error(error);
-      alert('Cập nhật danh mục hàng hóa thất bại');
+      Swal.fire({
+        icon: 'error',
+        title: 'Cập nhật danh mục hàng hóa thất bại',
+        showConfirmButton: false,
+        timer: 1000
+      });
     }
   };
 
-  const paginatedData = computed(() => {
-    const start = (currentPage.value - 1) * itemsPerPage.value;
-    const end = start + itemsPerPage.value;
-    return danhMucHangHoas.value.slice(start, end);
-  });
+    const paginatedData = computed(() => {
+      const start = (currentPage.value - 1) * itemsPerPage.value;
+      const end = start + itemsPerPage.value;
+      return danhMucHangHoas.value.slice(start, end);
+    });
 
-  const totalPages = computed(() => {
-    return Math.ceil(danhMucHangHoas.value.length / itemsPerPage.value);
-  });
-
-  const changePage = (page) => {
-    currentPage.value = page;
-  };
-
-  const nextPage = () => {
-    if (currentPage.value < totalPages.value) {
-      currentPage.value++;
-    }
-  };
-
-  const previousPage = () => {
-    if (currentPage.value > 1) {
-      currentPage.value--;
-    }
-  };
+    const changePage = (page) => {
+      currentPage.value = page;
+    };
 
   const filterClicked = () => {
     let search_box_container = document.getElementById('search_box_content');
@@ -322,12 +320,9 @@ export default {
     getDanhMucHangHoaById,
     updateDanhMucHangHoa,
     paginatedData,
-    totalPages,
     currentPage,
     itemsPerPage,
     changePage,
-    nextPage,
-    previousPage,
     filterClicked,
     search,
     searchString,
@@ -336,7 +331,8 @@ export default {
 },
 
   components:{
-    NavbarAdmin
+    NavbarAdmin,
+    Pagination
   },
 } 
 </script>
