@@ -19,7 +19,16 @@
           <router-link class="dropdown-item" to="/quan_ly_trang_thai_to_khai">Trạng thái tờ khai</router-link> 
         </div>
       </li>
-      <li class="navbar_item"><router-link to="/lich_su_dang_nhap">Lịch sử đăng nhập</router-link></li>
+      <li class="navbar_item dropdown">
+        <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Quản lý lịch sử
+        </a>
+        <div class="sub-menu" aria-labelledby="navbarDropdown" style="width: 100%;">
+          <router-link class="dropdown-item" to="/lich_su_tai_khoan">Lịch sử tài khoản</router-link>
+          <router-link class="dropdown-item" to="/lich_su_van_don">Lịch sử vận đơn</router-link>
+          <router-link class="dropdown-item" to="/lich_su_to_khai">Lịch sử tờ khai</router-link> 
+        </div>
+      </li>
     </ul>
     <div id="right_side" class="d-flex align-items-center dropdown">
       <a class="nav-link show" aria-expanded="true" @click="useIconClicked">
@@ -67,6 +76,8 @@
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import router from '../routers/router';
+import axios from 'axios';
+
 export default{
   setup(){
     const isDropdownVisible = ref(false);
@@ -79,13 +90,33 @@ export default{
         router.push('/');
       }
     });
-    const signOutClick = () => {
+
+    const signOutClick =  () => {
       localStorage.removeItem('savedEmail');
       localStorage.removeItem('savedMaVaiTro');
       localStorage.removeItem('savedThuocDonVi');
       localStorage.removeItem('savedTenVaiTro');
       localStorage.removeItem('token');
+      addLichSuTaiKhoan();
       router.push('/');
+    };
+
+    const addLichSuTaiKhoan = async() => {
+      const lichSuData = {
+        email: userName.value,
+        ma_hanh_dong: 2,
+      };
+      console.log(lichSuData);
+      try {
+        const response = await axios.post(`/api/lich-su-tai-khoan`, lichSuData, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        console.log(response.data);
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     const useIconClicked = () => {
