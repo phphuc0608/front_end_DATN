@@ -39,6 +39,8 @@ import NavbarCongty from '../../../components/NavbarCongty.vue';
 import axios from 'axios';
 import router from '../../../routers/router';
 import { useRoute } from 'vue-router';
+import Swal from 'sweetalert2';
+
 export default {
   setup(){
     const route = useRoute(); 
@@ -109,11 +111,17 @@ export default {
       };
       try {
         await axios.put(`/api/to-khai/${route.params.ma_to_khai}`, toKhai);
-        alert('Cập nhật tờ khai thành công');
-        router.push('/quan_ly_to_khai');
+        Swal.fire({
+          icon: 'success',
+          title: 'Cập nhật tờ khai thành công',
+        });
+        router.back('/quan_ly_to_khai');
       } catch (error) {
         console.log(error);
-        alert('Cập nhật tờ khai thất bại');
+        Swal.fire({
+          icon: 'error',
+          title: 'Cập nhật tờ khai thất bại',
+        });
       }
     }
 
