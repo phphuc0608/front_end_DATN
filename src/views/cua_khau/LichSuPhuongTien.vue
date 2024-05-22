@@ -39,10 +39,11 @@
     </div>
   </div>
   <div class="container-fluid px-5">
-    <div class="header_container">
+    <div class="header_container d-flex justify-content-between align-items-center">
       <span class="title">
-        <i class="bi bi-table"></i> Bảng lịch sử tài khoản
+        <i class="bi bi-table"></i> Bảng lịch sử phương tiện
       </span>
+      <button @click="getLichSuPhuongTienData" class="btn btn-success"><i class="bi bi-download"></i> Tải lịch sử phương tiện</button>
     </div>
     <div class="table_container p-3">
       <div class="table-responsive">
@@ -66,25 +67,7 @@
         </table>
       </div>
     </div>
-    <div class="col-md-12 d-flex align-items-center justify-content-end flex-wrap px-3 py-2" style="background-color: white;">
-      <nav aria-label="Page navigation example mb-2">
-        <ul class="pagination mb-2 mb-sm-0">
-          <li class="page-item">
-            <a class="page-link" href="#" @click.prevent="previousPage">
-              <i class="bi bi-arrow-left-short"></i>
-            </a>
-          </li>
-          <li class="page-item" v-for="page in totalPages" :key="page">
-            <a class="page-link" href="#" @click.prevent="changePage(page)">{{ page }}</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="#" @click.prevent="nextPage">
-              <i class="bi bi-arrow-right-short"></i>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
+    <Pagination :totalItems="lichSus.length" :itemsPerPage="itemsPerPage" :currentPage="currentPage" @page-changed="changePage" />
   </div>
 </template>
 
@@ -92,6 +75,9 @@
 import axios from 'axios';
 import { ref, onMounted, computed } from 'vue';
 import NavbarCuakhau from '../../components/NavbarCuakhau.vue';
+import Pagination from '../../components/Pagination.vue';
+import fileDownload from 'js-file-download';
+import Swal from 'sweetalert2';
 
 export default {
   setup() {
@@ -179,49 +165,64 @@ export default {
       return lichSus.value.slice(start, end);
     });
 
-    const totalPages = computed(() => {
-      return Math.ceil(lichSus.value.length / itemsPerPage.value);
-    });
-
     const changePage = (page) => {
       currentPage.value = page;
     };
 
-    const nextPage = () => {
-      if (currentPage.value < totalPages.value) {
-        currentPage.value++;
-      }
-    };
+    const getLichSuPhuongTienData = () => {
+      axios({
+        url: `/api/thong-ke/download-lich-su-phuong-tien`,
+        method: 'GET',
+        responseType: 'arraybuffer',
+      }).then((response) => {
+        const data = new Uint8Array(response.data);
+        const bom = new Uint8Array([0xEF, 0xBB, 0xBF]); // BOM in UTF-8
+        const withBom = new Uint8Array(bom.length + data.length);
+        withBom.set(bom);
+        withBom.set(data, bom.length);
+        const blob = new Blob([withBom], { type: 'text/csv;charset=utf-8;' });
+        fileDownload(blob, 'lich_su_phuong_tien.csv');
+        Swal.fire({
+          icon: 'success',
+          title: 'Tải file thành công',
+          showConfirmButton: false,
+          timer: 1000
+        });
+      })
+      .catch(function(error){
+        console.log(error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Tải file thất bại',
+          showConfirmButton: false,
+          timer: 1000
+        });
+      });
 
-    const previousPage = () => {
-      if (currentPage.value > 1) {
-        currentPage.value--;
-      }
-    };
+    }
 
     getlichSus();
     getTrangThaiPhuongTien();
 
-    return{
+    return {
       lichSus,
       paginatedData,
-      totalPages,
       currentPage,
       itemsPerPage,
       changePage,
-      nextPage,
-      previousPage,
       filterClicked,
       searchString,
       maDanhMucTrangThai,
       danhMucTrangThais,
       search,
-      removeFilter
+      removeFilter,
+      getLichSuPhuongTienData
     }
   },
 
   components:{
-    NavbarCuakhau
+    NavbarCuakhau,
+    Pagination
   },
 } 
 </script>
