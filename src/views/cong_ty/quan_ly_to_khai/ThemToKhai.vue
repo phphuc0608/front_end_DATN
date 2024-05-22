@@ -29,17 +29,19 @@
         </div>
       </div> 
       <div class="d-flex justify-content-start mt-4">
-        <button type="submit" class="btn btn-success me-3"><i class="bi bi-plus-circle"></i> Thêm vận đơn</button>
+        <button type="submit" class="btn btn-success me-3"><i class="bi bi-plus-circle"></i> Thêm tờ khai</button>
         <button type="button" class="btn btn-danger" @click="resetForm"><i class="bi bi-x-circle"></i> Reset</button>
       </div> 
     </form>
   </div>
 </template>
 <script>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import NavbarCongty from '../../../components/NavbarCongty.vue';
 import axios from 'axios';
 import router from '../../../routers/router';
+import Swal from 'sweetalert2';
+
 export default {
   setup(){
     const donVis = ref([]); 
@@ -50,7 +52,6 @@ export default {
     const emailError = ref(false);
 
     const resetForm = () => {
-      maDonVi.value = '';
       maToKhai.value = '';
     };
 
@@ -102,12 +103,17 @@ export default {
           }
         });
         console.log(response.data);
-        alert('Thêm tờ khai thành công');
-        router.push('/quan_ly_to_khai');
-        //showModal.value = true;
+        Swal.fire({
+          icon: 'success',
+          title: 'Thêm tờ khai thành công',
+        });
+        router.back('/quan_ly_to_khai');
       } catch (error) {
         console.log(error);
-        alert('Thêm tờ khai thất bại');
+        Swal.fire({
+          icon: 'error',
+          title: 'Thêm tờ khai thất bại',
+        });
       }
     };
 
