@@ -19,16 +19,6 @@
           <input v-model="soDienThoai" type="text" class="form-control" :class="{'is-invalid': soDienThoaiError}" placeholder="Nhập số điện thoại" :title="soDienThoaiError ? 'Số điện thoại phải đủ 10 ký tự' : ''" required>
         </div>
         <div class="col-md-6">
-          <label for="" class="col-form-label">Mật khẩu</label>
-          <input v-model="matKhau" type="password" class="form-control" placeholder="Nhập mật khẩu">
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <label for="" class="col-form-label">Nhập lại mật khẩu</label>
-          <input v-model="matKhauNhapLai" type="password" :class="{'is-invalid': matKhauError}" class="form-control" placeholder="Nhập lại mật khẩu" :title="matKhauError ? 'Mật khẩu không trùng khớp' : ''">
-        </div>
-        <div class="col-md-6">
           <label for="" class="col-form-label">Thuộc đơn vị</label>
           <select v-model="maDonVi" class="form-control form-select h-auto wide" required>
             <option v-for="donVi in donVis" :key="donVi.ma_don_vi" :value="donVi.ma_don_vi">
@@ -36,7 +26,7 @@
             </option>
           </select>
         </div>
-      </div>  
+      </div>
       <div class="row">
         <div class="col-md-6">
           <label for="" class="col-form-label">Vai trò</label>
@@ -47,8 +37,9 @@
           </select>
         </div>
         <form class="col-md-6 d-flex align-items-center" style="margin-top: 36px;">
-          <button class="btn btn-success me-3" @click.prevent="updateDangHoatDong(true)">Mở tài khoản</button>
-          <button class="btn btn-danger" @click.prevent="updateDangHoatDong(false)">Khóa tài khoản</button>
+          <button class="btn btn-success me-3" @click.prevent="moTaiKhoan">Mở tài khoản</button>
+          <button class="btn btn-danger me-3" @click.prevent="khoaTaiKhoan">Khóa tài khoản</button>
+          <button class="btn btn-primary" @click.prevent="khoiPhucMatKhau">Khôi phục mật khẩu</button>
         </form>
       </div>  
       <div class="d-flex justify-content-start mt-4">
@@ -58,11 +49,13 @@
   </div>
 </template>
 <script>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import NavbarAdmin from '../../../components/NavbarAdmin.vue';
 import axios from 'axios';
 import router from '../../../routers/router';
+import Swal from 'sweetalert2';
+
 export default {
   setup(){
     const donVis = ref([]);
@@ -73,11 +66,8 @@ export default {
     const soDienThoai = ref('');
     const maDonVi = ref('');
     const maVaiTro = ref(0);
-    const matKhau = ref('');
-    const matKhauNhapLai = ref('');
     const dangHoatDong = ref(true);
     const emailError = ref(false);
-    const matKhauError = ref(false);
     const soDienThoaiError = ref(false);
 
     const getdonVis = () => {
@@ -129,10 +119,9 @@ export default {
 
     const updateNguoiDung = async() => {
       validateEmail();
-      validatePasswords();
       validateSoDienThoai();
       // Check if any validation failed
-      if(emailError.value || matKhauError.value || soDienThoaiError.value) {
+      if(emailError.value || soDienThoaiError.value) {
         return; // Stop execution if validation failed
       }
       const nguoiDungData = {
@@ -141,42 +130,82 @@ export default {
         so_dien_thoai: soDienThoai.value,
         thuoc_don_vi: maDonVi.value,
         ma_vai_tro: maVaiTro.value,
-        mat_khau: matKhau.value,
       };
       console.log(nguoiDungData);
       console.log(typeof(nguoiDungData.dang_hoat_dong));
       try {
         await axios.put(`/api/nguoi-dung/${email.value}`, nguoiDungData);
-        alert('Cập nhật người dùng thành công');
+        Swal.fire({
+          icon: 'success',
+          title: 'Cập nhật người dùng thành công',
+        });
         setTimeout(() => {
-          router.push('/quan_ly_nguoi_dung');
+          router.back('/quan_ly_nguoi_dung');
         }, 10);
       } catch (error) {
         console.log(error);
-        alert('Cập nhật người dùng thất bại');
+        Swal.fire({
+          icon: 'error',
+          title: 'Cập nhật người dùng thất bại',
+        });
       }
     }
     
-    const updateDangHoatDong = async(status) => {
+    const khoiPhucMatKhau = async() => {
+      try{
+        await axios.patch(`/api/nguoi-dung/${email.value}/khoi-phuc-mat-khau`);
+        Swal.fire({
+          icon: 'success',
+          title: 'Khôi phục mật khẩu thành công',
+        });
+      } catch (error) {
+        console.log(error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Khôi phục mật khẩu thất bại',
+        });
+      }
+    }
+
+    const moTaiKhoan = async() => {
       try {
-        await axios.patch(`/api/nguoi-dung/${email.value}?status=${status}`);
-        console.log(status);
-        alert('Cập nhật trạng thái hoạt động thành công');
+        await axios.patch(`/api/nguoi-dung/${email.value}/mo-khoa-tai-khoan`);
+        Swal.fire({
+          icon: 'success',
+          title: 'Mở tài khoản thành công',
+        });
+      } catch (error) {
+        console.log(error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Mở tài khoản thất bại',
+        });
+      }
+    }
+
+    const khoaTaiKhoan = async() => {
+      try {
+        await axios.patch(`/api/nguoi-dung/${email.value}/khoa-tai-khoan`);
+        Swal.fire({
+          icon: 'success',
+          title: 'Khóa tài khoản thành công',
+        });
         router.push('/quan_ly_nguoi_dung');
       } catch (error) {
         console.log(error);
-        alert('Cập nhật trạng thái hoạt động thất bại');
+        Swal.fire({
+          icon: 'error',
+          title: 'Khóa tài khoản thất bại',
+        });
       }
     }
+
 
     const validateEmail = () => {
       const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       emailError.value = !re.test(email.value);
     };
 
-    const validatePasswords = () => {
-      matKhauError.value = matKhau.value !== matKhauNhapLai.value;
-    };
     
     const validateSoDienThoai = () => {
       const re = /^\d{10}$/;
@@ -201,17 +230,15 @@ export default {
       maDonVi,
       vaiTros,
       maVaiTro,
-      matKhau,
       dangHoatDong,
-      matKhauNhapLai,
       emailError,
-      matKhauError,
       soDienThoaiError,
       validateEmail,
-      validatePasswords,
       validateSoDienThoai,
       updateNguoiDung,
-      updateDangHoatDong
+      moTaiKhoan,
+      khoaTaiKhoan,
+      khoiPhucMatKhau
     }
   },
   components: {
