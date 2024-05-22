@@ -129,13 +129,14 @@ export default {
 
     onMounted(() => {
       document.title = 'Đăng nhập';
-      getNguoiDungByEmail();
+
     });
 
     return {
       username,
       password,
       handleSubmit,
+      getNguoiDungByEmail
     };
   },
 }
