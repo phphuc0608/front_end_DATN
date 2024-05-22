@@ -82,25 +82,7 @@
         </table>
       </div>
     </div>
-    <div class="col-md-12 d-flex align-items-center justify-content-end flex-wrap px-3 py-2" style="background-color: white;">
-      <nav aria-label="Page navigation example mb-2">
-        <ul class="pagination mb-2 mb-sm-0">
-          <li class="page-item">
-            <a class="page-link" href="#" @click.prevent="previousPage">
-              <i class="bi bi-arrow-left-short"></i>
-            </a>
-          </li>
-          <li class="page-item" v-for="page in totalPages" :key="page">
-            <a class="page-link" href="#" @click.prevent="changePage(page)">{{ page }}</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="#" @click.prevent="nextPage">
-              <i class="bi bi-arrow-right-short"></i>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
+    <Pagination :totalItems="donVis.length" :itemsPerPage="itemsPerPage" :currentPage="currentPage" @page-changed="changePage" />
   </div>
 </template>
 
@@ -108,6 +90,8 @@
 import axios from 'axios';
 import { ref, onMounted, computed } from 'vue';
 import NavbarAdmin from '../../../components/NavbarAdmin.vue';
+import Swal from 'sweetalert2';
+import Pagination from '../../../components/Pagination.vue';
 
 export default {
   setup() {
@@ -150,11 +134,21 @@ export default {
             'Content-Type': 'application/json',
           }
         });
-        alert('Xóa danh mục đơn vị thành công');
+        Swal.fire({
+          icon: 'success',
+          title: 'Xóa danh mục đơn vị thành công',
+          showConfirmButton: false,
+          timer: 1000
+        });
         setTimeout(getdonVis, 1000); 
       } catch (error) {
         console.log(error);
-        alert('Xóa danh mục đơn vị thất bại');
+        Swal.fire({
+          icon: 'error',
+          title: 'Xóa danh mục đơn vị thất bại',
+          showConfirmButton: false,
+          timer: 1000
+        });
       }
     };
 
@@ -187,30 +181,14 @@ export default {
       });
     };
 
-    const paginatedData = computed(() => {
+        const paginatedData = computed(() => {
       const start = (currentPage.value - 1) * itemsPerPage.value;
       const end = start + itemsPerPage.value;
       return donVis.value.slice(start, end);
     });
 
-    const totalPages = computed(() => {
-      return Math.ceil(donVis.value.length / itemsPerPage.value);
-    });
-
     const changePage = (page) => {
       currentPage.value = page;
-    };
-
-    const nextPage = () => {
-      if (currentPage.value < totalPages.value) {
-        currentPage.value++;
-      }
-    };
-
-    const previousPage = () => {
-      if (currentPage.value > 1) {
-        currentPage.value--;
-      }
     };
 
     const filterClicked = () => {
@@ -230,14 +208,11 @@ export default {
     return{
       donVis,
       paginatedData,
-      totalPages,
       currentPage,
       itemsPerPage,
-      changePage,
-      nextPage,
-      previousPage,
       filterClicked,
       deleteDoanhNghiep,
+      changePage,
       search,
       searchString,
       maDanhMucDonVi,
@@ -247,7 +222,8 @@ export default {
   },
 
   components:{
-    NavbarAdmin
+    NavbarAdmin,
+    Pagination
   },
 } 
 </script>
