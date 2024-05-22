@@ -59,34 +59,13 @@
                 <a data-bs-toggle="modal" data-bs-target="#update_vai_tro" class="btn btn-warning me-2 update_btn" @click="getDanhMucVaiTroById(vaiTro.ma_vai_tro)">
                   <i class="bi bi-pencil-fill"></i>
                 </a>
-                <a class="btn del_button" @click="deleteDanhMucVaiTro(vaiTro.ma_vai_tro)" >
-                  <i class="bi bi-trash"></i>
-                </a>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
-    <div class="col-md-12 d-flex align-items-center justify-content-end flex-wrap px-3 py-2" style="background-color: white;">
-      <nav aria-label="Page navigation example mb-2">
-        <ul class="pagination mb-2 mb-sm-0">
-          <li class="page-item">
-            <a class="page-link" href="#" @click.prevent="previousPage">
-              <i class="bi bi-arrow-left-short"></i>
-            </a>
-          </li>
-          <li class="page-item" v-for="page in totalPages" :key="page">
-            <a class="page-link" href="#" @click.prevent="changePage(page)">{{ page }}</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="#" @click.prevent="nextPage">
-              <i class="bi bi-arrow-right-short"></i>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
+    <Pagination :totalItems="vaiTros.length" :itemsPerPage="itemsPerPage" :currentPage="currentPage" @page-changed="changePage" />
     <!-- Them danh muc don vi -->
     <div style="margin-top: 200px;" class="modal" id="add_vai_tro" tabindex="-1" role="dialog" aria-labelledby="add_vai_tro_label" aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -144,6 +123,9 @@
 import axios from 'axios';
 import { ref, onMounted, computed } from 'vue';
 import NavbarAdmin from '../../../components/NavbarAdmin.vue';
+import Swal from 'sweetalert2';
+import Pagination from '../../../components/Pagination.vue';
+
 
 export default {
   setup() {
@@ -209,33 +191,26 @@ export default {
       try {
         const response = await axios.post(`/api/danh-muc-vai-tro`, danhMucVaiTroData);
         console.log(response.data);
-        alert('Thêm vai trò thành công');
+        Swal.fire({
+          icon: 'success',
+          title: 'Thêm vai trò thành công',
+          showConfirmButton: false,
+          timer: 1000
+        });
         modalAdd.value.hide();
         getDanhMucVaiTro(); // Refresh vaiTros
         tenVaiTro.value = '';
       } catch (error) {
         console.error(error);
-        alert('Thêm vai trò thất bại');
+        Swal.fire({
+          icon: 'error',
+          title: 'Thêm vai trò thất bại',
+          showConfirmButton: false,
+          timer: 1000
+        });
       }
     };
 
-    const deleteDanhMucVaiTro = (maVaiTro) => {
-      axios.delete(`/api/danh-muc-vai-tro/${maVaiTro}`, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(function(response){
-        const message = response.data.message;
-        console.log(response.data.message);
-        alert(message);
-        getDanhMucVaiTro();
-      })
-      .catch(function(error){
-        console.log(error);
-        alert('Xóa vai trò thất bại');
-      });
-    }
 
   const getDanhMucVaiTroById = (maVaiTroId) => {
     axios.get(`/api/danh-muc-vai-tro/${maVaiTroId}`, {
@@ -263,42 +238,36 @@ export default {
     };
     console.log(danhMucVaiTroData);
     try {
-      const response = await axios.put(`/api/danh-muc-vai-tro/${maVaiTro.value}`, danhMucVaiTroData);
+      const response = await axios.patch(`/api/danh-muc-vai-tro/${maVaiTro.value}`, danhMucVaiTroData);
       console.log(response.data);
-      alert('Cập nhật vai trò thành công');
+      Swal.fire({
+        icon: 'success',
+        title: 'Cập nhật vai trò thành công',
+        showConfirmButton: false,
+        timer: 1000
+      });
       modalUpdate.value.hide();
       getDanhMucVaiTro(); // Refresh vaiTros
     } catch (error) {
       console.error(error);
-      alert('Cập nhật vai trò thất bại');
+      Swal.fire({
+        icon: 'error',
+        title: 'Cập nhật vai trò thất bại',
+        showConfirmButton: false,
+        timer: 1000
+      });
     }
   };
 
-  const paginatedData = computed(() => {
-    const start = (currentPage.value - 1) * itemsPerPage.value;
-    const end = start + itemsPerPage.value;
-    return vaiTros.value.slice(start, end);
-  });
+    const paginatedData = computed(() => {
+      const start = (currentPage.value - 1) * itemsPerPage.value;
+      const end = start + itemsPerPage.value;
+      return vaiTros.value.slice(start, end);
+    });
 
-  const totalPages = computed(() => {
-    return Math.ceil(vaiTros.value.length / itemsPerPage.value);
-  });
-
-  const changePage = (page) => {
-    currentPage.value = page;
-  };
-
-  const nextPage = () => {
-    if (currentPage.value < totalPages.value) {
-      currentPage.value++;
-    }
-  };
-
-  const previousPage = () => {
-    if (currentPage.value > 1) {
-      currentPage.value--;
-    }
-  };
+    const changePage = (page) => {
+      currentPage.value = page;
+    };
 
   const filterClicked = () => {
     let search_box_container = document.getElementById('search_box_content');
@@ -318,16 +287,12 @@ export default {
     maVaiTro,
     tenVaiTro,
     addVaiTro,
-    deleteDanhMucVaiTro,
     getDanhMucVaiTroById,
     updateVaiTro,
     paginatedData,
-    totalPages,
     currentPage,
     itemsPerPage,
     changePage,
-    nextPage,
-    previousPage,
     filterClicked,
     search,
     searchString,
@@ -336,7 +301,8 @@ export default {
 },
 
   components:{
-    NavbarAdmin
+    NavbarAdmin,
+    Pagination
   },
 } 
 </script>
