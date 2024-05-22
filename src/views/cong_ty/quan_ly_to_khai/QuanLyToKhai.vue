@@ -15,7 +15,6 @@
             <label class="form-label">Tìm kiếm</label>
             <input type="text" class="form-control mb-xl-0 mb-3" placeholder="Tìm kiếm">
           </div>
-          
           <div class="col-xl-3 col-sm-6 align-self-end">
             <div>
               <button class="btn btn-primary me-2" title="Nhấn vào đây để tìm kiếm" type="button">
@@ -36,10 +35,11 @@
     </div>
   </div>
   <div class="container-fluid px-5">
-    <div class="header_container">
+    <div class="header_container d-flex justify-content-between align-items-center">
       <span class="title">
         <i class="bi bi-table"></i> Bảng tờ khai
       </span>
+      <button @click="getToKhaiData" class="btn btn-success"><i class="bi bi-download"></i> Tải lịch sử tờ khai</button>
     </div>
     <div class="table_container p-3">
       <div class="table-responsive">
@@ -74,25 +74,7 @@
         </table>
       </div>
     </div>
-    <div class="col-md-12 d-flex align-items-center justify-content-end flex-wrap px-3 py-2" style="background-color: white;">
-      <nav aria-label="Page navigation example mb-2">
-        <ul class="pagination mb-2 mb-sm-0">
-          <li class="page-item">
-            <a class="page-link" href="#" @click.prevent="previousPage">
-              <i class="bi bi-arrow-left-short"></i>
-            </a>
-          </li>
-          <li class="page-item" v-for="page in totalPages" :key="page">
-            <a class="page-link" href="#" @click.prevent="changePage(page)">{{ page }}</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="#" @click.prevent="nextPage">
-              <i class="bi bi-arrow-right-short"></i>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
+  <Pagination :totalItems="toKhais.length" :itemsPerPage="itemsPerPage" :currentPage="currentPage" @page-changed="changePage" />
   </div>
 </template>
 
@@ -100,7 +82,9 @@
 import axios from 'axios';
 import { ref, onMounted, computed } from 'vue';
 import NavbarAdmin from '../../../components/NavbarCongty.vue';
-import router from '../../../routers/router';
+import Swal from 'sweetalert2';
+import fileDownload from 'js-file-download';
+import Pagination from '../../../components/Pagination.vue';
 
 export default {
   setup() {
@@ -113,36 +97,72 @@ export default {
       document.title = "Quản lý tờ khai";
     });
 
-  const getToKhais = () => {
-    axios.get(`/api/to-khai/doanh-nghiep/${maDonVi.value}`, {
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    })
-    .then(function(response){
-      toKhais.value = response.data;
-      console.log(response.data); 
-    })
-    .catch(function(error){
-      console.log(error);
-    });
-  };
-
-
-  const deleteToKhai = async(maToKhai) => {
-    try {
-      await axios.delete(`/api/to-khai/${maToKhai}`, {
+    const getToKhais = () => {
+      axios.get(`/api/to-khai/doanh-nghiep/${maDonVi.value}`, {
         headers: {
           'Content-Type': 'application/json',
         }
+      })
+      .then(function(response){
+        toKhais.value = response.data;
+        console.log(response.data); 
+      })
+      .catch(function(error){
+        console.log(error);
       });
-      alert('Xóa vận đơn thành công');
-      setTimeout(getToKhais, 1000); 
-    } catch (error) {
-      console.log(error);
-      alert('Xóa vận đơn thất bại');
+    };
+
+    const getToKhaiData = () => {
+      axios({
+        url: `/api/thong-ke/download-lich-su-to-khai/${maDonVi.value}`,
+        method: 'GET',
+        responseType: 'arraybuffer',
+      }).then((response) => {
+        const data = new Uint8Array(response.data);
+        const bom = new Uint8Array([0xEF, 0xBB, 0xBF]); // BOM in UTF-8
+        const withBom = new Uint8Array(bom.length + data.length);
+        withBom.set(bom);
+        withBom.set(data, bom.length);
+        const blob = new Blob([withBom], { type: 'text/csv;charset=utf-8;' });
+        fileDownload(blob, 'lich_su_to_khai.csv');
+        Swal.fire({
+          icon: 'success',
+          title: 'Tải file thành công',
+          showConfirmButton: false,
+          timer: 1000
+        });
+      })
+      .catch(function(error){
+        console.log(error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Tải file thất bại',
+          showConfirmButton: false,
+          timer: 1000
+        });
+      });
     }
-  };
+
+    const deleteToKhai = async(maToKhai) => {
+      try {
+        await axios.delete(`/api/to-khai/${maToKhai}`, {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+        Swal.fire({
+          icon: 'success',
+          title: 'Xóa vận đơn thành công',
+        });
+        setTimeout(getToKhais, 1000); 
+      } catch (error) {
+        console.log(error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Xóa vận đơn thất bại',
+        });
+      }
+    };
 
     const paginatedData = computed(() => {
       const start = (currentPage.value - 1) * itemsPerPage.value;
@@ -150,24 +170,8 @@ export default {
       return toKhais.value.slice(start, end);
     });
 
-    const totalPages = computed(() => {
-      return Math.ceil(toKhais.value.length / itemsPerPage.value);
-    });
-
     const changePage = (page) => {
       currentPage.value = page;
-    };
-
-    const nextPage = () => {
-      if (currentPage.value < totalPages.value) {
-        currentPage.value++;
-      }
-    };
-
-    const previousPage = () => {
-      if (currentPage.value > 1) {
-        currentPage.value--;
-      }
     };
 
     const filterClicked = () => {
@@ -186,19 +190,18 @@ export default {
     return{
       toKhais,
       paginatedData,
-      totalPages,
       currentPage,
       itemsPerPage,
       changePage,
-      nextPage,
-      previousPage,
       filterClicked,
       deleteToKhai,
+      getToKhaiData
     }
   },
 
   components:{
-    NavbarAdmin
+    NavbarAdmin,
+    Pagination
   },
 } 
 </script>
