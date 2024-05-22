@@ -25,14 +25,14 @@
           </div>
           <div class="card-body px-0 py-2">
             <ul class="list-group list-group-flush">
-              <li class="card_item list-group-item border-0 py-2">
+              <!-- <li class="card_item list-group-item border-0 py-2">
                 <router-link to="" class="nav-link">
                   <i class="bi bi-file-earmark-person"></i>
                   Thông tin cá nhân
                 </router-link>
-              </li>
+              </li> -->
               <li class="card_item list-group-item border-0 py-2">
-                <router-link to="" class="nav-link">
+                <router-link to="/doi_mat_khau" class="nav-link">
                   <i class="bi bi-file-lock"></i>
                   Đổi mật khẩu
                 </router-link>
@@ -54,8 +54,10 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import router from '../routers/router';
+import axios from 'axios';
+
 export default{
   setup(){
     const isDropdownVisible = ref(false);
@@ -63,12 +65,37 @@ export default{
     const tenVaiTro = ref(localStorage.getItem('savedTenVaiTro'));
     const maVaiTro = ref(parseInt(localStorage.getItem('savedMaVaiTro')));
 
+    watch(route, (to, from) => {
+      if (to.path === '/') {
+        router.push('/');
+      }
+    });
+    
+    const addLichSuTaiKhoan = async() => {
+      const lichSuData = {
+        email: userName.value,
+        ma_hanh_dong: 2,
+      };
+      console.log(lichSuData);
+      try {
+        const response = await axios.post(`/api/lich-su-tai-khoan`, lichSuData, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        console.log(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     const signOutClick = () => {
       localStorage.removeItem('savedEmail');
       localStorage.removeItem('savedMaVaiTro');
       localStorage.removeItem('savedThuocDonVi');
       localStorage.removeItem('savedTenVaiTro');
       localStorage.removeItem('token');
+      addLichSuTaiKhoan();
       router.push('/');
     };
 
@@ -82,7 +109,7 @@ export default{
       useIconClicked,
       userName,
       tenVaiTro,
-      maVaiTro
+      maVaiTro,
     }
   },
 }
@@ -203,6 +230,7 @@ nav .navbar_container .navbar_item a.active,nav .navbar_container .navbar_item a
 }
 .card_item a:hover{
   color: #1b9bff;
+  cursor: pointer;
 }
 .card_logout a{
   color: red;
