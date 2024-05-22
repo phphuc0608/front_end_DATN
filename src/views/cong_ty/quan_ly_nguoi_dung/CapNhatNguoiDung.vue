@@ -53,11 +53,13 @@
   </div>
 </template>
 <script>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import NavbarCongty from '../../../components/NavbarCongty.vue';
 import axios from 'axios';
 import router from '../../../routers/router';
+import Swal from 'sweetalert2';
+
 export default {
   setup(){ 
     const route = useRoute();
@@ -106,17 +108,21 @@ export default {
         ma_vai_tro: maVaiTro.value,
         mat_khau: matKhau.value,
       };
-      console.log(nguoiDungData);
-      console.log(typeof(nguoiDungData.dang_hoat_dong));
       try {
         await axios.put(`/api/nguoi-dung/${email.value}`, nguoiDungData);
-        alert('Cập nhật người dùng thành công');
+        Swal.fire({
+          icon: 'success',
+          title: 'Cập nhật người dùng thành công',
+        });
         setTimeout(() => {
-          router.push('/quan_ly_nguoi_dung_cong_ty');
+          router.back('/quan_ly_nguoi_dung_cong_ty');
         }, 10);
       } catch (error) {
         console.log(error);
-        alert('Cập nhật người dùng thất bại');
+        Swal.fire({
+          icon: 'error',
+          title: 'Cập nhật người dùng thất bại',
+        });
       }
     }
     
@@ -124,11 +130,18 @@ export default {
       try {
         await axios.patch(`/api/nguoi-dung/${email.value}?status=${status}`);
         console.log(status);
-        alert('Cập nhật trạng thái hoạt động thành công');
-        router.push('/quan_ly_nguoi_dung_cong_ty');
+        Swal.fire({
+          icon: 'success',
+          title: 'Cập nhật trạng thái hoạt động thành công',
+
+        });
+        router.back('/quan_ly_nguoi_dung_cong_ty');
       } catch (error) {
         console.log(error);
-        alert('Cập nhật trạng thái hoạt động thất bại');
+        Swal.fire({
+          icon: 'error',
+          title: 'Cập nhật trạng thái hoạt động thất bại',
+        });
       }
     }
 
@@ -145,10 +158,6 @@ export default {
       const re = /^\d{10}$/;
       soDienThoaiError.value = !re.test(soDienThoai.value);
     };
-
-    // watch(dangHoatDong, () => {
-    //   updateDangHoatDong();
-    // });
 
     onMounted(async() => {
       document.title = "Cập nhật người dùng";
