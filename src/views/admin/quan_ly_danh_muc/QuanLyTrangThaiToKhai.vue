@@ -68,25 +68,7 @@
         </table>
       </div>
     </div>
-    <div class="col-md-12 d-flex align-items-center justify-content-end flex-wrap px-3 py-2" style="background-color: white;">
-      <nav aria-label="Page navigation example mb-2">
-        <ul class="pagination mb-2 mb-sm-0">
-          <li class="page-item">
-            <a class="page-link" href="#" @click.prevent="previousPage">
-              <i class="bi bi-arrow-left-short"></i>
-            </a>
-          </li>
-          <li class="page-item" v-for="page in totalPages" :key="page">
-            <a class="page-link" href="#" @click.prevent="changePage(page)">{{ page }}</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="#" @click.prevent="nextPage">
-              <i class="bi bi-arrow-right-short"></i>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
+    <Pagination :totalItems="trangThais.length" :itemsPerPage="itemsPerPage" :currentPage="currentPage" @page-changed="changePage" />
     <!-- Them danh muc trang thai -->
     <div style="margin-top: 200px;" class="modal" id="add_trang_thai" tabindex="-1" role="dialog" aria-labelledby="add_trang_thai_label" aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -148,6 +130,8 @@
 import axios from 'axios';
 import { ref, onMounted, computed } from 'vue';
 import NavbarAdmin from '../../../components/NavbarAdmin.vue';
+import Swal from 'sweetalert2';
+import Pagination from '../../../components/Pagination.vue';
 
 export default {
   setup() {
@@ -208,14 +192,24 @@ export default {
       try {
         const response = await axios.post(`/api/trang-thai-to-khai`, danhMucTrangThaiData);
         console.log(response.data);
-        alert('Thêm trạng thái thành công');
+        Swal.fire({
+          icon: 'success',
+          title: 'Thêm trạng thái thành công',
+          showConfirmButton: false,
+          timer: 1000
+        });
         modalAdd.value.hide();
         getDanhMucTrangThai(); // Refresh trangThais
         tenTrangThai.value = '';
         maTrangThai.value = '';
       } catch (error) {
         console.error(error);
-        alert('Thêm trạng thái thất bại');
+        Swal.fire({
+          icon: 'error',
+          title: 'Thêm trạng thái thất bại',
+          showConfirmButton: false,
+          timer: 1000
+        });
       }
     };
 
@@ -227,12 +221,22 @@ export default {
       })
       .then(function(response){
         console.log(response.data);
-        alert('Xóa trạng thái thành công');
+        Swal.fire({
+          icon: 'success',
+          title: 'Xóa trạng thái thành công',
+          showConfirmButton: false,
+          timer: 1000
+        });
         getDanhMucTrangThai(); // Refresh trangThais
       })
       .catch(function(error){
         console.log(error);
-        alert('Xóa trạng thái thất bại');
+        Swal.fire({
+          icon: 'error',
+          title: 'Xóa trạng thái thất bại',
+          showConfirmButton: false,
+          timer: 1000
+        });
       });
     }
 
@@ -264,12 +268,22 @@ export default {
     try {
       const response = await axios.put(`/api/trang-thai-to-khai/${maTrangThai.value}`, danhMucTrangThaiData);
       console.log(response.data);
-      alert('Cập nhật trạng thái thành công');
+      Swal.fire({
+        icon: 'success',
+        title: 'Cập nhật trạng thái thành công',
+        showConfirmButton: false,
+        timer: 1000
+      });
       modalUpdate.value.hide();
       getDanhMucTrangThai(); // Refresh trangThais
     } catch (error) {
       console.error(error);
-      alert('Cập nhật trạng thái thất bại');
+      Swal.fire({
+        icon: 'error',
+        title: 'Cập nhật trạng thái thất bại',
+        showConfirmButton: false,
+        timer: 1000
+      });
     }
   };
 
@@ -279,24 +293,8 @@ export default {
     return trangThais.value.slice(start, end);
   });
 
-  const totalPages = computed(() => {
-    return Math.ceil(trangThais.value.length / itemsPerPage.value);
-  });
-
   const changePage = (page) => {
     currentPage.value = page;
-  };
-
-  const nextPage = () => {
-    if (currentPage.value < totalPages.value) {
-      currentPage.value++;
-    }
-  };
-
-  const previousPage = () => {
-    if (currentPage.value > 1) {
-      currentPage.value--;
-    }
   };
 
   const filterClicked = () => {
@@ -321,12 +319,9 @@ export default {
     getDanhMucTrangThaiById,
     updatetrangThai,
     paginatedData,
-    totalPages,
     currentPage,
     itemsPerPage,
     changePage,
-    nextPage,
-    previousPage,
     filterClicked,
     searchString,
     search,
@@ -335,7 +330,8 @@ export default {
 },
 
   components:{
-    NavbarAdmin
+    NavbarAdmin,
+    Pagination
   },
 } 
 </script>
