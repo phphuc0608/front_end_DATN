@@ -20,7 +20,7 @@
               <button class="btn btn-primary me-2" title="Nhấn vào đây để tìm kiếm" type="button" @click="search">
                 <i class="bi bi-funnel-fill"></i> Filter
               </button>
-              <button class="btn light rev_button" title="Nhấn vào đây để xóa filter" type="button">
+              <button class="btn light rev_button" title="Nhấn vào đây để xóa filter" type="button" @click="removeFilter">
                 Remove filter
               </button>
             </div>
@@ -58,34 +58,13 @@
                 <a data-bs-toggle="modal" data-bs-target="#update_danh_muc_don_vi" class="btn btn-warning me-2 update_btn" @click="getDanhMucDonViById(donVi.ma_danh_muc_don_vi)">
                   <i class="bi bi-pencil-fill"></i>
                 </a>
-                <a class="btn del_button" @click="deleteDanhMucDonVi(donVi.ma_danh_muc_don_vi)" >
-                  <i class="bi bi-trash"></i>
-                </a>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
-    <div class="col-md-12 d-flex align-items-center justify-content-end flex-wrap px-3 py-2" style="background-color: white;">
-      <nav aria-label="Page navigation example mb-2">
-        <ul class="pagination mb-2 mb-sm-0">
-          <li class="page-item">
-            <a class="page-link" href="#" @click.prevent="previousPage">
-              <i class="bi bi-arrow-left-short"></i>
-            </a>
-          </li>
-          <li class="page-item" v-for="page in totalPages" :key="page">
-            <a class="page-link" href="#" @click.prevent="changePage(page)">{{ page }}</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="#" @click.prevent="nextPage">
-              <i class="bi bi-arrow-right-short"></i>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
+    <Pagination :totalItems="danhMucDonVis.length" :itemsPerPage="itemsPerPage" :currentPage="currentPage" @page-changed="changePage" />
     <!-- Them danh muc don vi -->
     <div style="margin-top: 200px;" class="modal" id="add_danh_muc_don_vi" tabindex="-1" role="dialog" aria-labelledby="add_danh_muc_don_vi_label" aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -147,6 +126,8 @@
 import axios from 'axios';
 import { ref, onMounted, computed } from 'vue';
 import NavbarAdmin from '../../../components/NavbarAdmin.vue';
+import Swal from 'sweetalert2';
+import Pagination from '../../../components/Pagination.vue';
 
 export default {
   setup() {
@@ -169,7 +150,12 @@ export default {
         keyboard: false
       });
     });
-    
+
+    const removeFilter = () => {
+      searchString.value = '';
+      getDanhMucDonVi();
+    };
+
     const getDanhMucDonVi = () => {
       axios.get(`/api/danh-muc-don-vi`, {
         headers: {
@@ -191,34 +177,31 @@ export default {
         ten_danh_muc_don_vi: tenDanhMucDonVi.value,
       };
       console.log(danhMucDonViData);
+      maDanhMucDonVi.value = '';
+      tenDanhMucDonVi.value = '';
       try {
         const response = await axios.post(`/api/danh-muc-don-vi`, danhMucDonViData);
-        console.log(response.data);
-        alert('Thêm danh mục đơn vị thành công');
+        Swal.fire({
+          icon: 'success',
+          title: 'Thêm danh mục đơn vị thành công',
+          showConfirmButton: false,
+          timer: 1000
+        });
         modalAdd.value.hide();
         getDanhMucDonVi(); // Refresh danhMucDonVis
+        maDanhMucDonVi.value = '';
+        tenDanhMucDonVi.value = '';
       } catch (error) {
         console.error(error);
-        alert('Thêm danh mục đơn vị thất bại');
+        Swal.fire({
+          icon: 'error',
+          title: 'Thêm danh mục đơn vị thất bại',
+          showConfirmButton: false,
+          timer: 1000
+        });
       }
     };
 
-    const deleteDanhMucDonVi = (maDanhMucDonVi) => {
-      axios.delete(`/api/danh-muc-don-vi/${maDanhMucDonVi}`, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(function(response){
-        console.log(response.data);
-        alert('Xóa danh mục đơn vị thành công');
-        getDanhMucDonVi(); // Refresh danhMucDonVis
-      })
-      .catch(function(error){
-        console.log(error);
-        alert('Xóa danh mục đơn vị thất bại');
-      });
-    }
 
   const getDanhMucDonViById = (maDanhMucDonViId) => {
     axios.get(`/api/danh-muc-don-vi/${maDanhMucDonViId}`, {
@@ -248,14 +231,23 @@ export default {
     };
     console.log(danhMucDonViData);
     try {
-      const response = await axios.put(`/api/danh-muc-don-vi/${maDanhMucDonVi.value}`, danhMucDonViData);
-      console.log(response.data);
-      alert('Cập nhật danh mục đơn vị thành công');
+      const response = await axios.patch(`/api/danh-muc-don-vi`, danhMucDonViData);
+      Swal.fire({
+        icon: 'success',
+        title: 'Cập nhật danh mục đơn vị thành công',
+        showConfirmButton: false,
+        timer: 1000
+      });
       modalUpdate.value.hide();
       getDanhMucDonVi(); // Refresh danhMucDonVis
     } catch (error) {
       console.error(error);
-      alert('Cập nhật danh mục đơn vị thất bại');
+      Swal.fire({
+        icon: 'error',
+        title: 'Cập nhật danh mục đơn vị thất bại',
+        showConfirmButton: false,
+        timer: 1000
+      });
     }
   };
 
@@ -274,24 +266,8 @@ export default {
     return danhMucDonVis.value.slice(start, end);
   });
 
-  const totalPages = computed(() => {
-    return Math.ceil(danhMucDonVis.value.length / itemsPerPage.value);
-  });
-
   const changePage = (page) => {
     currentPage.value = page;
-  };
-
-  const nextPage = () => {
-    if (currentPage.value < totalPages.value) {
-      currentPage.value++;
-    }
-  };
-
-  const previousPage = () => {
-    if (currentPage.value > 1) {
-      currentPage.value--;
-    }
   };
 
   const filterClicked = () => {
@@ -312,24 +288,22 @@ export default {
     maDanhMucDonVi,
     tenDanhMucDonVi,
     addDanhMucDonVi,
-    deleteDanhMucDonVi,
     getDanhMucDonViById,
     updateDanhMucDonVi,
     paginatedData,
-    totalPages,
     currentPage,
     itemsPerPage,
     changePage,
-    nextPage,
-    previousPage,
     filterClicked,
     search,
-    searchString
+    searchString,
+    removeFilter
   }
 },
 
   components:{
-    NavbarAdmin
+    NavbarAdmin,
+    Pagination
   },
 } 
 </script>
