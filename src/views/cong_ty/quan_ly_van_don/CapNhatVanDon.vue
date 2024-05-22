@@ -68,11 +68,13 @@
   </div>
 </template>
 <script>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import NavbarCongty from '../../../components/NavbarCongty.vue';
 import axios from 'axios';
 import router from '../../../routers/router';
 import { useRoute } from 'vue-router';
+import Swal from 'sweetalert2';
+
 export default {
   setup(){
     const route = useRoute();
@@ -157,11 +159,18 @@ export default {
       console.log(vanDon);
       try {
         await axios.put(`/api/van-don/${route.params.ma_van_don}`, vanDon);
-        alert('Cập nhật vận đơn thành công');
-        router.push('/quan_ly_van_don');
+        Swal.fire({
+          icon: 'success',
+          title: 'Cập nhật vận đơn thành công',
+        });
+        router.back('/quan_ly_van_don');
       } catch (error) {
         console.log(error);
-        alert('Cập nhật vận đơn thất bại');
+        alert();
+        Swal.fire({
+          icon: 'error',
+          title: 'Cập nhật vận đơn thất bại',
+        });
       }
     }
 
