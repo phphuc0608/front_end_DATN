@@ -45,7 +45,7 @@ import { ref, onMounted } from 'vue';
 import NavbarAdmin from '../../../components/NavbarAdmin.vue';
 import axios from 'axios';
 import router from '../../../routers/router';
-
+import Swal from 'sweetalert2';
 export default {
   setup(){
     const danhMucDonVis = ref([]);
@@ -111,11 +111,17 @@ export default {
           }
         });
         console.log(response.data);
-        alert('Thêm doanh nghiệp thành công');
-        router.push('/quan_ly_doanh_nghiep');
+        Swal.fire({
+          icon: 'success',
+          title: 'Thêm doanh nghiệp thành công',
+        });
+        router.back('/quan_ly_doanh_nghiep');
       } catch (error) {
         console.log(error);
-        alert('Thêm doanh nghiệp thất bại');
+        Swal.fire({
+          icon: 'error',
+          title: 'Thêm doanh nghiệp thất bại',
+        });
       }
     };
 
