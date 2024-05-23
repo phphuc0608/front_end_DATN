@@ -4,7 +4,7 @@
     <label for="check" class="checkbtn_sign_out">
       <i class="bi bi-list"></i>
     </label>
-    <label class="logo m-0">Company Side</label>
+    <label class="logo m-0">Công ty</label>
     <ul class="navbar_container">
       <li class="navbar_item" v-if="maVaiTro === 3"><router-link to="/quan_ly_nguoi_dung_cong_ty">Quản lý người dùng</router-link></li>
       <li class="navbar_item"><router-link to="/quan_ly_van_don">Quản lý vận đơn</router-link></li>
@@ -25,12 +25,6 @@
           </div>
           <div class="card-body px-0 py-2">
             <ul class="list-group list-group-flush">
-              <!-- <li class="card_item list-group-item border-0 py-2">
-                <router-link to="" class="nav-link">
-                  <i class="bi bi-file-earmark-person"></i>
-                  Thông tin cá nhân
-                </router-link>
-              </li> -->
               <li class="card_item list-group-item border-0 py-2">
                 <router-link to="/doi_mat_khau" class="nav-link">
                   <i class="bi bi-file-lock"></i>
@@ -57,6 +51,7 @@
 import { ref, watch } from 'vue';
 import router from '../routers/router';
 import axios from 'axios';
+import { useRoute } from 'vue-router';
 
 export default{
   setup(){
@@ -64,6 +59,7 @@ export default{
     const userName = ref(localStorage.getItem('savedEmail'));
     const tenVaiTro = ref(localStorage.getItem('savedTenVaiTro'));
     const maVaiTro = ref(parseInt(localStorage.getItem('savedMaVaiTro')));
+    const route = useRoute();
 
     watch(route, (to, from) => {
       if (to.path === '/') {
