@@ -37,7 +37,7 @@
               <button class="btn btn-primary me-2" title="Nhấn vào đây để tìm kiếm" type="button" @click="search">
                 <i class="bi bi-funnel-fill"></i> Filter
               </button>
-              <button class="btn light rev_button" title="Nhấn vào đây để xóa filter" type="button">
+              <button class="btn light rev_button" title="Nhấn vào đây để xóa filter" type="button" @click="removeFilter">
                 Remove filter
               </button>
             </div>
@@ -83,9 +83,6 @@
                 <router-link class="btn btn-warning me-2 update_btn" :to="{ name: 'CapNhatNguoiDungCongTy', params: { email: nguoiDung.email } }">
                   <i class="bi bi-pencil-fill"></i>
                 </router-link>
-                <a class="btn del_button" @click="deleteNguoiDung(nguoiDung.email)">
-                  <i class="bi bi-trash"></i>
-                </a>
               </td>
             </tr>
           </tbody>
@@ -117,7 +114,13 @@ export default {
     onMounted(() => {
       document.title = "Quản lý người dùng công ty";
     });
- 
+    
+    const removeFilter = () => {
+      searchString.value = '';
+      searchVaiTro.value = '';
+      searchDangHoatDong.value = null;
+    };
+
     const getNguoiDungs = () => {
       axios.get(`/api/nguoi-dung?search_string=${savedThuocDonVi.value}`, {
         headers: {
@@ -133,27 +136,6 @@ export default {
       });
     };
 
-    
-
-    const deleteNguoiDung = async (email) => {
-      try {
-        const response = await axios.delete(`/api/nguoi-dung/${email}`, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });  
-        Swal.fire({
-          icon: 'success',
-          title: 'Xóa người dùng thành công',
-        });
-        setTimeout(getNguoiDungs, 1000);
-      } catch (error) { 
-        Swal.fire({
-          icon: 'error',
-          title: 'Xóa người dùng thất bại',
-        });
-      }
-    };
 
     const getDanhMucVaiTro = () => {
       axios.get(`/api/danh-muc-vai-tro`, {
@@ -230,14 +212,14 @@ export default {
       itemsPerPage,
       changePage,
       filterClicked,
-      deleteNguoiDung,
       searchString,
       search,
       searchVaiTro,
       vaiTros,
       filteredNguoiDungs,
       savedThuocDonVi,
-      searchDangHoatDong
+      searchDangHoatDong,
+      removeFilter
     }
   },
   components:{
