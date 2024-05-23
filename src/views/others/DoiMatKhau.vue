@@ -1,17 +1,24 @@
 <template>
-  <div class="container pt-5">
-    <h1>Đổi mật khẩu</h1>
-    <form>
-      <div class="mb-3">
-        <label for="old_password" class="form-label">Mật khẩu cũ</label>
-        <input type="password" class="form-control" id="old_password" v-model="oldPassword">
+  <div class="d-flex align-items-center justify-content-center" style="height: 100vh;">
+    <div id="changePasswordBox" class="container mt-5 p-4">
+      <div id="header">
+        <button class="btn btn-primary mb-3" @click="buttonBack">
+          <i class="bi bi-arrow-left"></i>
+        </button>
+        <h1>Đổi mật khẩu</h1>
       </div>
-      <div class="mb-3">
-        <label for="new_password" class="form-label">Mật khẩu mới</label>
-        <input type="password" class="form-control" id="new_password" v-model="newPassword">
-      </div>
-      <button type="button" class="btn btn-primary" @click="updatePassword">Cập nhật</button>
-    </form>
+      <form>
+        <div class="mb-3">
+          <label for="old_password" class="form-label">Mật khẩu cũ</label>
+          <input type="password" class="form-control" id="old_password" v-model="oldPassword">
+        </div>
+        <div class="mb-3">
+          <label for="new_password" class="form-label">Mật khẩu mới</label>
+          <input type="password" class="form-control" id="new_password" v-model="newPassword">
+        </div>
+        <button type="button" class="btn btn-primary" @click="updatePassword">Cập nhật</button>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -34,6 +41,10 @@ export default {
       }
       document.title = 'Đổi mật khẩu';
     });
+
+    const buttonBack = () => {
+      router.back();
+    };
 
     const updatePassword = async() => {
       const updatePasswordData = {
@@ -67,11 +78,17 @@ export default {
     return {
       oldPassword,
       newPassword,
-      updatePassword
+      updatePassword,
+      buttonBack
     };
   }
 };
 </script>
 <style scoped>
-
+#changePasswordBox{
+  border: 1px solid black;
+  border-radius: 10px;
+  width: 50%;
+  margin: auto;
+}
 </style>
