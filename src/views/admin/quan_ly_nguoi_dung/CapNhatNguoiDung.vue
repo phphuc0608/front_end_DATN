@@ -79,7 +79,6 @@ export default {
       })
       .then(function(response){
         donVis.value = response.data;
-        console.log(response.data); 
       })
       .catch(function(error){
         console.log(error);
@@ -93,7 +92,6 @@ export default {
       })
       .then(function(response){
         vaiTros.value = response.data;
-        console.log(response.data); 
       })
       .catch(function(error){
         console.log(error);
@@ -174,6 +172,7 @@ export default {
           icon: 'success',
           title: 'Mở tài khoản thành công',
         });
+        router.push('/quan_ly_nguoi_dung');
       } catch (error) {
         console.log(error);
         Swal.fire({
