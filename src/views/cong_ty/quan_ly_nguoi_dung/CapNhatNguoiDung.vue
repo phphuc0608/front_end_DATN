@@ -19,16 +19,6 @@
           <input v-model="soDienThoai" type="text" class="form-control" :class="{'is-invalid': soDienThoaiError}" placeholder="Nhập số điện thoại" :title="soDienThoaiError ? 'Số điện thoại phải đủ 10 ký tự' : ''" required>
         </div>
         <div class="col-md-6">
-          <label for="" class="col-form-label">Mật khẩu</label>
-          <input v-model="matKhau" type="password" class="form-control" placeholder="Nhập mật khẩu">
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <label for="" class="col-form-label">Nhập lại mật khẩu</label>
-          <input v-model="matKhauNhapLai" type="password" :class="{'is-invalid': matKhauError}" class="form-control" placeholder="Nhập lại mật khẩu" :title="matKhauError ? 'Mật khẩu không trùng khớp' : ''">
-        </div>
-        <div class="col-md-6">
           <label for="" class="col-form-label">Thuộc đơn vị</label>
           <input v-model="maDonVi" class="form-control h-auto wide" required/>
         </div>
@@ -42,8 +32,9 @@
           </select>
         </div>
         <form class="col-md-6 d-flex align-items-center" style="margin-top: 36px;">
-          <button class="btn btn-success me-3" @click.prevent="updateDangHoatDong(true)">Mở tài khoản</button>
-          <button class="btn btn-danger" @click.prevent="updateDangHoatDong(false)">Khóa tài khoản</button>
+          <button class="btn btn-success me-3" @click.prevent="moTaiKhoan">Mở tài khoản</button>
+          <button class="btn btn-danger me-3" @click.prevent="khoaTaiKhoan">Khóa tài khoản</button>
+          <button class="btn btn-primary" @click.prevent="khoiPhucMatKhau">Khôi phục mật khẩu</button>
         </form>
       </div>  
       <div class="d-flex justify-content-start mt-4">
@@ -145,6 +136,56 @@ export default {
       }
     }
 
+    const khoiPhucMatKhau = async() => {
+      try{
+        await axios.patch(`/api/nguoi-dung/${email.value}/khoi-phuc-mat-khau`);
+        Swal.fire({
+          icon: 'success',
+          title: 'Khôi phục mật khẩu thành công',
+        });
+      } catch (error) {
+        console.log(error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Khôi phục mật khẩu thất bại',
+        });
+      }
+    }
+
+    const moTaiKhoan = async() => {
+      try {
+        await axios.patch(`/api/nguoi-dung/${email.value}/mo-khoa-tai-khoan`);
+        Swal.fire({
+          icon: 'success',
+          title: 'Mở tài khoản thành công',
+        });
+        router.push('/quan_ly_nguoi_dung_cong_ty');
+      } catch (error) {
+        console.log(error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Mở tài khoản thất bại',
+        });
+      }
+    }
+
+    const khoaTaiKhoan = async() => {
+      try {
+        await axios.patch(`/api/nguoi-dung/${email.value}/khoa-tai-khoan`);
+        Swal.fire({
+          icon: 'success',
+          title: 'Khóa tài khoản thành công',
+        });
+        router.push('/quan_ly_nguoi_dung_cong_ty');
+      } catch (error) {
+        console.log(error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Khóa tài khoản thất bại',
+        });
+      }
+    }
+
     const validateEmail = () => {
       const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       emailError.value = !re.test(email.value);
@@ -183,7 +224,10 @@ export default {
       validatePasswords,
       validateSoDienThoai,
       updateNguoiDung,
-      updateDangHoatDong
+      updateDangHoatDong,
+      khoiPhucMatKhau,
+      moTaiKhoan,
+      khoaTaiKhoan
     }
   },
   components: {
