@@ -5,44 +5,66 @@
     <div id="search_box" class="box_container col-md-12">
     </div>
   </div>
-  <div class="container-fluid px-5">
-    <div class="header_container">
-      <span class="title">
-        <i class="bi bi-table"></i> Bảng dữ liệu phương tiện mới nhất
-      </span>
-    </div>
-    <div class="table_container p-3">
-      <div class="table-responsive">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Biển số</th>
-              <th>Mã trạng thái</th>
-              <th>Mã lịch sử</th>
-              <th>Thời gian</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="vanDon in firstVanDon" :key="vanDon.bien_so">
-              <td>{{ vanDon.bien_so }}</td>
-              <td>{{ vanDon.trang_thai_phuong_tien.ten_trang_thai}}</td>
-              <td>{{ vanDon.ma_lich_su }}</td>
-              <td>{{ vanDon.thoi_gian }}</td>
-            </tr>
-          </tbody>
-        </table>
+  <div class="container-fluid d-flex justify-content-center align-items-center">
+    <div id="table_container" class="col-md-7 me-5">
+      <div class="header_container">
+        <span class="title">
+          <i class="bi bi-table"></i> Bảng dữ liệu phương tiện mới nhất
+        </span>
+      </div>
+      <div class="table_container p-3">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Biển số</th>
+                <th>Mã trạng thái</th>
+                <th>Mã lịch sử</th>
+                <th>Thời gian</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="vanDon in firstVanDon" :key="vanDon.bien_so">
+                <td>{{ vanDon.bien_so }}</td>
+                <td>{{ vanDon.trang_thai_phuong_tien.ten_trang_thai}}</td>
+                <td>{{ vanDon.ma_lich_su }}</td>
+                <td>{{ vanDon.thoi_gian }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="header_container mt-3">
+        <span class="title">
+          <i class="bi bi-table"></i> Bảng vận đơn của phương tiện
+        </span>
+      </div>
+      <div class="table_container p-3">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Mã vận đơn</th>
+                <th scope="col">Tên hàng hóa</th>
+                <th scope="col">Biển số xe</th>
+                <th scope="col">Ngày tạo vận đơn</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="vanDon in vanDons" :key="vanDon.bien_so">
+                <td>{{ vanDon.ma_van_don }}</td>
+                <td>{{ vanDon.ten_hang_hoa }}</td>
+                <td>{{ vanDon.bien_so }}</td>
+                <td>{{ vanDon.ngay_tao_van_don }}</td>      
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-    <div id="btn_container" class="py-3">
-      <button class="btn btn-success me-3" @click="confirmVanDon">
-        <i class="bi bi-check-circle-fill"></i> Xác nhận
-      </button>
-      <button class="btn btn-danger">
-        <i class="bi bi-x-circle-fill"></i> Từ chối
-      </button>
-    </div>
     <div id="img_container" class="mt-3 text-center">
-      <img :src="imageUrl" alt="">
+      <img :src="imageUrl" class="p-3" alt="" id="imageUrl"><br>
+      <img :src="imageCrop" alt="" id="imageCrop">
     </div>
   </div>
 </template>
@@ -56,16 +78,26 @@ export default {
   setup() {
     const firstVanDon = ref([]);
     const imageUrl = ref('http://42.115.62.251:8000/api/lich-su-phuong-tien/lastest/image');
+    const imageCrop = ref('http://42.115.62.251:8000/api/lich-su-phuong-tien/lastest/image_crop');
     const currentBienSo = ref('');
+    const vanDons = ref([]);
+    const toKhais = ref([]);
+    const maVanDon = ref(0);
+    const ngayDangKy = ref(new Date().toISOString().substr(0, 10));
     let intervalId;
 
     const getLastestImage = () => {
       imageUrl.value = `http://42.115.62.251:8000/api/lich-su-phuong-tien/lastest/image?time=${new Date().getTime()}`;
     }
 
+    const getImageCrop = () => {
+      imageCrop.value = `http://42.115.62.251:8000/api/lich-su-phuong-tien/lastest/image_crop?time=${new Date().getTime()}`
+    }
+
     onMounted(() => {
       document.title = "Quản lý xe ra vào";
       intervalId = setInterval(getLastestImage, 1000);
+      intervalId = setInterval(getImageCrop, 1000);
     });
 
     onUnmounted(() => {
@@ -77,36 +109,53 @@ export default {
         const response = await axios.get(`/api/lich-su-phuong-tien/lastest`)
         firstVanDon.value = [response.data];
         currentBienSo.value = response.data.bien_so;
+        getToKhais(); // Call getToKhais after currentBienSo.value is updated
       } catch (error) {
         console.log(error);
       }
     }
 
-    const confirmVanDon = () => {
-      if(firstVanDon.value.length === 0){
-        return;
-      }else{
-        axios.post(`/api/lich-su-phuong-tien`, {
-          bien_so: bien_so,
-          ma_trang_thai: 3,
-          anh: ""
-        })
-        .then(function(response){
-          console.log(response.data);
-          getfirstVanDon(); // Refresh the data
-        })
-        .catch(function(error){
-          console.log(error);
-        });
+    const getToKhais = async() => {
+      axios.get(`/api/to-khai/ngay-dang-ky/${ngayDangKy.value}/bien-so/${currentBienSo.value}`, {
+        headers: {
+          'Content-Type': 'application/json',
         }
+      })
+      .then(function(response){
+        toKhais.value = response.data;
+        maVanDon.value = response.data.ma_van_don;
+        console.log(response.data);
+        getVanDons(); // Call getVanDons after maVanDon.value is updated
+      })
+      .catch(function(error){
+        console.log(error);
+      });
     }
+
+    const getVanDons = () => {
+      axios.get(`/api/van-don/${maVanDon.value}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      .then(function(response){
+        vanDons.value = [response.data];
+        console.log(response.data); 
+      })
+      .catch(function(error){
+        console.log(error);
+      });
+    };
 
     getFirstVanDon();
     getLastestImage();
-    confirmVanDon();
+    getVanDons();
+    getToKhais();
+    getImageCrop();
 
     setInterval(() => {
       getFirstVanDon();
+      getVanDons();
     }, 1000);
 
     return{
@@ -114,9 +163,15 @@ export default {
       imageUrl,
       currentBienSo,
       intervalId,
-      confirmVanDon,
       getFirstVanDon,
-      getLastestImage
+      getLastestImage,
+      vanDons,
+      toKhais,
+      maVanDon,
+      ngayDangKy,
+      getToKhais,
+      getVanDons,
+      imageCrop
     }
   },
   components:{
@@ -218,8 +273,12 @@ export default {
   color: white;
   border-color: #452B90; 
 }
-#img_container img {
-  width: 50%;
-  height: auto;
+#img_container #imageCrop {
+  width: 200px;
+  height: 100px; ;
+}
+#img_container #imageUrl {
+  width: 400px;
+  height: 250px;
 }
 </style>
