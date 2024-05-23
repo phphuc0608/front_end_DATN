@@ -11,11 +11,6 @@
         <div class="col-md-6">
           <label for="" class="col-form-label">Đơn vị đăng ký</label>
           <input type="text" v-model="maDonVi" class="form-control h-auto wide" required readonly>
-          <!-- <select v-model="maDonVi" class="form-control form-select h-auto wide" required>
-            <option v-for="donVi in donVis" :key="donVi.ma_don_vi" :value="donVi.ma_don_vi">
-              {{ donVi.ten_don_vi }}
-            </option>
-          </select> -->
         </div>
       </div>
       <div class="row">
@@ -26,6 +21,10 @@
               {{ ToKhai.ma_van_don }} - {{ ToKhai.ten_hang_hoa }}
             </option>
           </select>
+        </div>
+        <div class="col-md-6">
+          <label for="" class="col-form-label">Ngày đăng ký</label>
+          <input type="date" class="form-control h-auto wide" v-model="ngayDangKy" required>
         </div>
       </div> 
       <div class="d-flex justify-content-start mt-4">
@@ -50,6 +49,7 @@ export default {
     const maDonVi = ref(localStorage.getItem('savedThuocDonVi'));
     const maToKhai = ref('');
     const emailError = ref(false);
+    const ngayDangKy = ref('');
 
     const resetForm = () => {
       maToKhai.value = '';
@@ -90,10 +90,10 @@ export default {
         return;
       }
       const toKhaiData = {
-        email_nguoi_dang_ky: email.value,
+        email: email.value,
         don_vi_dang_ky: maDonVi.value,
-        ma_trang_thai: 1,
         ma_van_don: maToKhai.value,
+        ngay_dang_ky: ngayDangKy.value
       };
       console.log(toKhaiData);
       try {
@@ -128,6 +128,7 @@ export default {
       donVis,
       resetForm,
       email,
+      ngayDangKy,
       maDonVi,
       maToKhai,
       vanDons,
