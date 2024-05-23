@@ -73,11 +73,6 @@ const routes = [
     name: 'LichSuToKhai',
     component: () => import('../views/admin/quan_ly_lich_su/LichSuToKhai.vue')
   },
-  {
-    path: '/lich_su_van_don',
-    name: 'LichSuVanDon',
-    component: () => import('../views/admin/quan_ly_lich_su/LichSuVanDon.vue')
-  },
   //Công ty
   {
     path: '/quan_ly_to_khai',
@@ -129,6 +124,11 @@ const routes = [
     name: 'ThongKeCongTy',
     component: () => import('../views/cong_ty/thong_ke/ThongKe.vue')
   },
+  {
+    path: '/chi_tiet_van_don/:ma_van_don',
+    name: 'ChiTietVanDon',
+    component: () => import('../views/cong_ty/quan_ly_van_don/ChiTietVanDon.vue')
+  },
   //Cửa khẩu
   {
     path: '/quan_ly_nguoi_dung_cua_khau',
@@ -159,6 +159,11 @@ const routes = [
     path: '/thong_ke_cua_khau',
     name: 'ThongKeCuaKhau',
     component: () => import('../views/cua_khau/ThongKe.vue')
+  },
+  {
+    path: '/quan_ly_to_khai_cua_khau',
+    name: 'QuanLyToKhaiCuaKhau',
+    component: () => import('../views/cua_khau/QuanLyToKhai.vue')
   }
 ];
 
@@ -183,10 +188,9 @@ router.beforeEach((to, from, next) => {
     'QuanLyTrangThaiToKhai',
     'LichSuTaiKhoan',
     'LichSuToKhai',
-    'LichSuVanDon'
   ];
-  const cuaKhauRoutes = ['QuanLyNguoiDungCuaKhau', 'ThemNguoiDungCuaKhau', 'CapNhatNguoiDungCuaKhau', 'QuanLyXeRaVao', 'LichSuPhuongTien', 'ThongKeCuaKhau', 'DoiMatKhau'];
-  const congTyRoutes = ['QuanLyNguoiDungCongTy', 'ThemNguoiDungCongTy', 'CapNhatNguoiDungCongTy', 'QuanLyToKhai', 'ThemToKhai', 'CapNhatToKhai', 'QuanLyVanDon', 'ThemVanDon', 'CapNhatVanDon', 'ThongKeCongTy', 'DoiMatKhau'];
+  const cuaKhauRoutes = ['QuanLyNguoiDungCuaKhau', 'ThemNguoiDungCuaKhau', 'CapNhatNguoiDungCuaKhau', 'QuanLyXeRaVao', 'LichSuPhuongTien', 'ThongKeCuaKhau', 'DoiMatKhau', 'QuanLyToKhaiCuaKhau'];
+  const congTyRoutes = ['QuanLyNguoiDungCongTy', 'ThemNguoiDungCongTy', 'CapNhatNguoiDungCongTy', 'QuanLyToKhai', 'ThemToKhai', 'CapNhatToKhai', 'QuanLyVanDon', 'ThemVanDon', 'CapNhatVanDon', 'ThongKeCongTy', 'DoiMatKhau', 'ChiTietVanDon'];
   const cuaKhauRestrictedRoutes = ['quan_ly_nguoi_dung_cua_khau'];
   const congTyRestrictedRoutes = ['quan_ly_nguoi_dung_cong_ty'];
 
@@ -213,6 +217,7 @@ router.beforeEach((to, from, next) => {
       localStorage.removeItem('savedThuocDonVi');
       localStorage.removeItem('token');
       localStorage.removeItem('savedTenVaiTro');
+      router.push('/');
     });
   }
 });
