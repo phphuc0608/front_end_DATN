@@ -4,7 +4,7 @@
     <label for="check" class="checkbtn_sign_out">
       <i class="bi bi-list"></i>
     </label>
-    <label class="logo m-0">Admin Side</label>
+    <label class="logo m-0">Admin</label>
     <ul class="navbar_container">
       <li class="navbar_item"><router-link to="/quan_ly_nguoi_dung">Quản lý người dùng</router-link></li>
       <li class="navbar_item"><router-link to="/quan_ly_doanh_nghiep">Quản lý doanh nghiệp</router-link></li>
@@ -44,12 +44,6 @@
           </div>
           <div class="card-body px-0 py-2">
             <ul class="list-group list-group-flush">
-              <li class="card_item list-group-item border-0 py-2">
-                <router-link to="" class="nav-link">
-                  <i class="bi bi-file-earmark-person"></i>
-                  Thông tin cá nhân
-                </router-link>
-              </li>
               <li class="card_item list-group-item border-0 py-2">
                 <router-link to="" class="nav-link">
                   <i class="bi bi-file-lock"></i>
