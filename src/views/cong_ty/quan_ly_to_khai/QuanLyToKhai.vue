@@ -11,13 +11,22 @@
       </div>
       <div id="search_box_content">
         <div class="row">
-          <div class="col-md-9 col-sm-6">
+          <div class="col-md-6 col-sm-6">
             <label class="form-label">Tìm kiếm</label>
-            <input type="text" class="form-control mb-xl-0 mb-3" placeholder="Tìm kiếm">
+            <input type="text" class="form-control mb-xl-0 mb-3" placeholder="Tìm kiếm" v-model="searchString">
+          </div>
+          <div class="col-md-3 col-sm-6">
+            <label class="form-label">Trạng thái tờ khai</label>
+            <select class="form-control form-select h-auto wide" v-model="maTrangThai">
+              <option></option>
+              <option v-for="(trangThaiToKhai, index) in trangThaiToKhais" :key="index" :value="trangThaiToKhai.ma_trang_thai">
+                {{ trangThaiToKhai.ten_trang_thai }}
+              </option>
+            </select>
           </div>
           <div class="col-xl-3 col-sm-6 align-self-end">
             <div>
-              <button class="btn btn-primary me-2" title="Nhấn vào đây để tìm kiếm" type="button">
+              <button class="btn btn-primary me-2" title="Nhấn vào đây để tìm kiếm" type="button" @click="search">
                 <i class="bi bi-funnel-fill"></i> Filter
               </button>
               <button class="btn light rev_button" title="Nhấn vào đây để xóa filter" type="button">
@@ -48,7 +57,7 @@
             <tr>
               <th scope="col">Mã tờ khai</th>
               <th scope="col">Đơn vị đăng ký</th>
-              <th scope="col">Vận đơn</th>
+              <th scope="col">Mã vận đơn</th>
               <th scope="col">Trạng thái</th>
               <th scope="col">Ngày đăng ký</th>
               <th scope="col" class="text-end">Hành động</th>
@@ -58,7 +67,9 @@
             <tr v-for="(toKhai, index) in paginatedData" :key="index">
               <td>{{ toKhai.ma_to_khai }}</td>
               <td>{{ toKhai.don_vi_dang_ky }}</td>
-              <td>{{ toKhai.van_don.ten_hang_hoa }}</td>
+              <td>
+                <router-link :to="{ name: 'ChiTietVanDon', params: { ma_van_don: toKhai.ma_van_don } }">{{ toKhai.ma_van_don }}</router-link>
+              </td>
               <td>{{ toKhai.trang_thai_to_khai.ten_trang_thai }}</td>
               <td>{{ toKhai.ngay_dang_ky }}</td>
               <td class="text-end">
@@ -89,9 +100,12 @@ import Pagination from '../../../components/Pagination.vue';
 export default {
   setup() {
     const toKhais = ref([]);
+    const trangThaiToKhais = ref([]);
     const currentPage = ref(1);
     const itemsPerPage = ref(5);
     const maDonVi = ref(localStorage.getItem('savedThuocDonVi'));
+    const maTrangThai = ref('');
+    const searchString = ref('');
     
     onMounted(() => {
       document.title = "Quản lý tờ khai";
@@ -106,6 +120,20 @@ export default {
       .then(function(response){
         toKhais.value = response.data;
         console.log(response.data); 
+      })
+      .catch(function(error){
+        console.log(error);
+      });
+    };
+
+    const getTrangThaiToKhais = () => {
+      axios.get('/api/trang-thai-to-khai', {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      .then(function(response){
+        trangThaiToKhais.value = response.data;
       })
       .catch(function(error){
         console.log(error);
@@ -164,6 +192,20 @@ export default {
       }
     };
 
+        
+    const search = async() =>{
+      try {
+        const response = await axios.get(`/api/to-khai/doanh-nghiep/${maDonVi.value}?search_string=${searchString.value}&ma_trang_thai=${maTrangThai.value}`, {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+        toKhais.value = response.data;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
     const paginatedData = computed(() => {
       const start = (currentPage.value - 1) * itemsPerPage.value;
       const end = start + itemsPerPage.value;
@@ -187,15 +229,20 @@ export default {
     };
 
     getToKhais();
+    getTrangThaiToKhais();
     return{
       toKhais,
+      trangThaiToKhais,
       paginatedData,
       currentPage,
       itemsPerPage,
       changePage,
       filterClicked,
       deleteToKhai,
-      getToKhaiData
+      getToKhaiData,
+      maTrangThai,
+      search,
+      searchString
     }
   },
 
