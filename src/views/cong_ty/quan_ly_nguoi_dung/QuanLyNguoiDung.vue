@@ -97,7 +97,6 @@
 import axios from 'axios';
 import { ref, onMounted, computed, watch} from 'vue';
 import NavbarCongty from '../../../components/NavbarCongty.vue';
-import Swal from 'sweetalert2';
 import Pagination from '../../../components/Pagination.vue';
 
 export default {
