@@ -25,7 +25,6 @@
         </a>
         <div class="sub-menu" aria-labelledby="navbarDropdown" style="width: 100%;">
           <router-link class="dropdown-item" to="/lich_su_tai_khoan">Lịch sử tài khoản</router-link>
-          <router-link class="dropdown-item" to="/lich_su_van_don">Lịch sử vận đơn</router-link>
           <router-link class="dropdown-item" to="/lich_su_to_khai">Lịch sử tờ khai</router-link> 
         </div>
       </li>
