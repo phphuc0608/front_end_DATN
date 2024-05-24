@@ -1,0 +1,3 @@
+axios
+sweetalert2
+js-file-download
