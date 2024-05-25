@@ -7,7 +7,7 @@
         </button>
         <h1>Đổi mật khẩu</h1>
       </div>
-      <form>
+      <form @submit.prevent.once="updatePassword">
         <div class="mb-3">
           <label for="old_password" class="form-label">Mật khẩu cũ</label>
           <input type="password" class="form-control" id="old_password" v-model="oldPassword">
@@ -16,7 +16,7 @@
           <label for="new_password" class="form-label">Mật khẩu mới</label>
           <input type="password" class="form-control" id="new_password" v-model="newPassword">
         </div>
-        <button type="button" class="btn btn-primary" @click="updatePassword">Cập nhật</button>
+        <button type="submit" class="btn btn-primary" :disabled="isUpdatingPassword.value">Cập nhật</button>
       </form>
     </div>
   </div>
@@ -28,13 +28,13 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import router from '../../routers/router';
 
-
 export default {
   setup() {
     const oldPassword = ref('');
     const newPassword = ref('');
     const email = localStorage.getItem('savedEmail');
-    
+    const isUpdatingPassword = ref(false);
+
     onMounted(() => {
       if (!email) {
         router.push('/');
@@ -46,18 +46,38 @@ export default {
       router.back();
     };
 
+    const addLichSuTaiKhoan = async() => {
+      const lichSuData = {
+        email: email,
+        ma_hanh_dong: 3,
+      }
+      try {
+        await axios.post('/api/lich-su-tai-khoan', lichSuData, { 
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+      } catch(error) {
+        console.log(error);
+      }
+    }
+
     const updatePassword = async() => {
+      if (isUpdatingPassword.value) return;
+      isUpdatingPassword.value = true;
       const updatePasswordData = {
         old_password: oldPassword.value,
         new_password: newPassword.value
       };
-      console.log(updatePasswordData);
-      try{
+      try {
         const response = await axios.patch(`/api/nguoi-dung/${email}/doi-mat-khau?old_password=${oldPassword.value}&new_password=${newPassword.value}`, updatePasswordData);
+        await addLichSuTaiKhoan();
         Swal.fire({
           icon: 'success',
           title: 'Thành công',
-          text: 'Đổi mật khẩu thành công'
+          text: 'Đổi mật khẩu thành công',
+          showConfirmButton: false,
+          timer: 1500
         });
         router.push('/');
         localStorage.removeItem('savedEmail');
@@ -65,30 +85,32 @@ export default {
         localStorage.removeItem('savedThuocDonVi');
         localStorage.removeItem('savedTenVaiTro');
         localStorage.removeItem('token');
-      }
-      catch(error){
+      } catch(error) {
         Swal.fire({
           icon: 'error',
           title: 'Thất bại',
           text: 'Đổi mật khẩu thất bại'
         });
-      
+      } finally {
+        isUpdatingPassword.value = false;
       }
     };
+
     return {
       oldPassword,
       newPassword,
       updatePassword,
-      buttonBack
+      buttonBack,
+      isUpdatingPassword,
     };
   }
 };
 </script>
 <style scoped>
-#changePasswordBox{
-  border: 1px solid black;
-  border-radius: 10px;
-  width: 50%;
-  margin: auto;
-}
+  #changePasswordBox {
+    border: 1px solid black;
+    border-radius: 10px;
+    width: 50%;
+    margin: auto;
+  }
 </style>
