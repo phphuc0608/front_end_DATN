@@ -44,7 +44,7 @@
           <div class="card-body px-0 py-2">
             <ul class="list-group list-group-flush">
               <li class="card_item list-group-item border-0 py-2">
-                <router-link to="" class="nav-link">
+                <router-link to="/doi_mat_khau" class="nav-link">
                   <i class="bi bi-file-lock"></i>
                   Đổi mật khẩu
                 </router-link>
@@ -106,7 +106,6 @@ export default{
             'Content-Type': 'application/json'
           }
         });
-        console.log(response.data);
       } catch (error) {
         console.log(error);
       }
