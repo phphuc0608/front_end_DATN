@@ -70,6 +70,23 @@ export default {
     const emailError = ref(false);
     const soDienThoaiError = ref(false);
 
+
+    const addLichSuKhoiPhucMatKhau = async()=>{
+      const lichSuData = {
+        email: email.value,
+        ma_hanh_dong: 7,
+      }
+      try {
+        await axios.post(`/api/lich-su-tai-khoan`, lichSuData, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
     const getdonVis = () => {
       axios.get(`/api/don-vi`, {
         headers: {
@@ -152,6 +169,7 @@ export default {
     const khoiPhucMatKhau = async() => {
       try{
         await axios.patch(`/api/nguoi-dung/${email.value}/khoi-phuc-mat-khau`);
+        addLichSuKhoiPhucMatKhau();
         Swal.fire({
           icon: 'success',
           title: 'Khôi phục mật khẩu thành công',
