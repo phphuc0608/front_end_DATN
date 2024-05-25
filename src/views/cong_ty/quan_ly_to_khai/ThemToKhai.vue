@@ -2,6 +2,7 @@
   <NavbarCongty/>
   <div id="content" class="container">
     <h3 class="my-4 text-left">THÊM TỜ KHAI</h3>
+    <Calendar/>
     <form @submit.prevent="addToKhai">
       <div class="row">
         <div class="col-md-6">
@@ -37,8 +38,10 @@
 <script>
 import { ref, onMounted } from 'vue';
 import NavbarCongty from '../../../components/NavbarCongty.vue';
+import Calendar from '../../../components/Calendar.vue';
 import axios from 'axios';
 import router from '../../../routers/router';
+
 import Swal from 'sweetalert2';
 
 export default {
@@ -138,7 +141,8 @@ export default {
     }
   },
   components: {
-    NavbarCongty
+    NavbarCongty,
+    Calendar
   },
 }
 </script>
