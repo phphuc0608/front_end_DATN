@@ -113,9 +113,9 @@ export default {
         if (Number(ma_vai_tro) === 1) {
           router.push('/quan_ly_nguoi_dung');
         } else if (Number(ma_vai_tro) === 3 || Number(ma_vai_tro) === 5) {
-          router.push('/quan_ly_van_don');
+          router.push('/thong_ke_cong_ty');
         } else if (Number(ma_vai_tro) === 2 || Number(ma_vai_tro) === 4) {
-          router.push('/quan_ly_xe_ra_vao');
+          router.push('/thong_ke_cua_khau');
         } 
       } catch (error) {
         console.error(error);
