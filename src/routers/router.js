@@ -188,8 +188,9 @@ router.beforeEach((to, from, next) => {
     'QuanLyTrangThaiToKhai',
     'LichSuTaiKhoan',
     'LichSuToKhai',
+    'DoiMatKhau',
   ];
-  const cuaKhauRoutes = ['QuanLyNguoiDungCuaKhau', 'ThemNguoiDungCuaKhau', 'CapNhatNguoiDungCuaKhau', 'QuanLyXeRaVao', 'LichSuPhuongTien', 'ThongKeCuaKhau', 'DoiMatKhau', 'QuanLyToKhaiCuaKhau'];
+  const cuaKhauRoutes = ['QuanLyNguoiDungCuaKhau', 'ThemNguoiDungCuaKhau', 'CapNhatNguoiDungCuaKhau', 'QuanLyXeRaVao', 'LichSuPhuongTien', 'ThongKeCuaKhau', 'DoiMatKhau', 'QuanLyToKhaiCuaKhau', 'DoiMatKhau'];
   const congTyRoutes = ['QuanLyNguoiDungCongTy', 'ThemNguoiDungCongTy', 'CapNhatNguoiDungCongTy', 'QuanLyToKhai', 'ThemToKhai', 'CapNhatToKhai', 'QuanLyVanDon', 'ThemVanDon', 'CapNhatVanDon', 'ThongKeCongTy', 'DoiMatKhau', 'ChiTietVanDon'];
   const cuaKhauRestrictedRoutes = ['quan_ly_nguoi_dung_cua_khau'];
   const congTyRestrictedRoutes = ['quan_ly_nguoi_dung_cong_ty'];
