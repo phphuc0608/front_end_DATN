@@ -2,7 +2,8 @@
 <NavbarCuakhau/>
 <div id="content" class="container-fluid px-5">
     <h3 class="text-center" style="margin-top: 120px; margin-bottom: 60px;">QUẢN LÝ TỜ KHAI</h3>
-        <div id="search_box" class="box_container col-md-12">
+    <Calendar/> 
+    <div id="search_box" class="box_container col-md-12 mt-3">
       <div id="search_box_header" class="header_container d-flex justify-content-between align-items-center">
         <span class="title">
           <i class="bi bi-funnel-fill"></i> Filter
@@ -66,6 +67,7 @@ import axios from 'axios';
 import { ref, onMounted, computed } from 'vue';
 import NavbarCuakhau from '../../components/NavbarCuakhau.vue';
 import Pagination from '../../components/Pagination.vue';
+import Calendar from '../../components/Calendar.vue';
 
 export default {
   setup() {
@@ -168,7 +170,8 @@ export default {
 
   components:{
     NavbarCuakhau,
-    Pagination
+    Pagination,
+    Calendar
   },
 } 
 </script>
