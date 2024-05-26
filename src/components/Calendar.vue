@@ -18,12 +18,17 @@
         </div>
         </div>
       <div class="calendar-body">
-        <div v-for="day in days" :key="day" :class="['calendar-day', { 'current-day': day === today }]" > 
-          {{ day }}
-          <div v-if="toKhaiCounts[day]" :class="['to-khai-count', { 'current-day': day === today }]">
-            {{ toKhaiCounts[day] }} tờ khai
-          </div>
+        <div v-for="day in days" :key="day" 
+          :class="['calendar-day', 
+                    { 'current-day': day === today },
+                    { 'min-to-khai': toKhaiCounts[day] === minToKhaiCount },
+                    { 'max-to-khai': toKhaiCounts[day] === maxToKhaiCount }
+                  ]">
+        {{ day }}
+        <div v-if="toKhaiCounts[day]" class="to-khai-count">
+          {{ toKhaiCounts[day] }} tờ khai
         </div>
+      </div>
       </div>
     </div>
   </div>
@@ -106,6 +111,16 @@ export default {
       await fetchToKhaiCounts(); 
     };
 
+    const minToKhaiCount = computed(() => {
+      const values = Object.values(toKhaiCounts.value);
+      return Math.min(...values);
+    });
+
+    const maxToKhaiCount = computed(() => {
+      const values = Object.values(toKhaiCounts.value);
+      return Math.max(...values);
+    });
+
     onMounted(() => {
       fetchToKhaiCounts();
     });
@@ -126,7 +141,9 @@ export default {
       today,
       updateYear,
       currentYear,
-      yearRange
+      yearRange,
+      minToKhaiCount,
+      maxToKhaiCount,
     };
   },
 };
@@ -172,6 +189,16 @@ export default {
 }
 .calendar-day.current-day, 
 .calendar-day.current-day .to-khai-count {
+  color: white;
+}
+
+.min-to-khai {
+  background-color: #4CAF50; /* Màu xanh lá cây */
+  color: white;
+}
+
+.max-to-khai {
+  background-color: #f44336; /* Màu đỏ */
   color: white;
 }
 </style>
