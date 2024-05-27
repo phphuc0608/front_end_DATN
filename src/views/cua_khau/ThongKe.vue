@@ -61,171 +61,65 @@ use([BarChart, TitleComponent, TooltipComponent, CanvasRenderer,LegendComponent,
 
 export default {
   setup() {
-    const vanDons = ref([]);
-    const maDonVi = ref(localStorage.getItem('savedThuocDonVi'));
+    const maDonVi = ref(1);
     const totalVanDons = ref(0);
     const toKhais = ref([]);
     const totalToKhais = ref(0);
-    const vanDonTheoThang = ref(0);
-    const vanDonThangTruoc = ref(0);
     const thangHienTai = ref(new Date().getMonth() + 1);
-    const thangTruoc = ref(thangHienTai.value - 1);
     const ngayHienTai = ref(new Date().getDate());  
-    const vanDonTheoQuy = ref(0);
     const quyHienTai = ref(Math.floor((new Date().getMonth() + 1) / 3) + 1);
     const toKhaiTheoThang = ref(0);
-    const toKhaiThangTruoc = ref(0);
     const toKhaiTheoQuy = ref(0);
-    const toKhaiTheoNgay = ref(0);
-    const vanDonTheoNgay = ref(0);
-    const vanDonMTD = ref([]);
-    const toKhaiMTD = ref([]);
+    const toKhaiTheoNgay = ref(0);;
     const phuongTienTheoTrangThais = ref([]);
+    const phuongTienHopLe = ref(0);
+    const phuongTienKhongHopLe = ref(0);
 
     provide(THEME_KEY, 'light');
 
     //Computed property sẽ tự động cập nhật khi các reactive dependencies thay đổi.
     const boxData1 = computed(() => [
       {
-        title: 'Tổng số vận đơn',
-        number: totalVanDons.value,
+        title: 'Tổng số tờ khai',
+        number: totalToKhais.value,
         color: '#FFB6C1'
       },
       {
-        title: 'Tổng số tờ khai',
-        number: totalToKhais.value,
+        title: `Tờ khai tháng ${thangHienTai.value}`,
+        number: toKhaiTheoThang.value,
+        color: '#98FB98'
+      },
+      {
+        title: 'Tổng số phương tiện hợp lệ',
+        number: phuongTienHopLe.value,
         color: '#FFD700'
       },
-            {
-        title: `Vận đơn ngày ${ngayHienTai.value}/${thangHienTai.value}`,
-        number: vanDonTheoNgay.value,
-        color: '#87CEEB'
-      },
+
     ]);
 
     const boxData2 = computed(() => [
       {
-        title: `Vận đơn tháng ${thangHienTai.value}`,
-        number: vanDonTheoThang.value,
-        color: '#FFA07A',
-        percentChange: vanDonThangTruoc.value === 0 ? 100 : ((vanDonTheoThang.value - vanDonThangTruoc.value) / vanDonThangTruoc.value * 100).toFixed(2)
-      },
+        title: `Tờ khai theo quý`,
+        number: toKhaiTheoQuy.value,
+        color: '#87CEEB'
+      },  
       {
         title: `Tờ khai ngày ${ngayHienTai.value}/${thangHienTai.value}`,
         number: toKhaiTheoNgay.value,
         color: '#9370DB'
       },
       {
-        title: `Tờ khai tháng ${thangHienTai.value}`,
-        number: toKhaiTheoThang.value,
-        color: '#98FB98',
-        percentChange: toKhaiThangTruoc.value === 0 ? 100 : ((toKhaiTheoThang.value - toKhaiThangTruoc.value) / toKhaiThangTruoc.value * 100).toFixed(2)
+        title: 'Tổng số phương tiện không hợp lệ',
+        number: phuongTienKhongHopLe.value,
+        color: '#FFA07A'
       },
     ]);
-    
-    const getVanDonMTD = async() => {
-      try{
-        const response = await axios.get(`/api/thong-ke/so-luong-van-don-mtd/${maDonVi.value}`);
-        vanDonMTD.value = response.data;
-        console.log(vanDonMTD.value); 
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    const getToKhaiMTD = async() => {
-      try{
-        const response = await axios.get(`/api/thong-ke/so-luong-to-khai-mtd/${maDonVi.value}`);
-        toKhaiMTD.value = response.data;
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    const chartVanDonMTD = computed(() => ({
-      tooltip: {
-        trigger: 'item',
-        formatter: '{a} <br/>{b} : {c}'
-      },
-      xAxis: {
-        type: 'category',
-        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-      },
-      yAxis: {
-        type: 'value'
-      },
-      series: [
-        {
-          data: vanDonMTD.value,
-          type: 'bar'
-        }
-      ]
-    }));
-
-    const chartToKhaiMTD = computed(() => ({
-      tooltip: {
-        trigger: 'item',
-        formatter: '{a} <br/>{b} : {c}'
-      },
-      xAxis: {
-        type: 'category',
-        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-      },
-      yAxis: {
-        type: 'value'
-      },
-      series: [
-        {
-          data: toKhaiMTD.value,
-          type: 'bar'
-        }
-      ]
-    }));
-
-    const getVanDons = async() => {
-      try {
-        const response = await axios.get(`/api/van-don`);
-        vanDons.value = response.data;
-        totalVanDons.value = vanDons.value.length;
-        console.log(totalVanDons.value)
-      } catch (error) {
-        console.log(error);
-      }
-    };
 
     const getToKhais = async () => {
       try{
-        const response = await axios.get(`/api/to-khai`);
+        const response = await axios.get(`/api/to-khai?limit=1000`);
         toKhais.value = response.data;
         totalToKhais.value = toKhais.value.length;
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    
-    const getVanDonTheoThangs = async() => {
-      try{
-        const response = await axios.get(`/api/thong-ke/so-luong-van-don-theo-thang/${thangHienTai.value}`);
-        vanDonTheoThang.value = response.data;
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-    const getVanDonThangTruocs = async() => {
-      try{
-        const response = await axios.get(`/api/thong-ke/so-luong-van-don-theo-thang/${thangTruoc.value}`);
-        vanDonThangTruoc.value = response.data;
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-
-    const getVanDonTheoQuys = async() => {
-      try{
-        const response = await axios.get(`/api/thong-ke/so-luong-van-don-theo-quy/${maDonVi.value}/${quyHienTai.value}`);
-        vanDonTheoQuy.value = response.data;
       } catch (error) {
         console.log(error);
       }
@@ -235,15 +129,6 @@ export default {
       try{
         const response = await axios.get(`/api/thong-ke/so-luong-to-khai-theo-thang/${maDonVi.value}/${thangHienTai.value}`);
         toKhaiTheoThang.value = response.data;
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-    const getToKhaiThangTruocs = async() => {
-      try{
-        const response = await axios.get(`/api/thong-ke/so-luong-to-khai-theo-thang/${maDonVi.value}/${thangTruoc.value}`);
-        toKhaiThangTruoc.value = response.data;
       } catch (error) {
         console.log(error);
       }
@@ -267,20 +152,12 @@ export default {
       }
     }
 
-    const getVanDonTheoNgays = async() => {
-      try{
-        const response = await axios.get(`/api/thong-ke/so-luong-van-don-theo-ngay/${maDonVi.value}`);
-        vanDonTheoNgay.value = response.data;
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
     const getPhuongTienTheoTrangThai = async() => {
       try{
         const response = await axios.get(`/api/thong-ke/so-luong-phuong-tien-theo-trang-thai`);
         phuongTienTheoTrangThais.value = response.data;
-        console.log(phuongTienTheoTrangThais.value);  
+        phuongTienHopLe.value = phuongTienTheoTrangThais.value['Hợp lệ'];
+        phuongTienKhongHopLe.value = phuongTienTheoTrangThais.value['Không hợp lệ'];
       } catch (error) {
         console.log(error);
       }
@@ -321,19 +198,11 @@ export default {
 
     onMounted(() => {
       document.title = "Thống kê";
-      getVanDons();
       getToKhais();
-      getVanDonTheoThangs();
-      getVanDonTheoQuys();
       getToKhaiTheoThangs();
       getToKhaiTheoQuys();
       getToKhaiTheoNgays();
-      getVanDonTheoNgays();
-      getVanDonMTD();
-      getToKhaiMTD();
       getPhuongTienTheoTrangThai();
-      getVanDonThangTruocs();
-      getToKhaiThangTruocs();
     });
 
     return{
@@ -342,19 +211,12 @@ export default {
       boxData2,
       totalVanDons,
       totalToKhais,
-      vanDonTheoThang,
-      vanDonThangTruoc,
-      vanDonTheoQuy,
       toKhaiTheoThang,
-      toKhaiThangTruoc,
       toKhaiTheoQuy,
       toKhaiTheoNgay,
-      vanDonTheoNgay,
-      chartVanDonMTD,
-      vanDonMTD,
-      chartToKhaiMTD,
-      toKhaiMTD,
       phuongTienTheoTrangThais,
+      phuongTienHopLe,
+      phuongTienKhongHopLe,
     }
   },
 
