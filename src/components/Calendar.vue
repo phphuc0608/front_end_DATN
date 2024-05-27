@@ -3,9 +3,9 @@
     <div class="calendar">
       <div class="calendar-header d-flex justify-content-center align-items-center">
         <div class="month_container d-flex justify-content-center align-items-center">
-          <select class="form-control form-select text-center" v-model="currentMonth" @change="updateMonth" style="width: 90%;">
+          <select class="form-control form-select text-center" v-model="currentMonth" @change="updateMonth" style="width: 100%;">
             <option v-for="month in 12" :key="month" :value="month - 1" :selected="month - 1 === currentMonth">
-              {{ new Date(0, month - 1).toLocaleString('default', { month: 'long' }) }}
+              {{ new Date(0, month - 1).toLocaleString('vi-VN', { month: 'long' }) }}
             </option>
           </select>
         </div>
@@ -17,16 +17,23 @@
           </select>
         </div>
       </div>
+      <div class="calendar-weekdays">
+        <div v-for="(weekday, index) in weekdays" :key="index" class="calendar-weekday">
+          {{ translateWeekday(weekday) }} 
+        </div>
+      </div>
       <div class="calendar-body">
         <div v-for="day in days" :key="day" 
-        :class="[
-            'calendar-day p-4',
-            { 'min-to-khai': dayIsMinToKhai(day) }, 
-            { 'max-to-khai': dayIsMaxToKhai(day) }, 
-            { 'no-to-khai': hasNoToKhai(day) } 
-        ]"
-        :style="{ backgroundColor: calculateColor(day) }">
-          <div class="day-label">{{ day }}</div> 
+          :class="[
+            'calendar-day p-4', 
+            { 'min-to-khai': dayIsMinToKhai(day) },
+            { 'max-to-khai': dayIsMaxToKhai(day) },
+            { 'no-to-khai': hasNoToKhai(day) },
+            { 'empty-day': !day } 
+          ]"
+          :style="{ backgroundColor: calculateColor(day) }"
+        >
+          <div class="day-label" v-if="day">{{ day }}</div>
           <div class="to-khai-count-container" v-if="toKhaiCounts[day]">
             {{ toKhaiCounts[day] }} tờ khai
           </div>
@@ -48,6 +55,7 @@ export default {
     const currentMonth = ref(now.getMonth()); 
     const currentYear = ref(now.getFullYear());
     const toKhaiCounts = ref({});
+    const firstDayOfWeek = ref(1);
 
     const yearRange = computed(() => {
       const startYear = now.getFullYear() - 10; 
@@ -65,7 +73,7 @@ export default {
         const endDate = new Date(currentYear.value, currentMonth.value + 1, 0);
         toKhaiCounts.value = {}; 
         for (let day = startDate.getDate(); day <= endDate.getDate(); day++) {
-          const currentDate = moment(startDate).date(day); // Tạo moment object
+          const currentDate = moment(startDate).date(day); 
           const formattedDate = currentDate.format('YYYY-MM-DD');
           const response = await axios.get(`/api/to-khai/ngay-dang-ky/${formattedDate}/tong-so`);
           toKhaiCounts.value[day] = response.data; 
@@ -85,11 +93,33 @@ export default {
 
     const days = computed(() => {
       const result = [];
+      const startDay = new Date(currentYear.value, currentMonth.value, 1).getDay(); 
+      const adjustedStartDay = (startDay - firstDayOfWeek.value + 7) % 7; 
+      for (let i = 0; i < adjustedStartDay; i++) {
+        result.push(null);
+      }
       for (let i = 1; i <= daysInMonth.value; i++) {
         result.push(i);
       }
       return result;
     });
+
+    const weekdays = computed(() => {
+      return ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    });
+
+    const translateWeekday = (weekday) => {
+      const translations = {
+        'Monday': 'Thứ hai',
+        'Tuesday': 'Thứ ba',
+        'Wednesday': 'Thứ tư',
+        'Thursday': 'Thứ năm',
+        'Friday': 'Thứ sáu',
+        'Saturday': 'Thứ bảy',
+        'Sunday': 'Chủ nhật'
+      };
+      return translations[weekday] || weekday; 
+    };
 
     const dayIsMinToKhai = (day) => {
       return toKhaiCounts.value[day] === minToKhaiCount.value && toKhaiCounts.value[day] !== 0;
@@ -101,7 +131,7 @@ export default {
 
     const updateMonth = async () => {
       now.setMonth(currentMonth.value);
-      await fetchToKhaiCounts(); // Đợi fetchToKhaiCounts hoàn thành trước khi cập nhật giao diện
+      await fetchToKhaiCounts();
     };
 
     const updateYear = async () => {
@@ -109,7 +139,7 @@ export default {
     };
 
     const minToKhaiCount = computed(() => {
-      const values = Object.values(toKhaiCounts.value).filter(count => count > 0); // Lọc bỏ các ngày có 0 tờ khai
+      const values = Object.values(toKhaiCounts.value).filter(count => count > 0); 
       return Math.min(...values);
     });
 
@@ -128,7 +158,7 @@ export default {
 
     const calculateColor = (day) => {
       if (!toKhaiCounts.value[day] || toKhaiCounts.value[day] === 0) {
-        return '#ccc'; // Màu xám cho các ngày không có tờ khai
+        return '#fff'; 
       }
       const countRange = maxToKhaiCount.value - minToKhaiCount.value;
       const countRatio = (toKhaiCounts.value[day] - minToKhaiCount.value) / countRange;
@@ -151,6 +181,9 @@ export default {
       dayIsMaxToKhai,
       dayIsMinToKhai,
       calculateColor,
+      firstDayOfWeek,
+      weekdays,
+      translateWeekday
     };
   },
 };
@@ -176,6 +209,21 @@ export default {
   color: white;
 }
 
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background-color: #c0bebe; 
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+.calendar-weekday {
+  padding: 5px;
+  font-weight: bold;
+  border-left: 1px solid #eee;
+  border-right: 1px solid #eee;
+}
+
 .calendar-body {
   display: grid;
   grid-template-columns: repeat(7, 1fr); /* 7 cột cho 7 ngày trong tuần */
@@ -192,6 +240,16 @@ export default {
   border-right: none;
 }
 
+.calendar-day:empty { 
+  border: none;
+}
+
+.calendar-day.empty-day {  
+  background-color: #ccc!important;
+  border-left: 1px solid #eee;
+  border-right: 1px solid #eee;
+}
+
 .day-label {
   position: absolute;
   top: 5px;
@@ -204,7 +262,7 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100%;
-  font-size: 15px; /* Hoặc giá trị khác tùy ý */
+  font-size: 17px;
 }
 
 .to-khai-count {
@@ -227,16 +285,4 @@ export default {
   padding: 2px 4px; 
 }
 
-/* .min-to-khai {
-  background-color: #4CAF50;
-}
-
-.max-to-khai {
-  background-color: #f44336; 
-}
-
-.no-to-khai {
-  background-color: #ccc; 
-  color: #333; 
-} */
 </style>
