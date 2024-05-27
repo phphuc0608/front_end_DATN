@@ -116,11 +116,12 @@ export default {
         color: '#FFB6C1'
       },
       {
-        title: 'Tổng số tờ khai',
-        number: totalToKhais.value,
-        color: '#FFD700'
+        title: `Vận đơn tháng ${thangHienTai.value}`,
+        number: vanDonTheoThang.value,
+        color: '#FFA07A',
+        percentChange: vanDonThangTruoc.value === 0 ? 100 : ((vanDonTheoThang.value - vanDonThangTruoc.value) / vanDonThangTruoc.value * 100).toFixed(2)
       },
-            {
+      {
         title: `Vận đơn ngày ${ngayHienTai.value}/${thangHienTai.value}`,
         number: vanDonTheoNgay.value,
         color: '#87CEEB'
@@ -129,21 +130,20 @@ export default {
 
     const boxData2 = computed(() => [
       {
-        title: `Vận đơn tháng ${thangHienTai.value}`,
-        number: vanDonTheoThang.value,
-        color: '#FFA07A',
-        percentChange: vanDonThangTruoc.value === 0 ? 100 : ((vanDonTheoThang.value - vanDonThangTruoc.value) / vanDonThangTruoc.value * 100).toFixed(2)
-      },
-      {
-        title: `Tờ khai ngày ${ngayHienTai.value}/${thangHienTai.value}`,
-        number: toKhaiTheoNgay.value,
-        color: '#9370DB'
+        title: 'Tổng số tờ khai',
+        number: totalToKhais.value,
+        color: '#FFD700'
       },
       {
         title: `Tờ khai tháng ${thangHienTai.value}`,
         number: toKhaiTheoThang.value,
         color: '#98FB98',
         percentChange: toKhaiThangTruoc.value === 0 ? 100 : ((toKhaiTheoThang.value - toKhaiThangTruoc.value) / toKhaiThangTruoc.value * 100).toFixed(2)
+      },
+      {
+        title: `Tờ khai ngày ${ngayHienTai.value}/${thangHienTai.value}`,
+        number: toKhaiTheoNgay.value,
+        color: '#9370DB'
       },
     ]);
     
