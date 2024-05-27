@@ -35,7 +35,7 @@
           </select>
         </div>
       </div> 
-      <div class="row">
+      <div class="row pt-3">
         <div class="col-md-6">
           <label class="form-label">Biển số xe</label>
           <input v-model="bienSo" type="text" class="form-control mb-3" placeholder="Nhập biển số xe" required>
@@ -61,7 +61,7 @@
           <textarea v-model="moTa" class="form-control mb-3" required></textarea>
         </div>
       </div> 
-      <div class="d-flex justify-content-start mt-4">
+      <div class="d-flex justify-content-start mt-2">
         <button type="submit" class="btn btn-success me-3"><i class="bi bi-plus-circle"></i> Thêm vận đơn</button>
         <button type="button" class="btn btn-danger" @click="resetForm"><i class="bi bi-x-circle"></i> Reset</button>
       </div> 

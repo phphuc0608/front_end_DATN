@@ -33,7 +33,7 @@
           </select>
         </div>
       </div> 
-      <div class="row">
+      <div class="row pt-3">
         <div class="col-md-6">
           <label class="form-label">Biển số xe</label>
           <input v-model="bienSo" type="text" class="form-control mb-3" placeholder="Nhập biển số xe" readonly>
