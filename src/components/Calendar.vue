@@ -285,4 +285,7 @@ export default {
   padding: 2px 4px; 
 }
 
+.no-to-khai {
+  color: black !important;;
+}
 </style>
