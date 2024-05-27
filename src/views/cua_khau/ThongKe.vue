@@ -185,7 +185,7 @@ export default {
 
     const getVanDons = async() => {
       try {
-        const response = await axios.get(`/api/van-don/doanh-nghiep/${maDonVi.value}`);
+        const response = await axios.get(`/api/van-don`);
         vanDons.value = response.data;
         totalVanDons.value = vanDons.value.length;
         console.log(totalVanDons.value)
@@ -196,7 +196,7 @@ export default {
 
     const getToKhais = async () => {
       try{
-        const response = await axios.get(`/api/to-khai/doanh-nghiep/${maDonVi.value}`);
+        const response = await axios.get(`/api/to-khai`);
         toKhais.value = response.data;
         totalToKhais.value = toKhais.value.length;
       } catch (error) {
@@ -206,7 +206,7 @@ export default {
     
     const getVanDonTheoThangs = async() => {
       try{
-        const response = await axios.get(`/api/thong-ke/so-luong-van-don-theo-thang/${maDonVi.value}/${thangHienTai.value}`);
+        const response = await axios.get(`/api/thong-ke/so-luong-van-don-theo-thang/${thangHienTai.value}`);
         vanDonTheoThang.value = response.data;
       } catch (error) {
         console.log(error);
@@ -215,7 +215,7 @@ export default {
 
     const getVanDonThangTruocs = async() => {
       try{
-        const response = await axios.get(`/api/thong-ke/so-luong-van-don-theo-thang/${maDonVi.value}/${thangTruoc.value}`);
+        const response = await axios.get(`/api/thong-ke/so-luong-van-don-theo-thang/${thangTruoc.value}`);
         vanDonThangTruoc.value = response.data;
       } catch (error) {
         console.log(error);
@@ -299,7 +299,7 @@ export default {
         legend: {
           orient: 'vertical',
           left: 'right',
-          data: ['Chờ xác nhận', 'Không tồn tại', 'Được thông quan', 'Không được thông quan'],
+          data: ['Hợp lệ', 'Không hợp lệ'],
         },
         series: [
           {
