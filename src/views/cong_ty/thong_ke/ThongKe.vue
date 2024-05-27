@@ -170,7 +170,7 @@ export default {
     const chartVanDonMTD = computed(() => ({
       tooltip: {
         trigger: 'item',
-        formatter: '{a} <br/>{b} : {c}'
+        formatter: '{b} : {c}' // Remove {a} for seriesName
       },
       xAxis: {
         type: 'category',
@@ -190,7 +190,7 @@ export default {
     const chartToKhaiMTD = computed(() => ({
       tooltip: {
         trigger: 'item',
-        formatter: '{a} <br/>{b} : {c}'
+        formatter: '{b} : {c}' 
       },
       xAxis: {
         type: 'category',
@@ -209,10 +209,8 @@ export default {
 
     const getVanDons = async() => {
       try {
-        const response = await axios.get(`/api/van-don/doanh-nghiep/${maDonVi.value}`);
-        vanDons.value = response.data;
-        totalVanDons.value = vanDons.value.length;
-        console.log(totalVanDons.value)
+        const response = await axios.get(`/api/thong-ke/so-luong-van-don/${maDonVi.value}`);
+        totalVanDons.value = response.data;
       } catch (error) {
         console.log(error);
       }
@@ -220,9 +218,8 @@ export default {
 
     const getToKhais = async () => {
       try{
-        const response = await axios.get(`/api/to-khai/doanh-nghiep/${maDonVi.value}`);
-        toKhais.value = response.data;
-        totalToKhais.value = toKhais.value.length;
+        const response = await axios.get(`/api/thong-ke/so-luong-to-khai/${maDonVi.value}`);
+        totalToKhais.value = response.data;
       } catch (error) {
         console.log(error);
       }
@@ -323,7 +320,7 @@ export default {
         legend: {
           orient: 'vertical',
           left: 'right',
-          data: ['Chờ xác nhận', 'Đã xác nhận', 'Từ chối', 'Đã thông quan', 'Không thông quan'],
+          data: ['Đã thông quan', 'Chờ thông quan', 'Bị hủy', 'Đăng ký thất bại'],
         },
         series: [
           {
