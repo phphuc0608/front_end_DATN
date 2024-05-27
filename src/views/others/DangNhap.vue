@@ -142,7 +142,10 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+*{
+  font-family:'Verdana', sans-serif;
+}
 .background {
   display: flex;
   align-items: center;
@@ -248,14 +251,14 @@ export default {
     cursor: text;
     color: var(--text);
     top: 0.8rem;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
 }
 .input__label,
 .input__field:focus~.input__label {
     position: absolute;
     top: -0.8rem;
     display: block;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     color: var(--text);
     transition: 0.3s;
 }
