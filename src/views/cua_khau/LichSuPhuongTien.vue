@@ -1,7 +1,7 @@
 <template>
 <NavbarCuakhau/>
 <div id="content" class="container-fluid px-5">
-    <h3 class="text-center" style="margin-top: 120px; margin-bottom: 60px;">LỊCH SỬ PHƯƠNG TIỆN</h3>
+    <h3 class="text-center" style="margin-top: 110px; margin-bottom: 30px;">LỊCH SỬ PHƯƠNG TIỆN</h3>
         <div id="search_box" class="box_container col-md-12">
       <div id="search_box_header" class="header_container d-flex justify-content-between align-items-center">
         <span class="title">
