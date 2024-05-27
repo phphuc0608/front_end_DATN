@@ -1,7 +1,6 @@
 <template>
   <NavbarCuakhau/>
-  <div id="content" class="container-fluid px-5">
-    <h3 class="text-center" style="margin-top: 120px; margin-bottom: 60px;">THỐNG KÊ CỬA KHẨU</h3>
+  <div id="content" class="container-fluid px-5" style="margin-top: 110px;">
     <div class=" d-flex justify-content-center align-items-center px-3 pb-3 mb-3">
       <div v-for="singleBox in boxData1" class="box col-md-4" :style="{ backgroundColor: singleBox.color }">
         <div class="box_header">
