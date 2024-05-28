@@ -111,7 +111,7 @@ export default {
 
     const boxData2 = computed(() => [
       {
-        title: `Tờ khai theo quý`,
+        title: `Tờ khai theo quý ${quyHienTai.value}`,
         number: toKhaiTheoQuy.value,
         color: '#87CEEB'
       },  
