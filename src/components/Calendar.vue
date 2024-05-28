@@ -46,7 +46,7 @@
 
 
 <script>
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import moment from 'moment';
 
 export default {
@@ -81,7 +81,7 @@ export default {
       } catch (error) {
           console.error(error);
       }
-  };
+    };
 
     const daysInMonth = computed(() => {
       return new Date(currentYear.value, currentMonth.value + 1, 0).getDate();
@@ -91,15 +91,27 @@ export default {
       return now.toLocaleString('default', { month: 'long' });
     });
 
+    const firstDayOfMonthOffset = computed(() => {
+      return new Date(currentYear.value, currentMonth.value, 1).getDay() - firstDayOfWeek.value;
+    });
+
+    const lastDayOfWeek = computed(() => {
+      return new Date(currentYear.value, currentMonth.value + 1, 0).getDay();
+    });
+
     const days = computed(() => {
+      const daysToDisplay = daysInMonth.value + firstDayOfMonthOffset.value;
+      const extraDays = (7 - (daysToDisplay % 7)) % 7; 
+      const totalDays = daysToDisplay + extraDays;
       const result = [];
-      const startDay = new Date(currentYear.value, currentMonth.value, 1).getDay(); 
-      const adjustedStartDay = (startDay - firstDayOfWeek.value + 7) % 7; 
-      for (let i = 0; i < adjustedStartDay; i++) {
-        result.push(null);
+      for (let i = 0; i < firstDayOfMonthOffset.value; i++) {
+        result.push(null); 
       }
       for (let i = 1; i <= daysInMonth.value; i++) {
-        result.push(i);
+        result.push(i); 
+      }
+      for (let i = 0; i < extraDays; i++) {
+        result.push(null); 
       }
       return result;
     });
@@ -183,7 +195,9 @@ export default {
       calculateColor,
       firstDayOfWeek,
       weekdays,
-      translateWeekday
+      translateWeekday,
+      firstDayOfMonthOffset,
+      lastDayOfWeek
     };
   },
 };
@@ -227,6 +241,7 @@ export default {
 .calendar-body {
   display: grid;
   grid-template-columns: repeat(7, 1fr); /* 7 cột cho 7 ngày trong tuần */
+  grid-auto-rows: minmax(74.3px, auto);
 }
 
 .calendar-day {
@@ -288,4 +303,5 @@ export default {
 .no-to-khai {
   color: black !important;;
 }
+
 </style>
