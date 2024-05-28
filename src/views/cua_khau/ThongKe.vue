@@ -43,6 +43,18 @@
           </div>
         </div>
       </div>
+      <div class="col-md-6">
+        <div class="box_container">
+          <div class="header_container">
+            <h5>Thống kê tờ khai theo trạng thái</h5>
+          </div>
+          <div class="content_container">
+            <div class="chart_container">
+              <v-chart class="chart" :option="chartToKhaiTheoTrangThai" autoresize/>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -61,19 +73,19 @@ use([BarChart, TitleComponent, TooltipComponent, CanvasRenderer,LegendComponent,
 
 export default {
   setup() {
-    const maDonVi = ref(1);
     const totalVanDons = ref(0);
-    const toKhais = ref([]);
     const totalToKhais = ref(0);
     const thangHienTai = ref(new Date().getMonth() + 1);
     const ngayHienTai = ref(new Date().getDate());  
     const quyHienTai = ref(Math.floor((new Date().getMonth() + 1) / 3) + 1);
     const toKhaiTheoThang = ref(0);
     const toKhaiTheoQuy = ref(0);
-    const toKhaiTheoNgay = ref(0);;
+    const toKhaiTheoNgay = ref(0);
     const phuongTienTheoTrangThais = ref([]);
+    const toKhaiTheoTrangThais = ref([]);
     const phuongTienHopLe = ref(0);
     const phuongTienKhongHopLe = ref(0);
+    const dateFormat = ref(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`);
 
     provide(THEME_KEY, 'light');
 
@@ -117,9 +129,8 @@ export default {
 
     const getToKhais = async () => {
       try{
-        const response = await axios.get(`/api/to-khai?limit=1000`);
-        toKhais.value = response.data;
-        totalToKhais.value = toKhais.value.length;
+        const response = await axios.get(`/api/thong-ke/so-luong-to-khai`);
+        totalToKhais.value = response.data;
       } catch (error) {
         console.log(error);
       }
@@ -127,7 +138,7 @@ export default {
 
     const getToKhaiTheoThangs = async() => {
       try{
-        const response = await axios.get(`/api/thong-ke/so-luong-to-khai-theo-thang/${maDonVi.value}/${thangHienTai.value}`);
+        const response = await axios.get(`/api/thong-ke/so-luong-to-khai-theo-thang/${thangHienTai.value}`);
         toKhaiTheoThang.value = response.data;
       } catch (error) {
         console.log(error);
@@ -136,7 +147,7 @@ export default {
 
     const getToKhaiTheoQuys = async() => {
       try{
-        const response = await axios.get(`/api/thong-ke/so-luong-to-khai-theo-quy/${maDonVi.value}/${quyHienTai.value}`);
+        const response = await axios.get(`/api/thong-ke/so-luong-to-khai-theo-quy/${quyHienTai.value}`);
         toKhaiTheoQuy.value = response.data;
       } catch (error) {
         console.log(error);
@@ -145,7 +156,8 @@ export default {
 
     const getToKhaiTheoNgays = async() => {
       try{
-        const response = await axios.get(`/api/thong-ke/so-luong-to-khai-theo-ngay/${maDonVi.value}`);
+        const response = await axios.get(`/api/thong-ke/so-luong-to-khai-theo-ngay/${dateFormat.value}`);
+        console.log(dateFormat.value)
         toKhaiTheoNgay.value = response.data;
       } catch (error) {
         console.log(error);
@@ -163,8 +175,48 @@ export default {
       }
     }
 
+    const getToKhaiTheoTrangThais = async() => {
+      try{
+        const response = await axios.get(`/api/thong-ke/so-luong-to-khai-theo-trang-thai`);
+        toKhaiTheoTrangThais.value = response.data;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    const chartToKhaiTheoTrangThai = computed(()=>{
+      const transformedData = Object.entries(toKhaiTheoTrangThais.value).map(([name, value]) => ({ name, value }));
+
+      return {
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b} : {c} ({d}%)',
+        },
+        legend: {
+          orient: 'vertical',
+          left: 'right',
+          data: ['Chờ thông quan', 'Đăng ký thất bại', 'Bị hủy', 'Đã thông quan'],
+        },
+        series: [
+          {
+            name: 'Tờ khai theo trạng thái',
+            type: 'pie',
+            radius: '55%',
+            center: ['50%', '50%'],
+            data: transformedData,
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)',
+              },
+            },
+          }
+        ]
+      };
+    });
+
     const chartPhuongTienTheoTrangThai = computed(() => {
-      // Transform the data into the expected format
       const transformedData = Object.entries(phuongTienTheoTrangThais.value).map(([name, value]) => ({ name, value }));
 
       return {
@@ -179,7 +231,7 @@ export default {
         },
         series: [
           {
-            name: 'Tờ khai theo trạng thái',
+            name: 'Phương tiện theo trạng thái',
             type: 'pie',
             radius: '55%',
             center: ['50%', '50%'],
@@ -203,10 +255,12 @@ export default {
       getToKhaiTheoQuys();
       getToKhaiTheoNgays();
       getPhuongTienTheoTrangThai();
+      getToKhaiTheoTrangThais();
     });
 
     return{
       chartPhuongTienTheoTrangThai,
+      chartToKhaiTheoTrangThai,
       boxData1,
       boxData2,
       totalVanDons,
@@ -217,6 +271,7 @@ export default {
       phuongTienTheoTrangThais,
       phuongTienHopLe,
       phuongTienKhongHopLe,
+      dateFormat
     }
   },
 
