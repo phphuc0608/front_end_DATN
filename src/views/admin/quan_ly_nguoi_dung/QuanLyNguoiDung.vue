@@ -97,7 +97,6 @@
 import axios from 'axios';
 import { ref, onMounted, computed, watch} from 'vue';
 import NavbarAdmin from '../../../components/NavbarAdmin.vue';
-import Swal from 'sweetalert2';
 import Pagination from '../../../components/Pagination.vue';
 
 export default {
@@ -153,7 +152,7 @@ export default {
 
     const search = async() => {
       try {
-        const respone = await axios.get(`/api/nguoi-dung?search_string=${searchString.value}`, {
+        const respone = await axios.get(`/api/nguoi-dung?search_string=${searchString.value}&dang_hoat_dong=${searchDangHoatDong.value}&ma_vai_tro=${searchVaiTro.value}`, {
           headers: {
             'Content-Type': 'application/json'
           }
@@ -165,20 +164,20 @@ export default {
       }
     };
 
-    const filteredNguoiDungs = computed(() => {
-      let filtered = nguoiDungs.value;
-      if (searchVaiTro.value) {
-        filtered = filtered.filter(nguoiDung => nguoiDung.vai_tro.ma_vai_tro === searchVaiTro.value);
-      }
-      if (searchDangHoatDong.value !== null && searchDangHoatDong.value !== '') {
-        filtered = filtered.filter(nguoiDung => nguoiDung.dang_hoat_dong.toString() === searchDangHoatDong.value);
-      }
-      return filtered;
-    });
+    // const filteredNguoiDungs = computed(() => {
+    //   let filtered = nguoiDungs.value;
+    //   if (searchVaiTro.value) {
+    //     filtered = filtered.filter(nguoiDung => nguoiDung.vai_tro.ma_vai_tro === searchVaiTro.value);
+    //   }
+    //   if (searchDangHoatDong.value !== null && searchDangHoatDong.value !== '') {
+    //     filtered = filtered.filter(nguoiDung => nguoiDung.dang_hoat_dong.toString() === searchDangHoatDong.value);
+    //   }
+    //   return filtered;
+    // });
 
-    watch(searchVaiTro, () => {
-      filteredNguoiDungs.value = nguoiDungs.value.filter(nguoiDung => nguoiDung.vai_tro.ma_vai_tro === searchVaiTro.value);
-    });
+    // watch(searchVaiTro, () => {
+    //   filteredNguoiDungs.value = nguoiDungs.value.filter(nguoiDung => nguoiDung.vai_tro.ma_vai_tro === searchVaiTro.value);
+    // });
 
     const paginatedData = computed(() => {
       const start = (currentPage.value - 1) * itemsPerPage.value;
@@ -215,7 +214,7 @@ export default {
       search,
       searchVaiTro,
       vaiTros,
-      filteredNguoiDungs,
+      // filteredNguoiDungs,
       searchDangHoatDong,
       removeFilter
     }
