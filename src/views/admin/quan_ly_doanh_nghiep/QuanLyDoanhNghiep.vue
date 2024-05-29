@@ -159,6 +159,7 @@ export default {
             'Content-Type': 'application/json',
           }
         });
+        console.log(searchString.value, maDanhMucDonVi.value)
         donVis.value = response.data;
         console.log(response.data);
       } catch (error) {
@@ -181,7 +182,7 @@ export default {
       });
     };
 
-        const paginatedData = computed(() => {
+    const paginatedData = computed(() => {
       const start = (currentPage.value - 1) * itemsPerPage.value;
       const end = start + itemsPerPage.value;
       return donVis.value.slice(start, end);
