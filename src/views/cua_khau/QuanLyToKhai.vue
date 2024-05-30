@@ -51,7 +51,9 @@
             <tr v-for="(toKhai, index) in paginatedData" :key="index">
               <td>{{ toKhai.ma_to_khai }}</td>
               <td>{{ toKhai.van_don.bien_so }}</td>
-              <td>{{ toKhai.trang_thai_to_khai.ten_trang_thai }}</td> 
+              <td :class="getClassByTrangThai(toKhai.trang_thai_to_khai.ten_trang_thai)">
+                {{ toKhai.trang_thai_to_khai.ten_trang_thai }}
+              </td>
               <td>{{ toKhai.ngay_dang_ky }}</td> 
             </tr>
           </tbody>
@@ -118,6 +120,16 @@ export default {
       });
     };
     
+    const getClassByTrangThai = (trangThai) => {
+      if(trangThai === 'Đã thông quan'){
+        return 'trang-thai-da-thong-quan';
+      }else if(trangThai === 'Chờ thông quan'){
+        return 'trang-thai-cho-thong-quan';
+      }else if(trangThai === 'Bị hủy'){
+        return 'trang-thai-bi-huy';
+      }
+    };
+
     const removeFilter = () => {
       dateString.value = '';
       maDanhMucTrangThai.value = '';
@@ -164,7 +176,8 @@ export default {
       danhMucTrangThais,
       search,
       removeFilter,
-      ngayDangKy
+      ngayDangKy,
+      getClassByTrangThai
     }
   },
 
@@ -267,5 +280,14 @@ export default {
   background-color: #452B90;
   color: white;
   border-color: #452B90; 
+}
+.trang-thai-da-thong-quan {
+  color: rgb(59, 224, 59); 
+}
+.trang-thai-cho-thong-quan {
+  color: orange; 
+}
+.trang-thai-bi-huy {
+  color: red; 
 }
 </style>
