@@ -133,13 +133,9 @@ export default {
       return translations[weekday] || weekday; 
     };
 
-    const dayIsMinToKhai = (day) => {
-      return toKhaiCounts.value[day] === minToKhaiCount.value && toKhaiCounts.value[day] !== 0;
-    };
+    const dayIsMinToKhai = (day) => day === 1;
 
-    const dayIsMaxToKhai = (day) => {
-      return toKhaiCounts.value[day] === maxToKhaiCount.value;
-    };
+    const dayIsMaxToKhai = (day) => day === 30;
 
     const updateMonth = async () => {
       now.setMonth(currentMonth.value);
@@ -285,14 +281,6 @@ export default {
   color: #666;
 }
 
-.min-to-khai .to-khai-count, 
-.max-to-khai .to-khai-count {
-    color: white !important; 
-}
-
-.min-to-khai, .max-to-khai {
-  color: white; 
-}
 
 .to-khai-count { 
   font-size: 12px;
