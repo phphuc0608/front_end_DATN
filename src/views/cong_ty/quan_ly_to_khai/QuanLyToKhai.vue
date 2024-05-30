@@ -70,7 +70,9 @@
               <td>
                 <router-link :to="{ name: 'ChiTietVanDon', params: { ma_van_don: toKhai.ma_van_don } }">{{ toKhai.ma_van_don }}</router-link>
               </td>
-              <td>{{ toKhai.trang_thai_to_khai.ten_trang_thai }}</td>
+              <td :class="getClassByTrangThai(toKhai.trang_thai_to_khai.ten_trang_thai)">
+                {{ toKhai.trang_thai_to_khai.ten_trang_thai }}
+              </td>
               <td>{{ toKhai.ngay_dang_ky }}</td>
               <td class="text-end">
                 <router-link class="btn btn-warning me-2 update_btn" :to="{ name: 'CapNhatToKhai', params: { ma_to_khai: toKhai.ma_to_khai } }">
@@ -169,7 +171,17 @@ export default {
           timer: 1000
         });
       });
-    }
+    };
+    
+    const getClassByTrangThai = (trangThai) => {
+      if(trangThai === 'Đã thông quan'){
+        return 'trang-thai-da-thong-quan';
+      }else if(trangThai === 'Chờ thông quan'){
+        return 'trang-thai-cho-thong-quan';
+      }else if(trangThai === 'Bị hủy'){
+        return 'trang-thai-bi-huy';
+      }
+    };
 
     const deleteToKhai = async(maToKhai) => {
       try {
@@ -230,6 +242,7 @@ export default {
 
     getToKhais();
     getTrangThaiToKhais();
+    // getClassByTrangThai();
     return{
       toKhais,
       trangThaiToKhais,
@@ -242,7 +255,8 @@ export default {
       getToKhaiData,
       maTrangThai,
       search,
-      searchString
+      searchString,
+      getClassByTrangThai
     }
   },
 
@@ -345,4 +359,14 @@ export default {
   color: white;
   border-color: #452B90; 
 }
+.trang-thai-da-thong-quan {
+  color: rgb(59, 224, 59); 
+}
+.trang-thai-cho-thong-quan {
+  color: orange; 
+}
+.trang-thai-bi-huy {
+  color: red; 
+}
+
 </style>
