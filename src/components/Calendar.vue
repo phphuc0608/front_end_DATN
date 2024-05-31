@@ -166,12 +166,12 @@ export default {
 
     const calculateColor = (day) => {
       if (!toKhaiCounts.value[day] || toKhaiCounts.value[day] === 0) {
-        return '#fff'; 
+        return '#fff';
       }
       const countRange = maxToKhaiCount.value - minToKhaiCount.value;
       const countRatio = (toKhaiCounts.value[day] - minToKhaiCount.value) / countRange;
-      const hue = 120 - (120 * countRatio); 
-      return `hsl(${hue}, 80%, 70%)`; 
+      const hue = 120 - (120 * countRatio);
+      return `hsl(${hue}, 80%, 70%)`;
     };
 
     return {
