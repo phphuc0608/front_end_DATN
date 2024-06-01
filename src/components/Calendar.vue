@@ -56,6 +56,7 @@ export default {
     const currentYear = ref(now.getFullYear());
     const toKhaiCounts = ref({});
     const firstDayOfWeek = ref(1);
+    const globalMaxToKhaiCount = ref(0);
 
     const yearRange = computed(() => {
       const startYear = now.getFullYear() - 10; 
@@ -76,7 +77,8 @@ export default {
           const currentDate = moment(startDate).date(day); 
           const formattedDate = currentDate.format('YYYY-MM-DD');
           const response = await axios.get(`/api/to-khai/ngay-dang-ky/${formattedDate}/tong-so`);
-          toKhaiCounts.value[day] = response.data; 
+          toKhaiCounts.value[day] = response.data;
+          globalMaxToKhaiCount.value = Math.max(globalMaxToKhaiCount.value, response.data); // Cập nhật giá trị lớn nhất
         }
       } catch (error) {
           console.error(error);
@@ -168,8 +170,8 @@ export default {
       if (!toKhaiCounts.value[day] || toKhaiCounts.value[day] === 0) {
         return '#fff';
       }
-      const countRange = maxToKhaiCount.value - minToKhaiCount.value;
-      const countRatio = (toKhaiCounts.value[day] - minToKhaiCount.value) / countRange;
+      const countRange = globalMaxToKhaiCount.value; 
+      const countRatio = toKhaiCounts.value[day] / countRange;
       const hue = 120 - (120 * countRatio);
       return `hsl(${hue}, 80%, 70%)`;
     };
