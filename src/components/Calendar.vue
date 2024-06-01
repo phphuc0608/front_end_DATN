@@ -224,7 +224,7 @@ export default {
 .calendar-weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  background-color: #c0bebe; 
+  background-color: #d2dbee; 
   text-align: center;
   border-bottom: 1px solid #eee;
 }
