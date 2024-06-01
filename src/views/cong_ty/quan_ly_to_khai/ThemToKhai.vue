@@ -28,7 +28,7 @@
           <input type="date" class="form-control h-auto wide" v-model="ngayDangKy" required>
         </div>
       </div> 
-      <div class="d-flex justify-content-start mt-4">
+      <div class="d-flex justify-content-start my-4">
         <button type="submit" class="btn btn-success me-3"><i class="bi bi-plus-circle"></i> Thêm tờ khai</button>
         <button type="button" class="btn btn-danger" @click="resetForm"><i class="bi bi-x-circle"></i> Reset</button>
       </div> 
