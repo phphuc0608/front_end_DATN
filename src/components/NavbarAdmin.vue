@@ -174,7 +174,9 @@ nav .navbar_container .navbar_item .dropdown-item{
 nav .navbar_container .navbar_item a.active,nav .navbar_container .navbar_item a:hover{
   background: #1b9bff;
   transition: .5s;
-  /* border-radius: 10px; */
+}
+.navbar_item a.router-link-exact-active{
+  background: #1b9bff;
 }
 .checkbtn_sign_out{
   font-size: 50px;
