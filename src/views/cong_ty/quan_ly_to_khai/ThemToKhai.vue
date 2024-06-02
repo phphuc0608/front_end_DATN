@@ -36,7 +36,7 @@
   </div>
 </template>
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import NavbarCongty from '../../../components/NavbarCongty.vue';
 import Calendar from '../../../components/Calendar.vue';
 import axios from 'axios';
@@ -53,10 +53,27 @@ export default {
     const maToKhai = ref('');
     const emailError = ref(false);
     const ngayDangKy = ref('');
+    const toKhaiTheoNgay = ref(0);
+    const ngayDangKyFormat = ref('');
+
+    // Watcher để theo dõi sự thay đổi của ngayDangKy
+    watch(ngayDangKy, (newDate) => {
+      if (newDate) { // Kiểm tra xem newDate có giá trị hợp lệ
+        getToKhaiTheoNgays(); 
+      }
+    });
 
     const resetForm = () => {
       maToKhai.value = '';
     };
+
+    const formatDate = (dateString) => {
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }; 
 
     const getDonVis = () => {
       axios.get(`/api/don-vi`, {
@@ -82,6 +99,17 @@ export default {
       }
     };
 
+    const getToKhaiTheoNgays = async () => {
+      ngayDangKyFormat.value = formatDate(ngayDangKy.value); // Format trước khi gọi API
+      try {
+        const response = await axios.get(`/api/to-khai/ngay-dang-ky/${ngayDangKyFormat.value}/tong-so`);
+        toKhaiTheoNgay.value = response.data;
+        // console.log(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     const validateEmail = () => {
       const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       emailError.value = !re.test(email.value);
@@ -92,18 +120,27 @@ export default {
       if (emailError.value) {
         return;
       }
+      // Kiểm tra số lượng tờ khai trước khi thêm
+      console.log(toKhaiTheoNgay.value);
+      if (toKhaiTheoNgay.value >= 30) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Số lượng tờ khai đã đủ',
+        });
+        return; 
+      }
       const toKhaiData = {
         email: email.value,
         don_vi_dang_ky: maDonVi.value,
         ma_van_don: maToKhai.value,
-        ngay_dang_ky: ngayDangKy.value
+        ngay_dang_ky: ngayDangKy.value,
       };
       console.log(toKhaiData);
       try {
         const response = await axios.post(`/api/to-khai`, toKhaiData, {
           headers: {
-            'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json',
+          },
         });
         console.log(response.data);
         Swal.fire({
@@ -127,6 +164,7 @@ export default {
 
     getDonVis();
     getVanDons();
+    getToKhaiTheoNgays();
     return {
       donVis,
       resetForm,
@@ -137,7 +175,10 @@ export default {
       vanDons,
       emailError,
       validateEmail,
-      addToKhai
+      addToKhai,
+      toKhaiTheoNgay,
+      formatDate,
+      ngayDangKyFormat
     }
   },
   components: {
