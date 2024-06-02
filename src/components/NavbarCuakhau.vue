@@ -160,10 +160,12 @@ nav .navbar_container .navbar_item .dropdown-item{
 }
 nav .navbar_container .navbar_item a.active,nav .navbar_container .navbar_item a:hover{
   background: #1b9bff;
+  border-radius: 16px;
   transition: .5s;
 }
 .navbar_item a.router-link-exact-active{
   background: #1b9bff;
+  border-radius: 16px;
 }
 .checkbtn_sign_out{
   font-size: 50px;
@@ -290,11 +292,11 @@ nav .navbar_container .navbar_item a.active,nav .navbar_container .navbar_item a
     position: relative; /* Đảm bảo vị trí tương đối cho dropdown item */
   }
   nav .navbar_container .navbar_item .dropdown-item{
-  color: white;
-  font-size: 20px;
-  padding: 10px 13px;
-  min-width: 100%;
-  text-transform: uppercase;
-}
+    color: white;
+    font-size: 20px;
+    padding: 10px 13px;
+    min-width: 100%;
+    text-transform: uppercase;
+  }
 }
 </style>
