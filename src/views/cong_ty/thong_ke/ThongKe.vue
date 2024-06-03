@@ -169,7 +169,7 @@ export default {
     const chartVanDonMTD = computed(() => ({
       tooltip: {
         trigger: 'item',
-        formatter: '{b} : {c}' // Remove {a} for seriesName
+        formatter: '{b} : {c}' 
       },
       xAxis: {
         type: 'category',
