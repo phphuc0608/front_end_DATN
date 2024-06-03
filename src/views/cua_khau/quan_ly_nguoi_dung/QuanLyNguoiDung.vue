@@ -19,8 +19,8 @@
             <label class="form-label" for="">Trạng thái</label>
             <select class="form-control form-select h-auto wide" v-model="searchDangHoatDong">
               <option selected></option>
-              <option value="true">Đang hoạt động</option>
-              <option value="false">Khóa hoạt động</option>
+              <option value="false">Đang hoạt động</option>
+              <option value="true">Khóa hoạt động</option>
             </select>
           </div>
           <div class="col-xl-3 col-sm-6">
@@ -37,7 +37,7 @@
               <button class="btn btn-primary me-2" title="Nhấn vào đây để tìm kiếm" type="button" @click="search">
                 <i class="bi bi-funnel-fill"></i> Filter
               </button>
-              <button class="btn light rev_button" title="Nhấn vào đây để xóa filter" type="button">
+              <button class="btn light rev_button" title="Nhấn vào đây để xóa filter" type="button" @click="removeFilter">
                 Remove filter
               </button>
             </div>
@@ -83,9 +83,6 @@
                 <router-link class="btn btn-warning me-2 update_btn" :to="{ name: 'CapNhatNguoiDungCuaKhau', params: { email: nguoiDung.email } }">
                   <i class="bi bi-pencil-fill"></i>
                 </router-link>
-                <a class="btn del_button" @click="deleteNguoiDung(nguoiDung.email)">
-                  <i class="bi bi-trash"></i>
-                </a>
               </td>
             </tr>
           </tbody>
@@ -116,9 +113,16 @@ export default {
     onMounted(() => {
       document.title = "Quản lý người dùng công ty";
     });
- 
+    
+    const removeFilter = () => {
+      searchString.value = '';
+      searchVaiTro.value = '';
+      searchDangHoatDong.value = '';
+      getNguoiDungs();
+    };
+
     const getNguoiDungs = () => {
-      axios.get(`/api/nguoi-dung?search_string=${savedThuocDonVi.value}`, {
+      axios.get(`/api/nguoi-dung/don-vi/${savedThuocDonVi.value}`, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -132,21 +136,6 @@ export default {
       });
     };
 
-    
-
-    const deleteNguoiDung = async (email) => {
-      try {
-        const response = await axios.delete(`/api/nguoi-dung/${email}`, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });  
-        alert('Xóa người dùng thành công');
-        setTimeout(getNguoiDungs, 1000);
-      } catch (error) { 
-        alert('Xóa người dùng thất bại');
-      }
-    };
 
     const getDanhMucVaiTro = () => {
       axios.get(`/api/danh-muc-vai-tro`, {
@@ -163,15 +152,19 @@ export default {
       });
     };
 
-    const search = async() => {
+    const search = async () => {
       try {
-        const respone = await axios.get(`/api/nguoi-dung?search_string=${searchString.value}`, {
+        let apiUrl = `/api/nguoi-dung/don-vi/${savedThuocDonVi.value}?search_string=${searchString.value}&ma_vai_tro=${searchVaiTro.value}`;
+        if (searchDangHoatDong.value !== null && searchDangHoatDong.value !== '') { 
+            apiUrl += `&dang_hoat_dong=${searchDangHoatDong.value === 'true'}`; // Chuyển đổi thành boolean
+        }
+        const response = await axios.get(apiUrl, {
           headers: {
             'Content-Type': 'application/json'
           }
-      });
-      nguoiDungs.value = respone.data;
-      console.log(respone.data);
+        });
+        nguoiDungs.value = response.data;
+        console.log(response.data);
       } catch (error) {
         console.error(error);
       }
@@ -223,7 +216,6 @@ export default {
       itemsPerPage,
       changePage,
       filterClicked,
-      deleteNguoiDung,
       searchString,
       search,
       searchVaiTro,
@@ -231,6 +223,7 @@ export default {
       filteredNguoiDungs,
       savedThuocDonVi,
       searchDangHoatDong,
+      removeFilter
     }
   },
   components:{
