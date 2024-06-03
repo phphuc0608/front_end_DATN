@@ -59,11 +59,8 @@ export default {
     const soDienThoai = ref('');
     const maDonVi = ref(localStorage.getItem('savedThuocDonVi'));
     const maVaiTro = ref(0);
-    const matKhau = ref('');
-    const matKhauNhapLai = ref('');
     const dangHoatDong = ref(true);
     const emailError = ref(false);
-    const matKhauError = ref(false);
     const soDienThoaiError = ref(false);
 
     const getNguoiDungByEmail = async() => {
@@ -85,10 +82,9 @@ export default {
 
     const updateNguoiDung = async() => {
       validateEmail();
-      validatePasswords();
       validateSoDienThoai();
       // Check if any validation failed
-      if(emailError.value || matKhauError.value || soDienThoaiError.value) {
+      if(emailError.value || soDienThoaiError.value) {
         return; // Stop execution if validation failed
       }
       const nguoiDungData = {
@@ -97,8 +93,8 @@ export default {
         so_dien_thoai: soDienThoai.value,
         thuoc_don_vi: maDonVi.value,
         ma_vai_tro: maVaiTro.value,
-        mat_khau: matKhau.value,
       };
+      console.log(nguoiDungData.value);
       try {
         await axios.put(`/api/nguoi-dung/${email.value}`, nguoiDungData);
         Swal.fire({
@@ -191,10 +187,6 @@ export default {
       emailError.value = !re.test(email.value);
     };
 
-    const validatePasswords = () => {
-      matKhauError.value = matKhau.value !== matKhauNhapLai.value;
-    };
-    
     const validateSoDienThoai = () => {
       const re = /^\d{10}$/;
       soDienThoaiError.value = !re.test(soDienThoai.value);
@@ -205,7 +197,6 @@ export default {
       await getNguoiDungByEmail();
     });
 
-
     return {
       email,
       hoVaTen,
@@ -214,14 +205,10 @@ export default {
       getNguoiDungByEmail,
       maDonVi,
       maVaiTro,
-      matKhau,
       dangHoatDong,
-      matKhauNhapLai,
       emailError,
-      matKhauError,
       soDienThoaiError,
       validateEmail,
-      validatePasswords,
       validateSoDienThoai,
       updateNguoiDung,
       updateDangHoatDong,
