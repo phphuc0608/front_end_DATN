@@ -3,6 +3,9 @@
   <div id="content" class="container">
     <h3 class="my-4 text-left">THÊM TỜ KHAI</h3>
     <Calendar/>
+    <div class="gioi_han_to_khai my-2">
+      <h5 class="p-0 m-0">Giới hạn {{ gioiHanToKhai }} tờ khai</h5>
+    </div>
     <form @submit.prevent="addToKhai">
       <div class="row">
         <div class="col-md-6">
@@ -55,6 +58,7 @@ export default {
     const ngayDangKy = ref('');
     const toKhaiTheoNgay = ref(0);
     const ngayDangKyFormat = ref('');
+    const gioiHanToKhai = ref(0);
 
     // Watcher để theo dõi sự thay đổi của ngayDangKy
     watch(ngayDangKy, (newDate) => {
@@ -74,6 +78,21 @@ export default {
       const day = String(date.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
     }; 
+
+    const getGioiHanToKhai = () => {
+      axios.get('/api/gioi-han-to-khai', {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      .then(function(response){
+        gioiHanToKhai.value = response.data;
+        console.log(response.data); 
+      })
+      .catch(function(error){
+        console.log(error);
+      });
+    };
 
     const getDonVis = () => {
       axios.get(`/api/don-vi`, {
@@ -120,9 +139,9 @@ export default {
       if (emailError.value) {
         return;
       }
-      // Kiểm tra số lượng tờ khai trước khi thêm
       console.log(toKhaiTheoNgay.value);
-      if (toKhaiTheoNgay.value >= 30) {
+      // Kiểm tra số lượng tờ khai của ngày đó trước khi thêm
+      if (toKhaiTheoNgay.value >= gioiHanToKhai.value) {
         Swal.fire({
           icon: 'warning',
           title: 'Số lượng tờ khai đã đủ',
@@ -165,6 +184,7 @@ export default {
     getDonVis();
     getVanDons();
     getToKhaiTheoNgays();
+    getGioiHanToKhai();
     return {
       donVis,
       resetForm,
@@ -178,7 +198,8 @@ export default {
       addToKhai,
       toKhaiTheoNgay,
       formatDate,
-      ngayDangKyFormat
+      ngayDangKyFormat,
+      gioiHanToKhai
     }
   },
   components: {
