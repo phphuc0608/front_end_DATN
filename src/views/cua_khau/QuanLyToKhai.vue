@@ -3,6 +3,14 @@
 <div id="content" class="container-fluid px-5">
     <h3 class="text-center" style="margin-top: 110px; margin-bottom: 30px;">QUẢN LÝ TỜ KHAI</h3>
     <Calendar/> 
+    <div class="col-md-12 d-flex my-3 align-items-center justify-content-between">
+      <button id="btn_add" type="button" data-bs-toggle="modal" data-bs-target="#update_so_luong" class="btn btn-primary">
+        <i class="bi bi-pencil-fill"></i> Cập nhật giới hạn số lượng tờ khai
+      </button>
+      <div class="gioi_han_to_khai mx-2">
+        <h5 class="p-0 m-0">Giới hạn {{ gioiHanToKhai }} tờ khai</h5>
+      </div>
+    </div>
     <div id="search_box" class="box_container col-md-12 mt-3">
       <div id="search_box_header" class="header_container d-flex justify-content-between align-items-center">
         <span class="title">
@@ -61,6 +69,29 @@
       </div>
     </div>
     <Pagination :totalItems="toKhais.length" :itemsPerPage="itemsPerPage" :currentPage="currentPage" @page-changed="changePage" />
+    <!-- Update so luong -->
+    <div style="margin-top: 200px;" class="modal" id="update_so_luong" tabindex="-1" role="dialog" aria-labelledby="update_so_luong_label" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="add_champion_label">Cập nhật giới hạn số lượng tờ khai</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+          <div class="modal-body">
+            <form @submit.prevent="addGioiHanToKhai" enctype="multipart/form-data">
+              <div class="form-group">
+                <label for="gioiHanToKhai">Số lượng:</label>
+                <input v-model="gioiHanToKhai" type="number" class="form-control" id="gioiHanToKhai" placeholder="Nhập số lượng tờ khai" required>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary py-2 px-3" data-dismiss="modal">Đóng</button>
+                <button type="submit" class="btn btn-primary py-2 px-3">Cập nhật</button>
+              </div>
+            </form>
+          </div>
+        </div> 
+      </div> 
+    </div>
   </div>
 </template>
 
@@ -80,6 +111,7 @@ export default {
     const maDanhMucTrangThai = ref('');
     const danhMucTrangThais = ref([]);
     const ngayDangKy = ref(new Date().toISOString().substr(0, 10));
+    const gioiHanToKhai = ref(0);
 
     onMounted(() => {
       document.title = "Quản lý tờ khai";
@@ -120,6 +152,21 @@ export default {
       });
     };
     
+    const getGioiHanToKhai = () => {
+      axios.get('/api/gioi-han-to-khai', {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      .then(function(response){
+        gioiHanToKhai.value = response.data;
+        console.log(response.data); 
+      })
+      .catch(function(error){
+        console.log(error);
+      });
+    };
+
     const getClassByTrangThai = (trangThai) => {
       if(trangThai === 'Đã thông quan'){
         return 'trang-thai-da-thong-quan';
@@ -128,6 +175,22 @@ export default {
       }else if(trangThai === 'Bị hủy'){
         return 'trang-thai-bi-huy';
       }
+    };
+
+    const addGioiHanToKhai = () => {
+      axios.post('/api/gioi-han-to-khai', {
+        so_luong_gioi_han: gioiHanToKhai.value
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      .then(function(response){
+        console.log(response.data); 
+      })
+      .catch(function(error){
+        console.log(error);
+      });
     };
 
     const removeFilter = () => {
@@ -163,6 +226,7 @@ export default {
 
 
     getToKhaiTheoNgayDangKys();
+    getGioiHanToKhai();
 
     return {
       toKhais,
@@ -177,7 +241,9 @@ export default {
       search,
       removeFilter,
       ngayDangKy,
-      getClassByTrangThai
+      getClassByTrangThai,
+      gioiHanToKhai,
+      addGioiHanToKhai
     }
   },
 
