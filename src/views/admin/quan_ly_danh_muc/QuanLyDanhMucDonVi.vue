@@ -156,7 +156,6 @@ export default {
       getDanhMucDonVi();
     };
 
-    
     const getDanhMucDonVi = () => {
       axios.get(`/api/danh-muc-don-vi`, {
         headers: {
