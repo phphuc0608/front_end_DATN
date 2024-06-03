@@ -47,34 +47,34 @@ export default {
     const userStore = useUserStore();
     const username = ref('');
     const password = ref('');
-    // Kiểm tra xem có email trong localStorage không
+    //Take savedEmail from localStorage and set it to userStore
     const savedEmail = localStorage.getItem('savedEmail');
     if (savedEmail) {
-      userStore.setEmail(savedEmail); // Đặt giá trị email vào userStore
+      userStore.setEmail(savedEmail); // Set email value to userStore
     }
-
+    //Take savedMaVaiTro from localStorage and set it to userStore
     const savedMaVaiTro = localStorage.getItem('savedMaVaiTro');
     if (savedMaVaiTro) {
-      userStore.setMaVaiTro(savedMaVaiTro); // Đặt giá trị ma_vai_tro vào userStore
+      userStore.setMaVaiTro(savedMaVaiTro); // Set ma_vai_tro value to userStore
     }
-
+    //Take savedThuocDonVi from localStorage and set it to userStore
     const savedThuocDonVi = localStorage.getItem('savedThuocDonVi');
     if (savedThuocDonVi) {
-      userStore.setThuocDonVi(savedThuocDonVi); // Đặt giá trị thuoc_don_vi vào userStore
+      userStore.setThuocDonVi(savedThuocDonVi); // Set thuoc_don_vi value to userStore
     }
-
+    //Take savedTenVaiTro from localStorage and set it to userStore
     const savedTenVaiTro = localStorage.getItem('savedTenVaiTro');
     if (savedTenVaiTro) {
-      userStore.setTenVaiTro(savedTenVaiTro); // Đặt giá trị ten_vai_tro vào userStore
+      userStore.setTenVaiTro(savedTenVaiTro); // Set ten_vai_tro value to userStore
     }
-
+    //Get user information by email
     const getNguoiDungByEmail = async() => {
       const emailParam = userStore.email;
       console.log(emailParam);  
       try {
         const response = await axios.get(`/api/nguoi-dung/${emailParam}`);
         console.log(response.data);
-        // Lưu ma_vai_tro vào localStorage và userStore
+        // Save ma_vai_tro, thuoc_don_vi to localStorage and userStore
         const ma_vai_tro = response.data.ma_vai_tro;
         const thuoc_don_vi = response.data.thuoc_don_vi;
         localStorage.setItem('savedMaVaiTro', ma_vai_tro);
@@ -85,31 +85,36 @@ export default {
         console.log(error);
       }
     }
-
+    //Handle submit form
     const handleSubmit = async() => {
+      //Create URLSearchParams object containing username and password (key-value)
       const userData = new URLSearchParams();
+      //Append username and password to userData
       userData.append('username', username.value);
       userData.append('password', password.value);
-      
-      // Lưu email vào localStorage
+      // Save email to localStorage
       localStorage.setItem('savedEmail', username.value);
+      //Update email in userStore
       userStore.setEmail(username.value);
-
       try {
         const response = await axios.post('/api/login', userData); 
+        // Save token to localStorage
         localStorage.setItem('token', response.data.access_token);
-        // Lấy thông tin người dùng và cập nhật savedMaVaiTro
+        // Get user information and update savedMaVaiTro
         const userInfo = await axios.get(`/api/nguoi-dung/${username.value}`);
+        // Save ma_vai_tro to localStorage and userStore
         const ma_vai_tro = userInfo.data.ma_vai_tro;
         localStorage.setItem('savedMaVaiTro', ma_vai_tro);
         userStore.setMaVaiTro(ma_vai_tro);
+        // Save ten_vai_tro to localStorage and userStore
         const ten_vai_tro = userInfo.data.vai_tro.ten_vai_tro;
         localStorage.setItem('savedTenVaiTro', ten_vai_tro);
         userStore.setTenVaiTro(ten_vai_tro);
+        // Save thuoc_don_vi to localStorage and userStore
         const thuoc_don_vi = userInfo.data.thuoc_don_vi;  
         localStorage.setItem('savedThuocDonVi', thuoc_don_vi);
         userStore.setThuocDonVi(thuoc_don_vi);
-        // Kiểm tra ma_vai_tro và chuyển hướng tương ứng
+        // Check ma_vai_tro and redirect to corresponding page
         if (Number(ma_vai_tro) === 1) {
           router.push('/quan_ly_nguoi_dung');
         } else if (Number(ma_vai_tro) === 3 || Number(ma_vai_tro) === 5) {
