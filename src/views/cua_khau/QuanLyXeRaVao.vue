@@ -77,8 +77,8 @@ import NavbarCuakhau from '../../components/NavbarCuakhau.vue';
 export default {
   setup() {
     const firstVanDon = ref([]);
-    const imageUrl = ref('http://42.115.62.251:8000/api/lich-su-phuong-tien/lastest/image');
-    const imageCrop = ref('http://42.115.62.251:8000/api/lich-su-phuong-tien/lastest/image_crop');
+    const imageUrl = ref('http://183.81.27.133:8000/api/lich-su-phuong-tien/lastest/image');
+    const imageCrop = ref('http://183.81.27.133:8000/api/lich-su-phuong-tien/lastest/image_crop');
     const currentBienSo = ref('');
     const vanDons = ref([]);
     const toKhais = ref([]);
@@ -87,11 +87,11 @@ export default {
     let intervalId;
 
     const getLastestImage = () => {
-      imageUrl.value = `http://42.115.62.251:8000/api/lich-su-phuong-tien/lastest/image?time=${new Date().getTime()}`;
+      imageUrl.value = `http://183.81.27.133:8000/api/lich-su-phuong-tien/lastest/image?time=${new Date().getTime()}`;
     }
 
     const getImageCrop = () => {
-      imageCrop.value = `http://42.115.62.251:8000/api/lich-su-phuong-tien/lastest/image_crop?time=${new Date().getTime()}`
+      imageCrop.value = `http://183.81.27.133:8000/api/lich-su-phuong-tien/lastest/image_crop?time=${new Date().getTime()}`
     }
 
     onMounted(() => {
