@@ -19,8 +19,8 @@
             <label class="form-label" for="">Trạng thái</label>
             <select class="form-control form-select h-auto wide" v-model="searchDangHoatDong">
               <option selected></option>
-              <option value="true">Đang hoạt động</option>
-              <option value="false">Khóa hoạt động</option>
+              <option value="false">Đang hoạt động</option>
+              <option value="true">Khóa hoạt động</option>
             </select>
           </div>
           <div class="col-xl-3 col-sm-6">
@@ -106,7 +106,7 @@ export default {
     const itemsPerPage = ref(5);
     const searchString = ref('');
     const searchVaiTro = ref('');
-    const searchDangHoatDong = ref(null);
+    const searchDangHoatDong = ref('');
     const vaiTros = ref([]);
 
     onMounted(() => {
@@ -116,7 +116,7 @@ export default {
     const removeFilter = () => {
       searchString.value = '';
       searchVaiTro.value = '';
-      searchDangHoatDong.value = null;
+      searchDangHoatDong.value = '';
       getNguoiDungs();
     };
 
@@ -150,34 +150,27 @@ export default {
       });
     };
 
-    const search = async() => {
+    const search = async () => {
       try {
-        const respone = await axios.get(`/api/nguoi-dung?search_string=${searchString.value}&dang_hoat_dong=${searchDangHoatDong.value}&ma_vai_tro=${searchVaiTro.value}`, {
+        let apiUrl = `/api/nguoi-dung?search_string=${searchString.value}&ma_vai_tro=${searchVaiTro.value}`;
+
+        // Conditionally add dang_hoat_dong if a value is selected
+        if (searchDangHoatDong.value !== null && searchDangHoatDong.value !== '') { 
+                apiUrl += `&dang_hoat_dong=${searchDangHoatDong.value}`;
+        }
+
+        const response = await axios.get(apiUrl, {
           headers: {
             'Content-Type': 'application/json'
           }
-      });
-      nguoiDungs.value = respone.data;
-      console.log(respone.data);
+        });
+
+        nguoiDungs.value = response.data;
+        console.log(response.data);
       } catch (error) {
         console.error(error);
       }
     };
-
-    // const filteredNguoiDungs = computed(() => {
-    //   let filtered = nguoiDungs.value;
-    //   if (searchVaiTro.value) {
-    //     filtered = filtered.filter(nguoiDung => nguoiDung.vai_tro.ma_vai_tro === searchVaiTro.value);
-    //   }
-    //   if (searchDangHoatDong.value !== null && searchDangHoatDong.value !== '') {
-    //     filtered = filtered.filter(nguoiDung => nguoiDung.dang_hoat_dong.toString() === searchDangHoatDong.value);
-    //   }
-    //   return filtered;
-    // });
-
-    // watch(searchVaiTro, () => {
-    //   filteredNguoiDungs.value = nguoiDungs.value.filter(nguoiDung => nguoiDung.vai_tro.ma_vai_tro === searchVaiTro.value);
-    // });
 
     const paginatedData = computed(() => {
       const start = (currentPage.value - 1) * itemsPerPage.value;
