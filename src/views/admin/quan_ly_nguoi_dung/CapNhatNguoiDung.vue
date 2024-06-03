@@ -6,7 +6,7 @@
       <div class="row">
         <div class="col-md-6">
           <label class="col-form-label">Email</label>
-          <input v-model="email" type="text" :class="{'is-invalid': emailError}" class="form-control" placeholder="Nhập email" :title="emailError ? 'Email không đúng định dạng' : ''" required>
+          <input v-model="email" type="text" :class="{'is-invalid': emailError}" class="form-control" placeholder="Nhập email" :title="emailError ? 'Email không đúng định dạng' : ''" required readonly>
         </div>
         <div class="col-md-6">
           <label for="" class="col-form-label">Họ và tên</label>
