@@ -63,8 +63,11 @@ export default {
     }
 
     const updatePassword = async() => {
+      //Check if updating password is in progress
       if (isUpdatingPassword.value) return;
+      //This variable is true to signal that a password change is in progress.
       isUpdatingPassword.value = true;
+
       const updatePasswordData = {
         old_password: oldPassword.value,
         new_password: newPassword.value
@@ -79,6 +82,7 @@ export default {
           showConfirmButton: false,
           timer: 1500
         });
+        //Redirect to login page and remove savedEmail, savedMaVaiTro, savedThuocDonVi, savedTenVaiTro, token
         router.push('/');
         localStorage.removeItem('savedEmail');
         localStorage.removeItem('savedMaVaiTro');
@@ -92,6 +96,7 @@ export default {
           text: 'Đổi mật khẩu thất bại'
         });
       } finally {
+        //This variable is false to signal that the password change is complete.
         isUpdatingPassword.value = false;
       }
     };
