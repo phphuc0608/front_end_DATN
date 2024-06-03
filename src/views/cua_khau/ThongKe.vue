@@ -31,7 +31,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-4">
         <div class="box_container">
           <div class="header_container">
             <h5>Thống kê phương tiện theo trạng thái</h5>
@@ -43,7 +43,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-4">
         <div class="box_container">
           <div class="header_container">
             <h5>Thống kê tờ khai theo trạng thái</h5>
@@ -51,6 +51,18 @@
           <div class="content_container">
             <div class="chart_container">
               <v-chart class="chart" :option="chartToKhaiTheoTrangThai" autoresize/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="box_container">
+          <div class="header_container">
+            <h5>Thống kê tờ khai hàng tháng</h5>
+          </div>
+          <div class="content_container">
+            <div class="chart_container">
+              <v-chart class="chart" :option="chartToKhaiMTD" autoresize/>
             </div>
           </div>
         </div>
@@ -86,6 +98,8 @@ export default {
     const phuongTienHopLe = ref(0);
     const phuongTienKhongHopLe = ref(0);
     const dateFormat = ref(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`);
+    const months = Array.from({ length: 12 }, (_, i) => i + 1); //Create an array of 12 months
+    const toKhaiMTD = ref([]);
 
     provide(THEME_KEY, 'light');
 
@@ -145,6 +159,19 @@ export default {
       }
     }
 
+    const getToKhaiMTD = async () => {
+      try {
+        const results = await Promise.all(
+          months.map(month => axios.get(`/api/thong-ke/so-luong-to-khai-theo-thang/${month}`))
+        );
+
+        toKhaiMTD.value = results.map(res => res.data);
+      } catch (error) {
+        console.error("Error fetching to khai data:", error);
+        // Handle the error appropriately (e.g., show a user notification)
+      }
+    }; 
+
     const getToKhaiTheoQuys = async() => {
       try{
         const response = await axios.get(`/api/thong-ke/so-luong-to-khai-theo-quy/${quyHienTai.value}`);
@@ -184,9 +211,28 @@ export default {
       }
     }
 
+    const chartToKhaiMTD = computed(() => ({
+      tooltip: {
+        trigger: 'item',
+        formatter: '{b} : {c}' 
+      },
+      xAxis: {
+        type: 'category',
+        data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+      },
+      yAxis: {
+        type: 'value'
+      },
+      series: [
+        {
+          data: toKhaiMTD.value,
+          type: 'bar'
+        }
+      ]
+    }));
+
     const chartToKhaiTheoTrangThai = computed(()=>{
       const transformedData = Object.entries(toKhaiTheoTrangThais.value).map(([name, value]) => ({ name, value }));
-
       return {
         tooltip: {
           trigger: 'item',
@@ -256,11 +302,13 @@ export default {
       getToKhaiTheoNgays();
       getPhuongTienTheoTrangThai();
       getToKhaiTheoTrangThais();
+      getToKhaiMTD();
     });
 
     return{
       chartPhuongTienTheoTrangThai,
       chartToKhaiTheoTrangThai,
+      chartToKhaiMTD,
       boxData1,
       boxData2,
       totalVanDons,
@@ -271,7 +319,9 @@ export default {
       phuongTienTheoTrangThais,
       phuongTienHopLe,
       phuongTienKhongHopLe,
-      dateFormat
+      dateFormat,
+      toKhaiMTD,
+      months
     }
   },
 
