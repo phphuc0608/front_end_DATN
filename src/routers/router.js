@@ -73,7 +73,7 @@ const routes = [
     name: 'LichSuToKhai',
     component: () => import('../views/admin/quan_ly_lich_su/LichSuToKhai.vue')
   },
-  //Công ty
+  //Company
   {
     path: '/quan_ly_to_khai',
     name: 'QuanLyToKhai',
@@ -129,7 +129,7 @@ const routes = [
     name: 'ChiTietVanDon',
     component: () => import('../views/cong_ty/quan_ly_van_don/ChiTietVanDon.vue')
   },
-  //Cửa khẩu
+  //Border gate
   {
     path: '/quan_ly_nguoi_dung_cua_khau',
     name: 'QuanLyNguoiDungCuaKhau',
@@ -166,15 +166,18 @@ const routes = [
     component: () => import('../views/cua_khau/QuanLyToKhai.vue')
   }
 ];
-
+//Create a router instance
 const router = createRouter({
   history: createWebHistory(),
   routes
 })
 
+
+
+//Check if the user has the right to access the page
 router.beforeEach((to, from, next) => {
   const savedMaVaiTro = localStorage.getItem('savedMaVaiTro');
-
+  //List of routes that can be accessed by each role
   const adminRoutes = [
     'QuanLyNguoiDung',
     'ThemNguoiDung',
@@ -190,11 +193,35 @@ router.beforeEach((to, from, next) => {
     'LichSuToKhai',
     'DoiMatKhau',
   ];
-  const cuaKhauRoutes = ['QuanLyNguoiDungCuaKhau', 'ThemNguoiDungCuaKhau', 'CapNhatNguoiDungCuaKhau', 'QuanLyXeRaVao', 'LichSuPhuongTien', 'ThongKeCuaKhau', 'DoiMatKhau', 'QuanLyToKhaiCuaKhau', 'DoiMatKhau'];
-  const congTyRoutes = ['QuanLyNguoiDungCongTy', 'ThemNguoiDungCongTy', 'CapNhatNguoiDungCongTy', 'QuanLyToKhai', 'ThemToKhai', 'CapNhatToKhai', 'QuanLyVanDon', 'ThemVanDon', 'CapNhatVanDon', 'ThongKeCongTy', 'DoiMatKhau', 'ChiTietVanDon'];
+  const cuaKhauRoutes = [
+    'QuanLyNguoiDungCuaKhau',
+    'ThemNguoiDungCuaKhau',
+    'CapNhatNguoiDungCuaKhau',
+    'QuanLyXeRaVao',
+    'LichSuPhuongTien',
+    'ThongKeCuaKhau',
+    'DoiMatKhau',
+    'QuanLyToKhaiCuaKhau',
+    'DoiMatKhau'
+  ];
+  const congTyRoutes = [
+    'QuanLyNguoiDungCongTy',
+    'ThemNguoiDungCongTy',
+    'CapNhatNguoiDungCongTy',
+    'QuanLyToKhai',
+    'ThemToKhai',
+    'CapNhatToKhai',
+    'QuanLyVanDon',
+    'ThemVanDon',
+    'CapNhatVanDon',
+    'ThongKeCongTy',
+    'DoiMatKhau',
+    'ChiTietVanDon'
+  ];
+  //Restricted routes
   const cuaKhauRestrictedRoutes = ['quan_ly_nguoi_dung_cua_khau'];
   const congTyRestrictedRoutes = ['quan_ly_nguoi_dung_cong_ty'];
-
+  //Check if the user has the right to access the page
   if (to.name === 'DangNhap') {
     next();
   } else if (savedMaVaiTro === '1' && adminRoutes.includes(to.name)) {
