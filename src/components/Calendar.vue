@@ -26,24 +26,22 @@
         <div v-for="day in days" :key="day" 
           :class="[
             'calendar-day p-4', 
-            { 'min-to-khai': dayIsMinToKhai(day) },
-            { 'max-to-khai': dayIsMaxToKhai(day) },
-            { 'no-to-khai': hasNoToKhai(day) },
             { 'empty-day': !day } 
           ]"
           :style="{ backgroundColor: calculateColor(day) }"
         >
           <div class="day-label" v-if="day">{{ day }}</div>
-          <div class="to-khai-count-container" v-if="toKhaiCounts[day]">
-            {{ toKhaiCounts[day] }} tờ khai
-          </div>
+            <div class="to-khai-count-container" v-if="day && toKhaiCounts[day]">
+              {{ toKhaiCounts[day] }} tờ khai
+            </div>
+            <div class="to-khai-count-container" v-else-if="day">
+              0 tờ khai
+            </div>
         </div>
       </div>
     </div>
   </div>
 </template>
-
-
 
 <script>
 import { computed, onMounted, ref } from 'vue';
@@ -56,7 +54,8 @@ export default {
     const currentYear = ref(now.getFullYear());
     const toKhaiCounts = ref({});
     const firstDayOfWeek = ref(1);
-    const globalMaxToKhaiCount = ref(0);
+    const minToKhai = ref(0);
+    const maxToKhai = ref(0);
 
     const yearRange = computed(() => {
       const startYear = now.getFullYear() - 10; 
@@ -78,8 +77,10 @@ export default {
           const formattedDate = currentDate.format('YYYY-MM-DD');
           const response = await axios.get(`/api/to-khai/ngay-dang-ky/${formattedDate}/tong-so`);
           toKhaiCounts.value[day] = response.data;
-          globalMaxToKhaiCount.value = Math.max(globalMaxToKhaiCount.value, response.data); // Cập nhật giá trị lớn nhất
+          maxToKhai.value = Math.max(maxToKhai.value, response.data); // Cập nhật giá trị lớn nhất
         }
+        const maxResponse = await axios.get('/api/to-khai/so-luong/to-khai-max');
+        maxToKhai.value = maxResponse.data;
       } catch (error) {
           console.error(error);
       }
@@ -135,10 +136,6 @@ export default {
       return translations[weekday] || weekday; 
     };
 
-    const dayIsMinToKhai = (day) => day === 1;
-
-    const dayIsMaxToKhai = (day) => day === 30;
-
     const updateMonth = async () => {
       now.setMonth(currentMonth.value);
       await fetchToKhaiCounts();
@@ -148,31 +145,18 @@ export default {
       await fetchToKhaiCounts(); 
     };
 
-    const minToKhaiCount = computed(() => {
-      const values = Object.values(toKhaiCounts.value).filter(count => count > 0); 
-      return Math.min(...values);
-    });
-
-    const maxToKhaiCount = computed(() => {
-      const values = Object.values(toKhaiCounts.value);
-      return Math.max(...values);
-    });
-
-    const hasNoToKhai = (day) => {
-      return !toKhaiCounts.value[day]; 
-    };
-
     onMounted(() => {
       fetchToKhaiCounts();
     });
 
     const calculateColor = (day) => {
       if (!toKhaiCounts.value[day] || toKhaiCounts.value[day] === 0) {
-        return '#fff';
+        return '#ccfccc'; // Màu xanh lá cho 0 tờ khai
       }
-      const countRange = globalMaxToKhaiCount.value; 
-      const countRatio = toKhaiCounts.value[day] / countRange;
-      const hue = 120 - (120 * countRatio);
+
+      const countRange = maxToKhai.value - minToKhai.value;
+      const countRatio = (toKhaiCounts.value[day] - minToKhai.value) / countRange;
+      const hue = 120 - (120 * countRatio); // Màu chuyển từ xanh lá (0) sang đỏ (120)
       return `hsl(${hue}, 80%, 70%)`;
     };
 
@@ -185,17 +169,13 @@ export default {
       updateYear,
       currentYear,
       yearRange,
-      minToKhaiCount,
-      maxToKhaiCount,
-      hasNoToKhai,
-      dayIsMaxToKhai,
-      dayIsMinToKhai,
       calculateColor,
       firstDayOfWeek,
       weekdays,
       translateWeekday,
       firstDayOfMonthOffset,
-      lastDayOfWeek
+      lastDayOfWeek,
+
     };
   },
 };
