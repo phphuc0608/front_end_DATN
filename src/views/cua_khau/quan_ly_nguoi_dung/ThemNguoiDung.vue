@@ -57,6 +57,8 @@ import { ref, onMounted, computed } from 'vue';
 import NavbarCuakhau from '../../../components/NavbarCuakhau.vue';
 import axios from 'axios';
 import router from '../../../routers/router';
+import Swal from 'sweetalert2';
+
 export default {
   setup(){
     const donVis = ref([]);
@@ -148,18 +150,24 @@ export default {
           }
         });
         console.log(response.data);
-        alert('Thêm người dùng thành công');
-        router.push('/quan_ly_nguoi_dung_cua_khau');
-        //showModal.value = true;
+        Swal.fire({
+          icon: 'success',
+          title: 'Thêm người dùng thành công',
+        });
+        router.back('/quan_ly_nguoi_dung_cua_khau');
       } catch (error) {
         console.log(error);
-        alert('Thêm người dùng thất bại');
+        alert();
+        Swal.fire({
+          icon: 'error',
+          title: 'Thêm người dùng thất bại',
+        });
       }
     };
 
 
     onMounted(() => {
-      document.title = "Thêm doanh nghiệp";
+      document.title = "Thêm người dùng";
     });
 
     getdonVis();
