@@ -12,7 +12,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://42.115.62.251:8000/',
+        target: 'http://183.81.27.133:8000/',
         changeOrigin: true,
         secure: false,
         timeout: 5000,
