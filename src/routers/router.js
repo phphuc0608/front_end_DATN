@@ -172,8 +172,6 @@ const router = createRouter({
   routes
 })
 
-
-
 //Check if the user has the right to access the page
 router.beforeEach((to, from, next) => {
   const savedMaVaiTro = localStorage.getItem('savedMaVaiTro');
