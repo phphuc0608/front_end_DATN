@@ -45,11 +45,6 @@
         </div>
       </div>
     </div>
-    <div class="col-md-12 d-flex mb-4 pb-3">
-      <router-link to="/them_nguoi_dung_cua_khau" class="btn btn-primary me-3">
-        <i class="bi bi-plus-circle"></i> Thêm người dùng
-      </router-link>
-    </div>
   </div>
   <div class="container-fluid px-5">
     <div class="header_container">
