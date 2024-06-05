@@ -56,7 +56,7 @@ export default {
     const firstDayOfWeek = ref(1);
     const minToKhai = ref(0);
     const maxToKhai = ref(0);
-
+    //Calculate year range from 10 years ago to 10 years later
     const yearRange = computed(() => {
       const startYear = now.getFullYear() - 10; 
       const endYear = now.getFullYear() + 10; 
@@ -66,42 +66,46 @@ export default {
       }
       return years;
     });
-  
+    //Fetch to khai counts from API
     const fetchToKhaiCounts = async () => {
       try {
+        //Get first and last date of the month
         const startDate = new Date(currentYear.value, currentMonth.value, 1);
         const endDate = new Date(currentYear.value, currentMonth.value + 1, 0);
+        //Reset toKhaiCounts
         toKhaiCounts.value = {}; 
+        //Fetch to khai counts for each day in the month
         for (let day = startDate.getDate(); day <= endDate.getDate(); day++) {
           const currentDate = moment(startDate).date(day); 
           const formattedDate = currentDate.format('YYYY-MM-DD');
           const response = await axios.get(`/api/to-khai/ngay-dang-ky/${formattedDate}/tong-so`);
           toKhaiCounts.value[day] = response.data;
-          maxToKhai.value = Math.max(maxToKhai.value, response.data); // Cập nhật giá trị lớn nhất
+          maxToKhai.value = Math.max(maxToKhai.value, response.data); // Update maxToKhai
         }
+        //Fetch maxToKhai
         const maxResponse = await axios.get('/api/to-khai/so-luong/to-khai-max');
         maxToKhai.value = maxResponse.data;
       } catch (error) {
           console.error(error);
       }
     };
-
+    //Calculate number of days in the month
     const daysInMonth = computed(() => {
       return new Date(currentYear.value, currentMonth.value + 1, 0).getDate();
     });
-
+    //Calculate current month name
     const currentMonthName = computed(() => {
       return now.toLocaleString('default', { month: 'long' });
     });
-
+    //Calculate first day of month offset
     const firstDayOfMonthOffset = computed(() => {
       return new Date(currentYear.value, currentMonth.value, 1).getDay() - firstDayOfWeek.value;
     });
-
+    //Calculate last day of week
     const lastDayOfWeek = computed(() => {
       return new Date(currentYear.value, currentMonth.value + 1, 0).getDay();
     });
-
+    //Calculate days to display in the calendar
     const days = computed(() => {
       const daysToDisplay = daysInMonth.value + firstDayOfMonthOffset.value;
       const extraDays = (7 - (daysToDisplay % 7)) % 7; 
@@ -118,11 +122,11 @@ export default {
       }
       return result;
     });
-
+    //Calculate weekdays
     const weekdays = computed(() => {
       return ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
     });
-
+    //Translate weekday to Vietnamese
     const translateWeekday = (weekday) => {
       const translations = {
         'Monday': 'Thứ hai',
@@ -135,12 +139,12 @@ export default {
       };
       return translations[weekday] || weekday; 
     };
-
+    //Update month
     const updateMonth = async () => {
       now.setMonth(currentMonth.value);
       await fetchToKhaiCounts();
     };
-
+    //Update year
     const updateYear = async () => {
       await fetchToKhaiCounts(); 
     };
@@ -148,15 +152,16 @@ export default {
     onMounted(() => {
       fetchToKhaiCounts();
     });
-
+    //Calculate color based on to khai count
     const calculateColor = (day) => {
+      //Return #ccfccc if there are no to khai
       if (!toKhaiCounts.value[day] || toKhaiCounts.value[day] === 0) {
-        return '#ccfccc'; // Màu xanh lá cho 0 tờ khai
+        return '#ccfccc'; // 
       }
-
+      //Calculate hue based on to khai count
       const countRange = maxToKhai.value - minToKhai.value;
       const countRatio = (toKhaiCounts.value[day] - minToKhai.value) / countRange;
-      const hue = 120 - (120 * countRatio); // Màu chuyển từ xanh lá (0) sang đỏ (120)
+      const hue = 120 - (120 * countRatio); // Calculate hue from 0 to 120
       return `hsl(${hue}, 80%, 70%)`;
     };
 
