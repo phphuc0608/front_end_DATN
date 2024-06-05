@@ -110,11 +110,6 @@ const routes = [
     component: () => import('../views/cong_ty/quan_ly_nguoi_dung/QuanLyNguoiDung.vue')
   },
   {
-    path: '/them_nguoi_dung_cong_ty',
-    name: 'ThemNguoiDungCongTy',
-    component: () => import('../views/cong_ty/quan_ly_nguoi_dung/ThemNguoiDung.vue')
-  },
-  {
     path: '/cap_nhat_nguoi_dung_cong_ty/:email',
     name: 'CapNhatNguoiDungCongTy',
     component: () => import('../views/cong_ty/quan_ly_nguoi_dung/CapNhatNguoiDung.vue')
@@ -134,11 +129,6 @@ const routes = [
     path: '/quan_ly_nguoi_dung_cua_khau',
     name: 'QuanLyNguoiDungCuaKhau',
     component: () => import('../views/cua_khau/quan_ly_nguoi_dung/QuanLyNguoiDung.vue')
-  },
-  {
-    path: '/them_nguoi_dung_cua_khau',
-    name: 'ThemNguoiDungCuaKhau',
-    component: () => import('../views/cua_khau/quan_ly_nguoi_dung/ThemNguoiDung.vue')
   },
   {
     path: '/cap_nhat_nguoi_dung_cua_khau/:email',
@@ -193,7 +183,6 @@ router.beforeEach((to, from, next) => {
   ];
   const cuaKhauRoutes = [
     'QuanLyNguoiDungCuaKhau',
-    'ThemNguoiDungCuaKhau',
     'CapNhatNguoiDungCuaKhau',
     'QuanLyXeRaVao',
     'LichSuPhuongTien',
@@ -204,7 +193,6 @@ router.beforeEach((to, from, next) => {
   ];
   const congTyRoutes = [
     'QuanLyNguoiDungCongTy',
-    'ThemNguoiDungCongTy',
     'CapNhatNguoiDungCongTy',
     'QuanLyToKhai',
     'ThemToKhai',
@@ -217,8 +205,8 @@ router.beforeEach((to, from, next) => {
     'ChiTietVanDon'
   ];
   //Restricted routes
-  const cuaKhauRestrictedRoutes = ['quan_ly_nguoi_dung_cua_khau'];
-  const congTyRestrictedRoutes = ['quan_ly_nguoi_dung_cong_ty'];
+  const cuaKhauRestrictedRoutes = ['quan_ly_nguoi_dung_cua_khau', 'cap_nhat_nguoi_dung_cua_khau'];
+  const congTyRestrictedRoutes = ['quan_ly_nguoi_dung_cong_ty', 'cap_nhat_nguoi_dung_cong_ty'];
   //Check if the user has the right to access the page
   if (to.name === 'DangNhap') {
     next();
