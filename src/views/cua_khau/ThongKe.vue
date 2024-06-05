@@ -1,72 +1,79 @@
 <template>
   <NavbarCuakhau/>
   <div id="content" class="container-fluid px-5" style="margin-top: 110px;">
-    <div class=" d-flex justify-content-center align-items-center px-3 pb-3 mb-3">
-      <div v-for="singleBox in boxData1" class="box col-md-4" :style="{ backgroundColor: singleBox.color }">
-        <div class="box_header">
-          <h5>{{ singleBox.title }}</h5>
+    <div id="print_area">
+      <div class=" d-flex justify-content-center align-items-center px-3 pb-3 mb-3">
+        <div v-for="singleBox in boxData1" class="box col-md-4" :style="{ backgroundColor: singleBox.color }">
+          <div class="box_header">
+            <h5>{{ singleBox.title }}</h5>
+          </div>
+          <div class="box_number">
+            <h1>{{ singleBox.number }}</h1>
+          </div>
         </div>
-        <div class="box_number">
-          <h1>{{ singleBox.number }}</h1>
+      </div>
+      <div class=" d-flex justify-content-center align-items-center px-3 pb-3 mb-3">
+        <div v-for="singleBox in boxData2" class="box col-md-4" :style="{ backgroundColor: singleBox.color }">
+          <div class="box_header">
+            <h5>{{ singleBox.title }}</h5>
+          </div>
+          <div class="box_number">
+            <h1>
+              {{ singleBox.number }}
+              <span
+                v-if="singleBox.percentChange"
+                :class="{'text-success': singleBox.percentChange > 0, 'text-danger': singleBox.percentChange < 0}"
+                style="font-size: 25px;"
+              >
+                {{ singleBox.percentChange > 0 ? '+' : '' }}{{ singleBox.percentChange }}%
+              </span>
+            </h1>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4" id="chartPhuongTienTheoTrangThai">
+          <div class="box_container">
+            <div class="header_container">
+              <h5>Thống kê phương tiện theo trạng thái</h5>
+            </div>
+            <div class="content_container">
+              <div class="chart_container">
+                <v-chart class="chart" :option="chartPhuongTienTheoTrangThai" autoresize/>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4" id="chartToKhaiTheoTrangThai">
+          <div class="box_container">
+            <div class="header_container">
+              <h5>Thống kê tờ khai theo trạng thái</h5>
+            </div>
+            <div class="content_container">
+              <div class="chart_container">
+                <v-chart class="chart" :option="chartToKhaiTheoTrangThai" autoresize/>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4" id="chartToKhaiMTD">
+          <div class="box_container">
+            <div class="header_container">
+              <h5>Thống kê tờ khai hàng tháng</h5>
+            </div>
+            <div class="content_container">
+              <div class="chart_container">
+                <v-chart class="chart" :option="chartToKhaiMTD" autoresize/>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <div class=" d-flex justify-content-center align-items-center px-3 pb-3 mb-3">
-      <div v-for="singleBox in boxData2" class="box col-md-4" :style="{ backgroundColor: singleBox.color }">
-        <div class="box_header">
-          <h5>{{ singleBox.title }}</h5>
-        </div>
-        <div class="box_number">
-          <h1>
-            {{ singleBox.number }}
-            <span
-              v-if="singleBox.percentChange"
-              :class="{'text-success': singleBox.percentChange > 0, 'text-danger': singleBox.percentChange < 0}"
-              style="font-size: 25px;"
-            >
-              {{ singleBox.percentChange > 0 ? '+' : '' }}{{ singleBox.percentChange }}%
-            </span>
-          </h1>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-4">
-        <div class="box_container">
-          <div class="header_container">
-            <h5>Thống kê phương tiện theo trạng thái</h5>
-          </div>
-          <div class="content_container">
-            <div class="chart_container">
-              <v-chart class="chart" :option="chartPhuongTienTheoTrangThai" autoresize/>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="box_container">
-          <div class="header_container">
-            <h5>Thống kê tờ khai theo trạng thái</h5>
-          </div>
-          <div class="content_container">
-            <div class="chart_container">
-              <v-chart class="chart" :option="chartToKhaiTheoTrangThai" autoresize/>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="box_container">
-          <div class="header_container">
-            <h5>Thống kê tờ khai hàng tháng</h5>
-          </div>
-          <div class="content_container">
-            <div class="chart_container">
-              <v-chart class="chart" :option="chartToKhaiMTD" autoresize/>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div id="button_container">
+      <button @click="printReport" class="btn btn-primary p-2 my-2 me-2">
+        <i class="bi bi-file-pdf-fill"></i> Xuất báo cáo
+      </button>
     </div>
   </div>
 </template>
@@ -80,6 +87,8 @@ import { BarChart, PieChart } from 'echarts/charts';
 import { TitleComponent, TooltipComponent, LegendComponent, GridComponent } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 import VChart, { THEME_KEY } from 'vue-echarts';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 use([BarChart, TitleComponent, TooltipComponent, CanvasRenderer,LegendComponent, GridComponent, PieChart]);
 
@@ -168,7 +177,6 @@ export default {
         toKhaiMTD.value = results.map(res => res.data);
       } catch (error) {
         console.error("Error fetching to khai data:", error);
-        // Handle the error appropriately (e.g., show a user notification)
       }
     }; 
 
@@ -294,6 +302,35 @@ export default {
       };
     });
 
+    const printReport = async () => {
+      // 1. Get the Report Section
+      const reportSection = document.getElementById('print_area');
+
+      // 2. Adjust Page Size and Margin
+      const pdfOptions = {
+        margin: 10,
+        filename: 'thong_ke_cua_khau.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 }, // Adjust as needed
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      // 3. Generate the PDF
+      try {
+        const canvas = await html2canvas(reportSection, pdfOptions.html2canvas);
+        const imgData = canvas.toDataURL(pdfOptions.image.type, pdfOptions.image.quality);
+
+        const pdf = new jsPDF(pdfOptions.jsPDF);  
+        const imgProps= pdf.getImageProperties(imgData);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        pdf.addImage(imgData, 'PNG', pdfOptions.margin, pdfOptions.margin, pdfWidth - 2 * pdfOptions.margin, pdfHeight - 2 * pdfOptions.margin);
+        pdf.save(pdfOptions.filename); 
+      } catch (error) {
+        console.error("Lỗi khi tạo PDF:", error); 
+      }
+    };
+
     onMounted(() => {
       document.title = "Thống kê";
       getToKhais();
@@ -321,7 +358,8 @@ export default {
       phuongTienKhongHopLe,
       dateFormat,
       toKhaiMTD,
-      months
+      months,
+      printReport,
     }
   },
 
