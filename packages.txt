@@ -1,3 +1,6 @@
 axios
 sweetalert2
 js-file-download
+moment
+jspdf
+html2canvas
