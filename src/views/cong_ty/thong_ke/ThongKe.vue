@@ -1,6 +1,11 @@
 <template>
   <NavbarCongty/>
   <div id="content" class="container-fluid px-5" style="margin-top: 110px;">
+    <div id="button_container">
+      <button @click="printReport" class="btn btn-primary p-2 my-2 me-2">
+        <i class="bi bi-file-pdf-fill"></i> Xuất báo cáo
+      </button>
+    </div>
     <div id="print_area">
       <div class=" d-flex justify-content-center align-items-center px-3 pb-3 mb-3">
         <div v-for="singleBox in boxData1" class="box col-md-4" :style="{ backgroundColor: singleBox.color }">
@@ -69,11 +74,77 @@
           </div>
         </div>
       </div>
-    </div>
-    <div id="button_container">
-      <button @click="printReport" class="btn btn-primary p-2 my-2 me-2">
-        <i class="bi bi-file-pdf-fill"></i> Xuất báo cáo
-      </button>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="box_container">
+            <div class="header_container">
+              <h5>Bảng vận đơn hàng tháng</h5>
+            </div>
+            <div class="table table-responsive m-0">
+              <table class="table table-bordered m-0">
+                <thead>
+                  <tr>
+                    <th>Tháng</th>
+                    <th>Số lượng</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(soLuong, index) in vanDonMTD" :key="index">
+                    <td>{{ index + 1 }}</td>
+                    <td>{{ soLuong }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="box_container">
+            <div class="header_container">
+              <h5>Bảng tờ khai hàng tháng</h5>
+            </div>
+            <div class="table table-responsive m-0">
+              <table class="table table-bordered m-0">
+                <thead>
+                  <tr>
+                    <th>Tháng</th>
+                    <th>Số lượng</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(soLuong, index) in toKhaiMTD" :key="index">
+                    <td>{{ index + 1 }}</td>
+                    <td>{{ soLuong }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="box_container">
+            <div class="header_container">
+              <h5>Bảng tờ khai theo trạng thái</h5>
+            </div>
+            <div class="table table-responsive m-0">
+              <table class="table table-bordered m-0">
+                <thead>
+                  <tr>
+                    <th>Trạng thái</th>
+                    <th>Số lượng</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(soLuong, trangThai) in toKhaiTheoTrangThais" :key="trangThai"> 
+                    <td>{{ trangThai }}</td>
+                    <td>{{ soLuong }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
