@@ -1,4 +1,5 @@
 axios
+pinia
 sweetalert2
 js-file-download
 moment
